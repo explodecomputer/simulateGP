@@ -68,8 +68,8 @@ risk_simulation <- function(G, eff, prevalence, prop_discovered)
 {
 	nid <- nrow(G)
 	nsnp <- ncol(G)
-	h2x <- var(eff)
-	gx_true <- as.numeric(scale(G %*% eff)) * sqrt(h2x)
+	gx_true <- scale(G) %*% eff
+	h2x <- var(gx_true)
 	prob_disease <- gx_to_gp(gx_true, h2x, 1-prevalence)
 	disease <- rbinom(nid, 1, prob_disease)
 	eff_pred <- eff

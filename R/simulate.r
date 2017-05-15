@@ -61,3 +61,60 @@ choose_effects <- function(nsnp, totvar, sqrt=TRUE)
 	return(out)
 }
 
+#' Convert continuous trait to binary 
+#'
+#' @param y Phenotype vector
+#' @param prevalence=NULL Disease prevalence
+#' @param threshold=NULL Disease threshold
+#'
+#' @export
+#' @return Vector of binary trait
+y_to_binary <- function(y, prevalence=NULL, threshold=NULL)
+{
+	if(is.null(prevalence) & is.null(threshold)) stop("Prevalence or threshold needs to be non-null")
+	if(!is.null(prevalence))
+	{
+		d <- y
+		t <- quantile(d, 1-prevalence)
+		d[y >= t] <- 1
+		d[y < t] <- 0
+		return(d)
+	}
+	if(!is.null(threshold))
+	{
+		d <- y
+		d[y >= threshold] <- 1
+		d[y < threshold] <- 0
+		return(d)
+	}
+}
+
+
+#' Ascertain some proportion of cases and controls from binary phenotype
+#'
+#' @param d Vector of 1/0
+#' @param prop_cases Proportion of 1s to retain
+#'
+#' @export
+#' @return Array of IDs
+ascertain_samples <- function(d, prop_cases)
+{
+	d <- d[!is.na(d)]
+	d <- d[d %in% c(0,1)]
+	x1 <- sum(d==1)
+	x0 <- sum(d==0)
+	exp_cases <- x1
+	exp_controls <- (x1 - prop_cases * x1) / prop_cases
+	if(round(exp_controls) > x0)
+	{
+		exp_controls <- x0
+		exp_cases <- (x0 - (1 - prop_cases) * x0) / (1 - prop_cases)
+	}
+	i0 <- which(d == 0)
+	i0 <- sample(i0, exp_controls, replace=FALSE)
+	i1 <- which(d == 1)
+	i1 <- sample(i1, exp_cases, replace=FALSE)
+
+	return(sort(c(i0, i1)))
+}
+
