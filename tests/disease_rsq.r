@@ -1,18 +1,46 @@
+library(devtools)
 load_all()
 
 
-va <- 0.1
-maf <- 0.5
-prevalence <- 0.1
-nid <- 100000
-proportion <- 0.5
+var_cc <- function(proportion, prevalence)
+{
+	tval <- qnorm(prevalence, lower.tail=FALSE)
+	zval <- dnorm(tval)
+	i <- zval / prevalence
+	lambda <- (proportion - prevalence) / (1 - prevalence)
+	vp <- 1 + i * lambda * (tval - i * lambda)
+	return(vp)
+}
+
+var_cc(0.5, 0.5)
+
+nid <- 10000
+r <- expand.grid(
+	maf=c(0.1, 0.3, 0.5), 
+	va=c(0.01, 0.04, 0.07, 0.1), 
+	prevalence=c(0.01, 0.1)
+)
+
+for(i in 1:nrow(r))
+{
+	message(i, " of ", nrow(r))
+	g <- make_geno(nid, 1, r$maf[i])
+	d <- risk_simulation(g, r$va[i], r$prevalence[i], 1)
+	r$b[i] <- glm(d$disease ~ g, family="binomial")$coefficients[2]
+	r$bo[i] <- lm(d$disease ~ g)$coefficients[2]
+}
 
 
-g <- make_geno(nid, 1, maf)
-x <- make_phen(sqrt(va), g)
-bin <- y_to_binary(x, prevalence=prevalence)
+r$h2o <- r$bo^2 * r$maf * (1-r$maf) * 2 / (r$prevalence * (1-r$prevalence))
+
+plot(h2o ~ va, r)
 
 
+ggplot(r, aes(x=va, y=bo)) +
+geom_line(aes(colour=as.factor(maf), linetype=as.factor(prevalence))) +
+geom_point()
+
+plot(b ~ bo, r)
 
 
 
@@ -89,15 +117,6 @@ var(bin)
 
 
 
-var_cc <- function(proportion, prevalence)
-{
-	tval <- qnorm(prevalence, lower.tail=FALSE)
-	zval <- dnorm(tval)
-	i <- zval / prevalence
-	lambda <- (proportion - prevalence) / (1 - prevalence)
-	vp <- 1 + i * lambda * (tval - i * lambda)
-	return(vp)
-}
 
 
 

@@ -39,7 +39,7 @@ gx_to_gp <- function(gx, h2x, prev)
 risk_cross_plot <- function(x, o, xlab="Values (low to high)", ylab="", title="", xname="GRS", oname="Disease")
 {
 	require(ggplot2)
-	d <- data.frame(
+	d <- tibble::data_frame(
 		value = c(range01(o), range01(x)),
 		key = c(rep(oname, length(o)), rep(xname, length(x))),
 		gr = rep(1:length(x), times=2)
@@ -75,7 +75,7 @@ risk_simulation <- function(G, eff, prevalence, prop_discovered)
 	eff_pred <- eff
 	eff_pred[sample(1:nsnp, nsnp * (1-prop_discovered))] <- 0
 	gx_pred <- as.numeric(G %*% eff_pred / sqrt(nsnp))
-	dat <- data.frame(gx_true=gx_true, gx_pred=gx_pred, prob_disease=prob_disease, disease=disease)
+	dat <- tibble::data_frame(gx_true=as.numeric(gx_true), gx_pred=gx_pred, prob_disease=as.numeric(prob_disease), disease=disease)
 	return(dat)
 }
 

@@ -50,7 +50,7 @@ expected_gwas <- function(eff, n, vx, vy)
 	se <- sqrt(ve / ((n-2) * vx))
 	tval <- eff / se
 	p <- pt(abs(tval), n-1, lower.tail=FALSE)
-	dat <- data.frame(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
+	dat <- tibble::data_frame(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
 	return(dat)
 }
 
@@ -70,7 +70,7 @@ gwas <- function(y, g)
 		o <- fast_assoc(y, g[,i])
 		out[i, ] <- unlist(o)
 	}
-	out <- as.data.frame(out)
+	out <- tibble::as_data_frame(out)
 	names(out) <- names(o)
 	return(out)
 }
@@ -88,7 +88,7 @@ get_effs <- function(x, y, g)
 	gwasx <- gwas(x, g)
 	gwasy <- gwas(y, g)
 
-	dat <- data.frame(
+	dat <- tibble::data_frame(
 		exposure="X",
 		id.exposure="X",
 		outcome="Y",
