@@ -59,22 +59,41 @@ lor_to_rsq <- function(b, af, ncase, ncontrol, prevalence)
 	return(vg / (vg + pi^2/3) / 0.58)
 }
 
-plot(h2o ~ va, r)
 
+func.Vg <- function (PA,RR1,RR2,K) {
+	Paa = (1-PA)^2
+	PAa = 2*PA*(1-PA)
+	PAA = PA^2
+	muaa=0
+	faa= K/(Paa + PAa*RR1 + PAA*RR2)
+	fAa= RR1*faa
+	fAA= RR2*faa 
+	T = qnorm(1-faa) 
+	muAa = T-qnorm(1-fAa)
+	muAA = T-qnorm(1-fAA)
+	mean.all= PAa*muAa+ PAA*muAA
+	Vg= Paa*(muaa-mean.all)^2 + PAa*(muAa-mean.all)^2+ PAA*(muAA-mean.all)^2
+	actual.Vg =  Vg/(1+Vg) 
+	VR = 1-actual.Vg 
+	actual.T = Paa*sqrt(VR)*qnorm(1-faa) + PAa*sqrt(VR)*qnorm(1-fAa) + PAA*sqrt(VR)*qnorm(1-fAA)
+	actual.muaa = actual.T - sqrt(VR) * qnorm(1-faa)
+	actual.muAa = actual.T - sqrt(VR) * qnorm(1-fAa)
+	actual.muAA = actual.T - sqrt(VR) * qnorm(1-fAA)
 
-ggplot(r, aes(x=va, y=bo)) +
-geom_line(aes(colour=as.factor(maf), linetype=as.factor(prevalence))) +
-geom_point()
-
-plot(b ~ bo, r)
+	res <- list(Vg=actual.Vg,muaa=actual.muaa, muAa = actual.muAa, muAA=actual.muAA)
+	res
+} 
 
 param <- data_frame(
-	va = runif(100, 0.001, 0.0001),
+	va = runif(100, 0.001, 0.05),
 	n = 100000,
 	prevalence = runif(100, 0.01, 0.1),
 	proportion = runif(100, 0.2, 0.8),
 	maf = runif(100, 0.05, 0.5),
-	rsq = NA
+	rsq1 = NA,
+	rsq2 = NA,
+	paf = NA,
+	pval = NA
 )
 
 
@@ -97,16 +116,28 @@ for(i in 1:nrow(param))
 	mod <- summary(glm(bina ~ ga, family="binomial"))
 	eff <- coefficients(mod)[2,1]
 	pval <- coefficients(mod)[2,4]
-	param$rsq[i] <- lor_to_rsq(eff, allele_frequency(ga), sum(bina==1), sum(bina==0), prevalence)
+	param$rsq1[i] <- lor_to_rsq(eff, allele_frequency(ga), sum(bina==1), sum(bina==0), prevalence)
 	param$paf[i] <- get_population_allele_frequency(allele_frequency(ga), sum(bina==1) / length(bina), exp(eff), prevalence)
 	param$pval[i] <- pval
+	param$rsq2[i] <- func.Vg(allele_frequency(ga), exp(eff), exp(eff)^2, prevalence)$Vg
+	param$rsq3[i] <- func.Vg(param$paf[i], exp(eff), exp(eff)^2, prevalence)$Vg
 }
 
-plot(rsq ~ va, param)
-summary(lm(rsq ~ va + prevalence + proportion + maf, param))
+plot(rsq1 ~ va, param)
+abline(lm(rsq1 ~ va, param))
+points(rsq2 ~ va, param, col="red")
+abline(lm(rsq2 ~ va, param), col="red")
+points(rsq3 ~ va, param, col="blue")
+abline(lm(rsq3 ~ va, param), col="blue")
+
+summary(lm(rsq1 ~ va + prevalence + proportion + maf, param))
+summary(lm(rsq2 ~ va + prevalence + proportion + maf, param))
+
+plot(rsq1 ~ rsq2, param)
+
 plot(-log10(param$pval))
 
-ggplot(param, aes(x=va, y=rsq)) +
+ggplot(param, aes(x=va, y=rsq1)) +
 geom_point(aes(colour=-log10(pval))
 )
 get_population_allele_frequency()

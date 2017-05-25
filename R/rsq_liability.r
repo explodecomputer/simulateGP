@@ -42,7 +42,7 @@ contingency <- function(af, prop, odds_ratio, eps=1e-15)
 #' @return Allele frequency 
 allele_frequency <- function(g)
 {
-	(sum(g == 1) + 2 * sum(g == 2) / (2 * sum(!is.na(g)))
+	(sum(g == 1) + 2 * sum(g == 2)) / (2 * sum(!is.na(g)))
 }
 
 
