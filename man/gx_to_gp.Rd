@@ -19,4 +19,3 @@ Vector of disease probabilities
 \description{
 Translate risk from liability to probability scale
 }
-

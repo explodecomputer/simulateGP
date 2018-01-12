@@ -1,13 +1,16 @@
-#' Create phenotype from vector of effects and matrix of factors
+
+#' Simulate variable based on the influences of other variables
 #'
-#' @param effs Vector of effects. If vy and vx are set to default then effect sizes are equivalent to sqrt(variance explained) of each factor
-#' @param indep Matrix of factors. Must be same number of columns as length of effs
-#' @param vy=1 Variance of phenotype to be outputed
-#' @param vx=rep(1, length(effs)) Vector of variances of each factor in indep
-#' @param my=0 Mean of phenotype to be outputted
+#' I need a function that takes some variables, and an effect size for each of them, and this creates a new variable where y = Xb + e, where X is the matrix of independent variables, b is their effect sizes, and e is a noise term. By default it's easier if b relates to the variance explained by each vector in X, and e has variance of 1 - sum(b).
+#'
+#' @param effs An array of effect sizes that the variables in indep have on the variable that you are simulating
+#' @param indep A matrix of variables, rows = Samples and columns = variables that have an influence on the variable that you are simulating
+#' @param vy What variance the output should have. Default = 1, meaning effs relate to the signed rsq of the influence of the indep variables on the outcome
+#' @param vx What variance the indep variables should have. Default is to set to 1, meaning that the effects are the signed variance explained
+#' @param my mean value of y to be output
 #'
 #' @export
-#' @return Phenotype vector
+#' @return Vector of y values
 make_phen <- function(effs, indep, vy=1, vx=rep(1, length(effs)), my=0)
 {
 	if(is.null(dim(indep))) indep <- cbind(indep)

@@ -19,4 +19,3 @@ Vector of effects
 \description{
 Get vector of effects that explain some amount of variance
 }
-

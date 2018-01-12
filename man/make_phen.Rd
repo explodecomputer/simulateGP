@@ -2,25 +2,24 @@
 % Please edit documentation in R/simulate.r
 \name{make_phen}
 \alias{make_phen}
-\title{Create phenotype from vector of effects and matrix of factors}
+\title{Simulate variable based on the influences of other variables}
 \usage{
 make_phen(effs, indep, vy = 1, vx = rep(1, length(effs)), my = 0)
 }
 \arguments{
-\item{effs}{Vector of effects. If vy and vx are set to default then effect sizes are equivalent to sqrt(variance explained) of each factor}
+\item{effs}{An array of effect sizes that the variables in indep have on the variable that you are simulating}
 
-\item{indep}{Matrix of factors. Must be same number of columns as length of effs}
+\item{indep}{A matrix of variables, rows = Samples and columns = variables that have an influence on the variable that you are simulating}
 
-\item{vy=1}{Variance of phenotype to be outputed}
+\item{vy}{What variance the output should have. Default = 1, meaning effs relate to the signed rsq of the influence of the indep variables on the outcome}
 
-\item{vx=rep(1, }{length(effs)) Vector of variances of each factor in indep}
+\item{vx}{What variance the indep variables should have. Default is to set to 1, meaning that the effects are the signed variance explained}
 
-\item{my=0}{Mean of phenotype to be outputted}
+\item{my}{mean value of y to be output}
 }
 \value{
-Phenotype vector
+Vector of y values
 }
 \description{
-Create phenotype from vector of effects and matrix of factors
+I need a function that takes some variables, and an effect size for each of them, and this creates a new variable where y = Xb + e, where X is the matrix of independent variables, b is their effect sizes, and e is a noise term. By default it's easier if b relates to the variance explained by each vector in X, and e has variance of 1 - sum(b).
 }
-

@@ -21,4 +21,3 @@ Data frame of associations
 \description{
 For known effect size, sample size and variances, what is the expected association?
 }
-

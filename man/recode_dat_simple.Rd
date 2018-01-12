@@ -15,4 +15,3 @@ Data frame
 \description{
 Simple recoding to have every effect on x positive
 }
-

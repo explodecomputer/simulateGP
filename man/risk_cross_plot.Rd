@@ -28,4 +28,3 @@ ggplot
 \description{
 Plot liability vs probability disease risk
 }
-

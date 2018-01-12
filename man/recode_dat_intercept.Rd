@@ -15,4 +15,3 @@ Data frame
 \description{
 Tries to avoid issue of recoding by finding intercept and pivoting negative g-x associations around intercept
 }
-

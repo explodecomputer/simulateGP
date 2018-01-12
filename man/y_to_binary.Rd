@@ -19,4 +19,3 @@ Vector of binary trait
 \description{
 Convert continuous trait to binary
 }
-

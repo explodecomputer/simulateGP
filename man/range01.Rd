@@ -15,4 +15,3 @@ Vector
 \description{
 Scale variable to have range between 0 and 1
 }
-

@@ -21,4 +21,3 @@ Data frame
 \description{
 Compares the liability and probability of disease under two scenarios - where all SNPs are known, and where only some SNPs are known
 }
-

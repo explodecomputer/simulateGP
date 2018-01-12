@@ -19,4 +19,3 @@ Matrix of genotypes, rows = individuals, columns = snps
 \description{
 Create genotype matrix
 }
-
