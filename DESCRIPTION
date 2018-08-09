@@ -6,7 +6,7 @@ Description: Functions for simulating SNP effects on phenotypes. Functions for
     simulating disease risk on probability and liability scales. Simulations to
     quickly obtain estimates of effect sizes for simulated genotype-phenotypes.
 Depends:
-    R (>= 3.3.1),
+    R (>= 3.2.1),
     tidyverse
 License: MIT
 Encoding: UTF-8
