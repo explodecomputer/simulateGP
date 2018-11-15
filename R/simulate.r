@@ -47,10 +47,11 @@ make_geno <- function(nid, nsnp, af)
 #' @param nsnp Number of SNPs
 #' @param totvar Total variance explained by all SNPs
 #' @param sqrt=TRUE Output effect sizes in terms of standard deviations
+#' @param mua=0 Constant term to be added to effects
 #'
 #' @export
 #' @return Vector of effects
-choose_effects <- function(nsnp, totvar, sqrt=TRUE)
+choose_effects <- function(nsnp, totvar, sqrt=TRUE, mua=0)
 {
 	eff <- rnorm(nsnp)
 	eff <- sign(eff) * eff^2
@@ -61,7 +62,7 @@ choose_effects <- function(nsnp, totvar, sqrt=TRUE)
 	{
 		out <- sqrt(abs(out)) * sign(out)
 	}
-	return(out)
+	return(out + mua)
 }
 
 #' Convert continuous trait to binary 

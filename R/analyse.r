@@ -72,6 +72,7 @@ gwas <- function(y, g)
 	}
 	out <- tibble::as_data_frame(out)
 	names(out) <- names(o)
+	out$snp <- 1:ncol(g)
 	return(out)
 }
 
@@ -87,23 +88,36 @@ get_effs <- function(x, y, g)
 {
 	gwasx <- gwas(x, g)
 	gwasy <- gwas(y, g)
+	return(make_dat(gwasx, gwasy))
+}
 
+#' Organise outputs from \code{gwas} into harmonised dat format
+#'
+#' @param gwasx Output from \code{gwas}
+#' @param gwasy Output from \code{gwas}
+#'
+#' @export
+#' @return
+make_dat <- function(gwasx, gwasy)
+{
+	d <- dplyr::inner_join(gwasx, gwasy, by='snp')
 	dat <- tibble::data_frame(
+		SNP = d$snp,
 		exposure="X",
 		id.exposure="X",
 		outcome="Y",
 		id.outcome="Y",
-		beta.exposure=gwasx$bhat,
-		beta.outcome=gwasy$bhat,
-		se.exposure=gwasx$se,
-		se.outcome=gwasy$se,
-		pval.exposure=gwasx$pval,
-		pval.outcome=gwasy$pval,
-		samplesize.exposure=gwasx$n,
-		samplesize.outcome=gwasy$n,
+		beta.exposure=d$bhat.x,
+		beta.outcome=d$bhat.y,
+		se.exposure=d$se.x,
+		se.outcome=d$se.y,
+		pval.exposure=d$pval.x,
+		pval.outcome=d$pval.y,
+		samplesize.exposure=d$n.x,
+		samplesize.outcome=d$n.y,
 		mr_keep=TRUE
 	)
-	return(dat)
+	return(dat)	
 }
 
 #' Simple recoding to have every effect on x positive
@@ -114,6 +128,7 @@ get_effs <- function(x, y, g)
 #' @return Data frame
 recode_dat_simple <- function(dat)
 {
+	.Deprecated('recode_dat')
 	sign0 <- function(x) {
 		x[x == 0] <- 1
 		return(sign(x))
@@ -134,11 +149,88 @@ recode_dat_simple <- function(dat)
 #' @return Data frame
 recode_dat_intercept <- function(dat)
 {
+	.Deprecated('recode_dat')
 	a <- lm(beta.outcome ~ beta.exposure, dat)$coefficients[1]
 	index <- dat$beta.exposure < 0
 	dat$beta.exposure[index] <- dat$beta.exposure[index] * -1
 	dat$beta.outcome[index] <- dat$beta.outcome[index] * -1 + 2 * a
 	dat$index <- index
-	return(dat)
+	return(dat)		
 }
 
+#' Recode data to make every effect on x positive
+#'
+#' Can use simple method or by pivoting around intercept
+#'
+#' @param dat Output from get_effs
+#' @param method Default 'intercept'. Alternatively can specify 'simple'
+#'
+#' @export
+#' @return Data frame
+recode_dat <- function(dat, method='intercept')
+{
+	if(method == 'intercept')
+	{
+		a <- lm(beta.outcome ~ beta.exposure, dat)$coefficients[1]
+		index <- dat$beta.exposure < 0
+		dat$beta.exposure[index] <- dat$beta.exposure[index] * -1
+		dat$beta.outcome[index] <- dat$beta.outcome[index] * -1 + 2 * a
+		dat$index <- index
+		return(dat)		
+	} else if(method == 'simple') {
+		sign0 <- function(x) {
+			x[x == 0] <- 1
+			return(sign(x))
+		}
+		index <- sign0(dat$beta.exposure) == -1
+		dat$beta.exposure <- abs(dat$beta.exposure)
+		dat$beta.outcome[index] <- dat$beta.outcome[index] * -1
+		return(dat)
+	} else {
+		stop('method must be intercept or simple')
+	}
+}
+
+
+#' Take several exposures and one outcome and make the data required for multivariable MR
+#'
+#' @param exposures List of exposure vectors
+#' @param y Vector of outcomes
+#' @param g Matrix of genotypes
+#'
+#' @export
+#' @return mv_harmonise_data output
+make_mvdat <- function(exposures, y, g)
+{
+	stopifnot(is.list(exposures))
+	message("There are ", length(exposures), " exposures")
+	exposure_dat <- lapply(exposures, function(x) gwas(x, g))
+	# exposure_dat1 <- gwas(x1, g)
+	# exposure_dat2 <- gwas(x2, g)
+	af <- colSums(g) / (nrow(g) * 2)
+	out <- gwas(y, g)
+	mvexp <- data.frame(
+		SNP=1:ncol(g),
+		effect_allele.exposure="A",
+		other_allele.exposure="G",
+		eaf.exposure=rep(af, times=length(exposures)),
+		exposure=rep(paste0("x", 1:length(exposures)), each=ncol(g)),
+		id.exposure=rep(paste0("x", 1:length(exposures)), each=ncol(g)),
+		beta.exposure = lapply(exposure_dat, function(x) x$bhat) %>% unlist,
+		se.exposure = lapply(exposure_dat, function(x) x$se) %>% unlist,
+		pval.exposure = lapply(exposure_dat, function(x) x$pval) %>% unlist
+	)
+	outcome_dat <- data.frame(
+		SNP=rep(1:ncol(g), times=length(exposures)),
+		outcome="y",
+		id.outcome="y",
+		effect_allele.outcome="A",
+		other_allele.outcome="G",
+		eaf.outcome=rep(af, times=length(exposures)),
+		beta.outcome = rep(out$bhat, times=length(exposures)),
+		se.outcome = rep(out$se, times=length(exposures)),
+		pval.outcome = rep(out$pval, times=length(exposures))
+	)
+	mvdat <- TwoSampleMR::mv_harmonise_data(mvexp, outcome_dat)
+	return(mvdat)
+}
