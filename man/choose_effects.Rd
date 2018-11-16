@@ -4,7 +4,7 @@
 \alias{choose_effects}
 \title{Get vector of effects that explain some amount of variance}
 \usage{
-choose_effects(nsnp, totvar, sqrt = TRUE)
+choose_effects(nsnp, totvar, sqrt = TRUE, mua = 0)
 }
 \arguments{
 \item{nsnp}{Number of SNPs}
@@ -12,6 +12,8 @@ choose_effects(nsnp, totvar, sqrt = TRUE)
 \item{totvar}{Total variance explained by all SNPs}
 
 \item{sqrt=TRUE}{Output effect sizes in terms of standard deviations}
+
+\item{mua=0}{Constant term to be added to effects}
 }
 \value{
 Vector of effects
