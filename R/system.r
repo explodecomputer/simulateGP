@@ -389,3 +389,89 @@ create_system <- function(nidx, nidy, nidu=0, nu=0, na=0, nb=0, var_x.y, nsnp_x,
 	}
 	return(out)
 }
+
+
+#' Apply MR tests to system
+#'
+#'
+#' @param ss Output from create_syste,
+#' @param id string denoting simulation ID
+#'
+#' @export
+#' @return List
+test_system <- function(ss, id="test")
+{
+	out <- list()
+
+	dx <- make_dat(ss$x$x, ss$y$y)
+	dx$exposure <- paste0("X:", id)
+	dx$outcome <- paste0("Y:", id)
+	dx$id.exposure <- paste0("X:", id)
+	dx$id.outcome <- paste0("Y:", id)
+
+	dy <- make_dat(ss$y$y, ss$x$x)
+	dy$exposure <- paste0("Y:", id)
+	dy$outcome <- paste0("X:", id)
+	dy$id.exposure <- paste0("Y:", id)
+	dy$id.outcome <- paste0("X:", id)
+
+	# Oracle
+	ox <- subset(dx, grepl("x", SNP))
+	out$ox <- try(TwoSampleMR::mr_wrapper(ox)[[1]])
+	oy <- subset(dy, grepl("y", SNP))
+	out$oy <- try(TwoSampleMR::mr_wrapper(oy)[[1]])
+
+	# Empirical
+	ex <- subset(dx, pval.exposure < 5e-8)
+	out$ex <- try(TwoSampleMR::mr_wrapper(ex)[[1]])
+	ey <- subset(dy, pval.exposure < 5e-8)
+	out$ey <- try(TwoSampleMR::mr_wrapper(ey)[[1]])
+
+	param <- expand.grid(
+		hypothesis = c("x", "y"), 
+		selection = c("e", "o"),
+		type = c("x", "y", "u")
+	)
+	o <- list()
+	for(i in 1:nrow(param))
+	{
+		o[[i]] <- data_frame(
+			hypothesis = param$hypothesis[i],
+			selection = param$selection[i],
+			type = param$type[i],
+			measure = c("nofilter", "outlier", "steiger", "either", "both"),
+			counts = get_counts(param$type[i], get(paste0(param$selection[i], param$hypothesis[i])), out[[paste0(param$selection[i], param$hypothesis[i])]])
+		)
+	}
+
+	out$instrument_validity <- dplyr::bind_rows(o)
+	out$instrument_validity$id <- id
+
+	# Best model
+	out$ex$estimates <- best_model(out$ex$estimates, ss$parameters$eff_x.y)
+	out$ox$estimates <- best_model(out$ox$estimates, 0)
+
+	return(out)
+}
+
+get_counts <- function(node, dat, res)
+{
+	c(sum(grepl(node, subset(dat)$SNP)),
+	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !outlier)$SNP)$SNP)),
+	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !steiger)$SNP)$SNP)),
+	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !either)$SNP)$SNP)),
+	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !both)$SNP)$SNP)))
+}
+
+best_model <- function(res, bxy)
+{
+	res$beta_correct <- res$ci_low <= bxy & res$ci_upp >= bxy
+	res$beta_best <- FALSE
+	res$beta_best[which.min(abs(res$b - bxy))] <- TRUE
+	res$pval_sig <- res$pval < 0.05
+	res$pval_lowest <- FALSE
+	res$pval_lowest[which.min(res$pval)] <- TRUE
+	res$pval_highest <- FALSE
+	res$pval_highest[which.max(res$pval)] <- TRUE
+	return(res)
+}
