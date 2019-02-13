@@ -115,6 +115,10 @@ make_dat <- function(gwasx, gwasy)
 		pval.outcome=d$pval.y,
 		samplesize.exposure=d$n.x,
 		samplesize.outcome=d$n.y,
+		units.exposure = "SD",
+		units.outcome = "SD",
+		rsq.exposure = d$fval.x / (d$fval.x + d$n.x - 2),
+		rsq.outcome = d$fval.y / (d$fval.y + d$n.y - 2),
 		mr_keep=TRUE
 	)
 	return(dat)	
