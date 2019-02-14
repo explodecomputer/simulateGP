@@ -430,7 +430,7 @@ test_system <- function(ss, id="test")
 	param <- expand.grid(
 		hypothesis = c("x", "y"), 
 		selection = c("e", "o"),
-		type = c("x", "y", "u")
+		type = c("valid", "reverse", "confounder")
 	)
 	o <- list()
 	for(i in 1:nrow(param))
@@ -439,12 +439,17 @@ test_system <- function(ss, id="test")
 			hypothesis = param$hypothesis[i],
 			selection = param$selection[i],
 			type = param$type[i],
-			measure = c("nofilter", "outlier", "steiger", "either", "both"),
-			counts = get_counts(param$type[i], get(paste0(param$selection[i], param$hypothesis[i])), out[[paste0(param$selection[i], param$hypothesis[i])]])
+			measure = c("nofilter", "outlier", "steiger", "both"),
+			counts = get_counts(
+				param$type[i], 
+				param$hypothesis[i],
+				get(paste0(param$selection[i], param$hypothesis[i])), 
+				out[[paste0(param$selection[i], param$hypothesis[i])]]
+			)
 		)
 	}
 
-	out$instrument_validity <- dplyr::bind_rows(o)
+	out$instrument_validity <- dplyr::bind_rows(o) %>% group_by(hypothesis, selection, type) %>% mutate(n=first(counts), pcounts=counts/n)
 	out$instrument_validity$id <- id
 
 	# Best model
@@ -454,13 +459,22 @@ test_system <- function(ss, id="test")
 	return(out)
 }
 
-get_counts <- function(node, dat, res)
+get_counts <- function(type, hyp, dat, res)
 {
-	c(sum(grepl(node, subset(dat)$SNP)),
-	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !outlier)$SNP)$SNP)),
-	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !steiger)$SNP)$SNP)),
-	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !either)$SNP)$SNP)),
-	sum(grepl(node, subset(dat, SNP %in% subset(res$snps_removed, !both)$SNP)$SNP)))
+	if(type == "valid")
+	{
+		node = hyp
+	} else if(type == "reverse") {
+		node = ifelse(hyp=="x", "y", "x")
+	} else {
+		node = "u"
+	}
+	c(
+		nrow(res$snps_retained),
+		nrow(subset(res$snps_retained, outlier) %>% subset(grepl(node, SNP))),
+		nrow(subset(res$snps_retained, steiger) %>% subset(grepl(node, SNP))),
+		nrow(subset(res$snps_retained, both) %>% subset(grepl(node, SNP)))
+	)
 }
 
 best_model <- function(res, bxy)
