@@ -470,7 +470,7 @@ get_counts <- function(type, hyp, dat, res)
 		node = "u"
 	}
 	c(
-		nrow(subset(res$snps_retained, nofilter) %>% subset(grepl(node, SNP))),
+		nrow(res$snps_retained %>% subset(grepl(node, SNP))),
 		nrow(subset(res$snps_retained, outlier) %>% subset(grepl(node, SNP))),
 		nrow(subset(res$snps_retained, steiger) %>% subset(grepl(node, SNP))),
 		nrow(subset(res$snps_retained, both) %>% subset(grepl(node, SNP)))
