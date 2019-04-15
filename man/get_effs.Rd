@@ -4,7 +4,7 @@
 \alias{get_effs}
 \title{Get effs for two traits and make dat format}
 \usage{
-get_effs(x, y, g)
+get_effs(x, y, g, xname = "X", yname = "Y")
 }
 \arguments{
 \item{x}{Vector of exposure phenotype}
@@ -12,6 +12,8 @@ get_effs(x, y, g)
 \item{y}{Vector of outcome phenotype}
 
 \item{g}{Matrix of genotypes}
+
+\item{yname}{}
 }
 \value{
 Data frame

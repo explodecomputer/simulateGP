@@ -4,12 +4,17 @@
 \alias{make_dat}
 \title{Organise outputs from \code{gwas} into harmonised dat format}
 \usage{
-make_dat(gwasx, gwasy)
+make_dat(gwasx, gwasy, xname = "X", yname = "Y")
 }
 \arguments{
 \item{gwasx}{Output from \code{gwas}}
 
 \item{gwasy}{Output from \code{gwas}}
+
+\item{yname}{}
+}
+\value{
+data frame
 }
 \description{
 Organise outputs from \code{gwas} into harmonised dat format

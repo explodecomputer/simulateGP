@@ -81,10 +81,12 @@ gwas <- function(y, g)
 #' @param x Vector of exposure phenotype
 #' @param y Vector of outcome phenotype
 #' @param g Matrix of genotypes
+#' @param xname
+#' @param yname
 #'
 #' @export
 #' @return Data frame
-get_effs <- function(x, y, g)
+get_effs <- function(x, y, g, xname="X", yname="Y")
 {
 	gwasx <- gwas(x, g)
 	gwasy <- gwas(y, g)
@@ -95,18 +97,20 @@ get_effs <- function(x, y, g)
 #'
 #' @param gwasx Output from \code{gwas}
 #' @param gwasy Output from \code{gwas}
+#' @param xname
+#' @param yname
 #'
 #' @export
-#' @return
-make_dat <- function(gwasx, gwasy)
+#' @return data frame
+make_dat <- function(gwasx, gwasy, xname="X", yname="Y")
 {
 	d <- dplyr::inner_join(gwasx, gwasy, by='snp')
 	dat <- tibble::data_frame(
 		SNP = d$snp,
-		exposure="X",
-		id.exposure="X",
-		outcome="Y",
-		id.outcome="Y",
+		exposure=xname,
+		id.exposure=xname,
+		outcome=yname,
+		id.outcome=yname,
 		beta.exposure=d$bhat.x,
 		beta.outcome=d$bhat.y,
 		se.exposure=d$se.x,
