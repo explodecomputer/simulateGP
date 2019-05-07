@@ -90,7 +90,7 @@ get_effs <- function(x, y, g, xname="X", yname="Y")
 {
 	gwasx <- gwas(x, g)
 	gwasy <- gwas(y, g)
-	return(make_dat(gwasx, gwasy))
+	return(make_dat(gwasx, gwasy, xname, yname))
 }
 
 #' Organise outputs from \code{gwas} into harmonised dat format
