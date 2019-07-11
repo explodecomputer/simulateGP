@@ -1,6 +1,6 @@
-# Simulate stuff
+# Simulate genotypic and phenotypic variables
 
-A collection of instruments for simulating various things.
+A collection of functions for simulating and analysing simple linear models.
 
 To install:
 
@@ -12,13 +12,14 @@ devtools::install_github("explodecomputer/simulateGP")
 
 Here we want to achieve the following:
 
-1. Simulate some genetic effects for the exposure
-2. Simulate the effect of the exposure on the outcome
-3. Get the SNP-exposure and SNP-outcome effects and standard errors for these simulations
+1. Simulate some genetic or confounding variables
+2. Simulate exposures that are influenced by (1)
+3. Simulate the outcomes that are influenced by (1) and (2)
+4. Get the SNP-exposure and SNP-outcome effects and standard errors for these simulations, for use in further analyses e.g. using the [TwoSampleMR](https://github.com/MRCIEU/TwoSampleMR) package
 
 ### Simple example
 
-Here is how to do 1 and 2:
+Here is how to do 1-3:
 
 ```r
 # Genotypes for 20 SNPs and 10000 individuals, where the SNPs have MAF = 0.5:
