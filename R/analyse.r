@@ -212,6 +212,10 @@ make_mvdat <- function(exposures, y, g)
 {
 	stopifnot(is.list(exposures))
 	message("There are ", length(exposures), " exposures")
+	if(is.null(names(exposures)))
+	{
+		names(exposures) <- paste0("x", 1:length(exposures))
+	}
 	exposure_dat <- lapply(exposures, function(x) gwas(x, g))
 	# exposure_dat1 <- gwas(x1, g)
 	# exposure_dat2 <- gwas(x2, g)
@@ -222,8 +226,8 @@ make_mvdat <- function(exposures, y, g)
 		effect_allele.exposure="A",
 		other_allele.exposure="G",
 		eaf.exposure=rep(af, times=length(exposures)),
-		exposure=rep(paste0("x", 1:length(exposures)), each=ncol(g)),
-		id.exposure=rep(paste0("x", 1:length(exposures)), each=ncol(g)),
+		exposure=rep(names(exposures), each=ncol(g)),
+		id.exposure=rep(names(exposures), each=ncol(g)),
 		beta.exposure = lapply(exposure_dat, function(x) x$bhat) %>% unlist,
 		se.exposure = lapply(exposure_dat, function(x) x$se) %>% unlist,
 		pval.exposure = lapply(exposure_dat, function(x) x$pval) %>% unlist
