@@ -5,11 +5,31 @@
 \title{Choose initial parameters for direct effects on X and Y}
 \usage{
 init_parameters(nsnp_x, var_gx.x, var_x.y, var_gx.y = 0, nsnp_y = 0,
-  var_gy.y = 0, mu_gx.y = 0, var_gy.x = 0, mu_gy.x = 0, prop_gy.x = 1,
-  prop_gx.y = 1)
+  var_gy.y = 0, mu_gx.y = 0, var_gy.x = 0, mu_gy.x = 0,
+  prop_gy.x = 1, prop_gx.y = 1)
 }
 \arguments{
-\item{prop_gx.y=1}{}
+\item{nsnp_x}{nsnp_x}
+
+\item{var_gx.x}{var_gx.x}
+
+\item{var_x.y}{var_x.y}
+
+\item{var_gx.y}{var_gx.y=0}
+
+\item{nsnp_y}{nsnp_y=0}
+
+\item{var_gy.y}{var_gy.y=0}
+
+\item{mu_gx.y}{mu_gx.y=0}
+
+\item{var_gy.x}{var_gy.x=0}
+
+\item{mu_gy.x}{mu_gy.x=0}
+
+\item{prop_gy.x}{prop_gy.x=1}
+
+\item{prop_gx.y}{prop_gx.y=1}
 }
 \value{
 List of model parameters

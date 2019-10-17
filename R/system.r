@@ -3,17 +3,17 @@ library(dplyr)
 
 #' Choose initial parameters for direct effects on X and Y
 #'
-#' @param nsnp_x
-#' @param var_gx.x
-#' @param var_x.y
-#' @param var_gx.y=0
-#' @param nsnp_y=0
-#' @param var_gy.y=0
-#' @param mu_gx.y=0
-#' @param var_gy.x=0
-#' @param mu_gy.x=0
-#' @param prop_gy.x=1
-#' @param prop_gx.y=1
+#' @param nsnp_x nsnp_x
+#' @param var_gx.x var_gx.x
+#' @param var_x.y var_x.y
+#' @param var_gx.y var_gx.y=0
+#' @param nsnp_y nsnp_y=0
+#' @param var_gy.y var_gy.y=0
+#' @param mu_gx.y mu_gx.y=0
+#' @param var_gy.x var_gy.x=0
+#' @param mu_gy.x mu_gy.x=0
+#' @param prop_gy.x prop_gy.x=1
+#' @param prop_gx.y prop_gx.y=1
 #'
 #' @export
 #' @return List of model parameters
@@ -43,10 +43,10 @@ init_parameters <- function(nsnp_x, var_gx.x, var_x.y, var_gx.y=0, nsnp_y=0, var
 #' Add confounder variables and their instruments
 #'
 #' @param parameters Output from \code{init_parameters}
-#' @param nsnp_u
-#' @param var_u.x
-#' @param var_u.y
-#' @param var_gu.u
+#' @param nsnp_u nsnp_u
+#' @param var_u.x var_u.x
+#' @param var_u.y var_u.y
+#' @param var_gu.u var_gu.u
 #'
 #' @export
 #' @return List of model parameters

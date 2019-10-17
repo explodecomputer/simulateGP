@@ -81,8 +81,8 @@ gwas <- function(y, g)
 #' @param x Vector of exposure phenotype
 #' @param y Vector of outcome phenotype
 #' @param g Matrix of genotypes
-#' @param xname
-#' @param yname
+#' @param xname xname
+#' @param yname yname
 #'
 #' @export
 #' @return Data frame

@@ -9,7 +9,13 @@ add_u(parameters, nsnp_u, var_u.x, var_u.y, var_gu.u)
 \arguments{
 \item{parameters}{Output from \code{init_parameters}}
 
-\item{var_gu.u}{}
+\item{nsnp_u}{nsnp_u}
+
+\item{var_u.x}{var_u.x}
+
+\item{var_u.y}{var_u.y}
+
+\item{var_gu.u}{var_gu.u}
 }
 \value{
 List of model parameters

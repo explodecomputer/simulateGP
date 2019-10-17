@@ -13,7 +13,9 @@ get_effs(x, y, g, xname = "X", yname = "Y")
 
 \item{g}{Matrix of genotypes}
 
-\item{yname}{}
+\item{xname}{xname}
+
+\item{yname}{yname}
 }
 \value{
 Data frame
