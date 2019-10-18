@@ -66,7 +66,7 @@ sample_beta <- function(beta, se)
 theoretical_gwas <- function(beta, maf, h2, nid, minmaf=0.01)
 {
 	stopifnot(length(beta) == length(maf))
-	stopifnot(all(maf <= 0.5))
+	stopifnot(all(maf > 0 & maf < 1))
 	maf <- pmax(minmaf, maf)
 	dat <- dplyr::tibble(
 		snp = 1:length(beta),

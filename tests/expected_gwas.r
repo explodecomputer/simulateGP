@@ -67,14 +67,12 @@ y <- rnorm(10000) + x
 summary(lm(y ~ x))$coeff[2,3]^2
 
 (cor(x,y)^2 * 10000-2) / (1-cor(x,y)^2)
-F = 
 
 pop <- simulate_population(a, 500000)
 
 
 # direct effects
 emp <- estimate_system_effects(pop)
-qw
 
 
 expx <- expected_gwas(a$eff_gx.x/sqrt(0.5), 500000, 1, 1)
@@ -126,5 +124,23 @@ alternative_expected_gwas <- function(eff, n, vx, vy)
 
 # problem - not getting correct standard error
 # fval seems to be only correct if half sample size is assumed??
+
+
+
+
+n <- 10000
+nsnp <- 100
+eff <- rnorm(nsnp)
+maf <- runif(nsnp)/2
+h2 <- 0.5
+g <- make_geno(n, nsnp, maf)
+grs <- g %*% eff
+y <- grs + rnorm(n, sd=sqrt(var(grs)))
+
+
+
+
+
+
 
 
