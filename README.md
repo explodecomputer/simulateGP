@@ -1,6 +1,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis-CI build status](https://travis-ci.org/explodecomputer/simulateGP.svg?branch=master)](https://travis-ci.org/explodecomputer/simulateGP)
+[![codecov](https://codecov.io/github/explodecomputer/simulateGP/branch/master/graphs/badge.svg)](https://codecov.io/github/expldecomputer/simulateGP) 
 
 # Simulate genotypic and phenotypic variables
 
