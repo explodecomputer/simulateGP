@@ -1,5 +1,5 @@
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis-CI build status](https://travis-ci.org/explodecomputer/simulateGP.svg?branch=master)](https://travis-ci.org/explodecomputer/simulateGP)
 
 # Simulate genotypic and phenotypic variables
