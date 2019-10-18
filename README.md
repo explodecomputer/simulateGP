@@ -1,3 +1,7 @@
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Travis-CI build status](https://travis-ci.org/explodecomputer/simulateGP.svg?branch=master)](https://travis-ci.org/explodecomputer/simulateGP)
+
 # Simulate genotypic and phenotypic variables
 
 A collection of functions for simulating and analysing simple linear models.
