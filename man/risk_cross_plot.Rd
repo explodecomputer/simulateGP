@@ -4,8 +4,15 @@
 \alias{risk_cross_plot}
 \title{Plot liability vs probability disease risk}
 \usage{
-risk_cross_plot(x, o, xlab = "Values (low to high)", ylab = "",
-  title = "", xname = "GRS", oname = "Disease")
+risk_cross_plot(
+  x,
+  o,
+  xlab = "Values (low to high)",
+  ylab = "",
+  title = "",
+  xname = "GRS",
+  oname = "Disease"
+)
 }
 \arguments{
 \item{x}{Disease risk on liability scale}

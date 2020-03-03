@@ -4,10 +4,25 @@
 \alias{create_system}
 \title{Wrapper for simulation pipeline}
 \usage{
-create_system(nidx, nidy, nidu = 0, nu = 0, na = 0, nb = 0,
-  var_x.y, nsnp_x, var_gx.x, var_gx.y = 0, mu_gx.y = 0,
-  prop_gx.y = 1, nsnp_y = 0, var_gy.y = 0, var_gy.x = 0,
-  mu_gy.x = 0, prop_gy.x = 1)
+create_system(
+  nidx,
+  nidy,
+  nidu = 0,
+  nu = 0,
+  na = 0,
+  nb = 0,
+  var_x.y,
+  nsnp_x,
+  var_gx.x,
+  var_gx.y = 0,
+  mu_gx.y = 0,
+  prop_gx.y = 1,
+  nsnp_y = 0,
+  var_gy.y = 0,
+  var_gy.x = 0,
+  mu_gy.x = 0,
+  prop_gy.x = 1
+)
 }
 \arguments{
 \item{nidx}{}

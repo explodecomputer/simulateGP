@@ -4,9 +4,19 @@
 \alias{init_parameters}
 \title{Choose initial parameters for direct effects on X and Y}
 \usage{
-init_parameters(nsnp_x, var_gx.x, var_x.y, var_gx.y = 0, nsnp_y = 0,
-  var_gy.y = 0, mu_gx.y = 0, var_gy.x = 0, mu_gy.x = 0,
-  prop_gy.x = 1, prop_gx.y = 1)
+init_parameters(
+  nsnp_x,
+  var_gx.x,
+  var_x.y,
+  var_gx.y = 0,
+  nsnp_y = 0,
+  var_gy.y = 0,
+  mu_gx.y = 0,
+  var_gy.x = 0,
+  mu_gy.x = 0,
+  prop_gy.x = 1,
+  prop_gx.y = 1
+)
 }
 \arguments{
 \item{nsnp_x}{nsnp_x}

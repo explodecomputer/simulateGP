@@ -1,0 +1,19 @@
+---
+title: "Translating between observed and liability models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Translating between observed and liability models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simulateGP)
+```

@@ -1,3 +1,27 @@
+#' Calculate expected MSE
+#'
+#' @param beta <what param does>
+#' @param maf <what param does>
+#' @param vy <what param does>
+#'
+#' @export
+#' @return Numeric
+expected_mse <- function(beta, maf, vy)
+{
+	vy - beta^2 * 2 * maf * (1-maf)
+}
+
+#' Calculate expected SSX
+#'
+#' @param maf <what param does>
+#' @param n <what param does>
+#'
+#' @export
+#' @return Numeric
+expected_ssx <- function(maf, n)
+{
+	(2 * maf * (1-maf)) * (n - 1)
+}
 
 #' Expected se given beta, maf, n and vy
 #'
@@ -12,7 +36,7 @@
 #' @return array of standard errors
 expected_se <- function(beta, maf, n, vy)
 {
-	sqrt((vy - beta^2 * 2 * maf * (1-maf)) / ((2 * maf * (1-maf)) * n))
+	sqrt(expected_mse(beta, maf, vy) / expected_ssx(maf, n))
 }
 
 #' Get the expected se for a gwas given n, h2, beta maf
@@ -73,6 +97,7 @@ theoretical_gwas <- function(beta, maf, h2, nid, minmaf=0.01)
 		beta = beta,
 		maf = maf,
 		se = gwas_se(nid, h2, beta, maf),
+
 		betahat = sample_beta(beta, se),
 		pval = pnorm(abs(betahat / se), low=FALSE) * 2
 	)
