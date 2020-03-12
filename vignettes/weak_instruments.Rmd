@@ -1,0 +1,336 @@
+---
+title: "Simulating summary data for weak instruments"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating summary data for weak instruments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simulateGP)
+```
+
+
+## Weak instrument bias
+
+
+https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf
+
+https://en.wikipedia.org/wiki/Instrumental_variables_estimation#Interpretation_as_two-stage_least_squares
+
+https://www.youtube.com/watch?v=JK-8XNIoAkI
+
+http://econ.lse.ac.uk/staff/spischke/ec533/Weak%20IV.pdf
+
+https://ocw.mit.edu/courses/economics/14-384-time-series-analysis-fall-2013/lecture-notes/MIT14_384F13_lec7and8.pdf
+
+https://www.nber.org/econometrics_minicourse_2018/2018si_methods.pdf
+
+https://www.ncbi.nlm.nih.gov/pubmed/21414999
+
+https://stats.stackexchange.com/questions/48366/standard-errors-for-covariance-estimate-in-r
+
+
+
+Parameters include:
+
+- Sample size
+- Number of SNPs
+- Allele frequencies of SNPs
+- Heritability of the phenotype
+- Effects of each SNP on the phenotype
+
+
+
+
+
+
+```{r}
+
+h2 <- 0.4
+nsnp <- 100
+nid <- 10000
+
+G <- make_geno(nid, nsnp, 0.5)
+Gs <- scale(G)
+
+
+bsim <- rnorm(nsnp, 0, sqrt(h2))
+
+bv <- Gs %*% bsim
+
+
+var(bv)
+sd(bv)
+
+
+# h2 <- b^2 * 2 * maf * (1 - maf) / vy
+# ve <- vy - vg
+```
+
+
+
+```{r}
+h2 <- 0.4
+nsnp <- 100
+nid <- 10000
+
+G <- make_geno(nid, nsnp, 0.5)
+b <- choose_effects(nsnp, h2)
+y <- make_phen(b, G)
+head(y)
+var(y)
+
+bv <- G %*% b
+cor(bv, y)^2
+bhat <- gwas(y, G)
+
+```
+
+
+```{r, eval=FALSE}
+btheory <- generate_gwas_ss(b, rep(0.5, nsnp), nid)
+plot(btheory$beta ~ bhat$bhat)
+plot(btheory$se ~ bhat$se)
+plot(log10(btheory$pval) ~ log10(bhat$pval))
+```
+
+Standard error of beta
+
+$$
+s_{\hat{\beta}} = \sqrt{\frac{MSE}{SSX}}
+$$
+
+
+Check that SSX is calculated correctly when using MAF to obtain var(X)
+
+```{r}
+set.seed(100)
+param <- expand.grid(
+	af = runif(1000)/2
+)
+param$n <- sample(300:10000, 1000)
+
+for(i in 1:nrow(param))
+{
+	g <- rbinom(param$n[i], 2, param$af[i])
+	param$ssx_emp[i] <- sum((g - mean(g))^2)
+	param$ssx_emp2[i] <- var(g) * (param$n[i] - 1)
+	param$ssx_exp[i] <- 2 * param$af[i] * (1 - param$af[i]) * (param$n[i] - 1)
+}
+
+plot(param$ssx_emp, param$ssx_emp2)
+plot(param$ssx_emp, param$ssx_exp)
+
+```
+
+Now check MSE
+
+
+```{r}
+param$b <- rnorm(nrow(param))
+```
+
+```{r}
+for(i in 1:nrow(param))
+{
+	g <- rbinom(param$n[i], 2, param$af[i])
+	y <- g * param$b[i] + rnorm(param$n[i])
+	param$vy[i] <- var(y)
+	param$r2[i] <- cor(g,y)^2
+	mod <- lm(y ~ g)
+	param$mse[i] <- anova(mod)[[3]][2]
+	param$mse_exp[i] <- expected_mse(param$b[i], param$af[i], param$vy[i])
+	mod2 <- summary(mod)$coefficients
+	param$bhat[i] <- mod2[2,1]
+	param$se[i] <- mod2[2,2]
+	param$se_theor[i] <- expected_se(param$b[i], param$af[i], param$n[i], param$vy[i])
+}
+```
+
+```{r}
+plot(param$mse, param$mse_exp)
+plot(param$bhat, param$b)
+plot(param$se, param$se_theor)
+hist(param$r2)
+ggplot(param, aes(mse, mse_exp)) +
+geom_point(aes(colour=af))
+
+ggplot(param, aes(mse, mse_exp)) +
+geom_point(aes(colour=r2))
+
+```
+
+
+Weak instrument bias
+
+```{r}
+library(mvtnorm)
+
+get_biv_bias <- function(n, rho, beta, pi1)
+{
+	err <- rmvnorm(n, c(0,0), matrix(c(1,rho,rho,1), 2, 2))
+	eta <- err[,1]
+	zeta <- err[,2]
+	z <- rnorm(n)
+	x <- pi1 * z + zeta
+	y <- beta * x + eta
+
+	Pz <- z %*% solve(t(z) %*% z) %*% t(z)
+
+	biv <- solve(t(x) %*% Pz %*% x) %*% t(x) %*% Pz %*% y
+	bias <- solve(t(x) %*% Pz %*% x) %*% t(x) %*% Pz %*% eta
+
+	return(c(biv, bias))
+}
+
+
+param <- expand.grid(
+	n = c(100),
+	pi1=seq(0, 0.1, by=0.02),
+	beta=c(0,1),
+	rho=seq(0, 0.8, by=0.2),
+	sim=1:200
+)
+
+dim(param)
+for(i in 1:nrow(param))
+{
+	mod <- get_biv_bias(param$n[i], param$rho[i], param$beta[i], param$pi1[i])
+	param$biv[i] <- mod[1]
+	param$bias[i] <- mod[2]
+}
+
+library(dplyr)
+params <- group_by(param, n, pi1, beta, rho) %>%
+summarise(biv=median(biv), bias=median(bias), nsim=n())
+
+ggplot(params, aes(y=bias, x=pi1, group=as.factor(rho))) +
+geom_point(aes(colour=as.factor(rho))) +
+geom_line(aes(colour=as.factor(rho))) +
+facet_grid(n ~ beta)
+```
+
+
+```{r}
+
+n <- 1000
+pi1 <- 1
+beta <- 1
+err <- rmvnorm(n, c(0,0), matrix(c(1,0.8,0.8,1), 2, 2))
+eta <- err[,1]
+zeta <- err[,2]
+z <- rnorm(n)
+x <- pi1 * z + zeta
+y <- beta * x + eta
+
+Pz <- z %*% solve(t(z) %*% z) %*% t(z)
+
+biv <- solve(t(x) %*% Pz %*% x) %*% t(x) %*% Pz %*% y
+bias <- solve(t(x) %*% Pz %*% x) %*% t(x) %*% Pz %*% eta
+
+t(x) %*% x
+t(x) %*% Pz %*% x
+
+cor(x, z)^2
+t(x) %*% x * cor(x,z)^2
+
+var(x) * (length(x)-1)
+
+sum((x - mean(x))^2) / (n-1) * (n)
+
+sum(x^2)
+
+t(x) %*% x / t(x) %*% Pz %*% x
+
+sum(z^2) / (length(z) - 1)
+
+
+cov(x,y) / var(x)
+
+solve(t(x) %*% x) %*% t(x) %*% y
+
+
+
+
+sum(x^2)
+
+
+
+u <- rnorm(n)
+z <- rnorm(n)
+x <- u * 2 + z + rnorm(n)
+y <- u * -2 + x * 2 + rnorm(n)
+
+res1 <- residuals(lm(x ~ z))
+res2 <- residuals(lm(y ~ x))
+
+cor(res1, res2)
+
+cor(u, x)^2 * cor(y, u)^2
+
+
+```
+
+```
+(x'x)-1 x'(xb + e)
+(x'x)-1 x'xb + x'e
+```
+
+```{r}
+solve(t(x) %*% x) %*% t(x) %*% (x * 5 + eta)
+
+```
+
+```
+cov(g,x) = cov(g, b1*g + a1*u + e)
+= b1 var(g) + a1 cov(g, u)
+```
+
+```
+cov(g,y) = cov(g, b2*x + a2*u + e)
+= b2 b1 var(g) + b2 a1 cov(g, u) + a2 cov(g, u)
+= b2 b1 var(g) + cov(g,u) (b2 a1 + a2)
+= b2 (b1 var(g) + a1 cov(g, u)) + a2 cov(g, u)
+```
+
+
+```{r}
+a <- rnorm(1000)
+b <- rnorm(1000)
+cov(a,b)
+sum((a-mean(a)) * (b - mean(b)))
+
+sum(a * b) + sum((a-mean(a))^2) * sum((b-mean(b))^2)
+```
+
+
+
+Specify
+
+- Number of SNPs
+
+
+```{r}
+fun <- function(nsnp, pi0, s)
+{
+
+}
+```
+
+
+
+
+
+
+
+
+

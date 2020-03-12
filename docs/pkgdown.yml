@@ -7,4 +7,5 @@ articles:
   individual_gwas: individual_gwas.html
   risk: risk.html
   simulate_individual_2smr: simulate_individual_2smr.html
+  weak_instruments: weak_instruments.html
 

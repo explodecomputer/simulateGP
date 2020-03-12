@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get vector of effects that explain some amount of variance — choose_effects • simulateGP</title>
+<title>Create a GWAS summary dataset — generate_gwas_ss • simulateGP</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Get vector of effects that explain some amount of variance — choose_effects" />
-<meta property="og:description" content="Get vector of effects that explain some amount of variance" />
+<meta property="og:title" content="Create a GWAS summary dataset — generate_gwas_ss" />
+<meta property="og:description" content="Create a GWAS summary dataset" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -127,41 +127,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get vector of effects that explain some amount of variance</h1>
+    <h1>Create a GWAS summary dataset</h1>
     
-    <div class="hidden name"><code>choose_effects.Rd</code></div>
+    <div class="hidden name"><code>generate_gwas_ss.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get vector of effects that explain some amount of variance</p>
+    <p>Create a GWAS summary dataset</p>
     </div>
 
-    <pre class="usage"><span class='fu'>choose_effects</span>(<span class='no'>nsnp</span>, <span class='no'>totvar</span>, <span class='kw'>sqrt</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>mua</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>generate_gwas_ss</span>(<span class='no'>beta</span>, <span class='no'>maf</span>, <span class='no'>nid</span>, <span class='kw'>vy</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>minmaf</span> <span class='kw'>=</span> <span class='fl'>0.01</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nsnp</th>
-      <td><p>Number of SNPs</p></td>
+      <th>beta</th>
+      <td><p>Array of true beta values</p></td>
     </tr>
     <tr>
-      <th>totvar</th>
-      <td><p>Total variance explained by all SNPs</p></td>
+      <th>maf</th>
+      <td><p>array of maf values</p></td>
     </tr>
     <tr>
-      <th>sqrt=TRUE</th>
-      <td><p>Output effect sizes in terms of standard deviations</p></td>
+      <th>nid</th>
+      <td><p>sample size</p></td>
     </tr>
     <tr>
-      <th>mua=0</th>
-      <td><p>Constant term to be added to effects</p></td>
+      <th>vy</th>
+      <td><p>Variance of trait</p></td>
+    </tr>
+    <tr>
+      <th>minmaf</th>
+      <td><p>minimum allowed maf. default=0.01 to prevent instability</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Vector of effects</p>
+    <p>list of data frames</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
