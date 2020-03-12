@@ -39,27 +39,6 @@ expected_se <- function(beta, maf, n, vy)
 	sqrt(expected_mse(beta, maf, vy) / expected_ssx(maf, n))
 }
 
-#' Get the expected se for a gwas given n, h2, beta maf
-#'
-#'
-#' @param n sample size
-#' @param h2 heritability
-#' @param beta array of effect sizes
-#' @param maf array of allele frequencies
-#'
-#' @export
-#' @return array of standard errors
-gwas_se <- function(n, h2, beta, maf)
-{
-	nsnp <- length(beta)
-	stopifnot(length(maf) == nsnp)
-	vg <- sum(beta^2 * 2 * maf * (1-maf))
-	ve <- (vg - h2 * vg) / h2
-	vy <- vg + ve
-	se <- expected_se(beta, maf, n, vy)
-	return(se)
-}
-
 #' Sample beta values given standard errors
 #'
 #' @param beta array of beta values
@@ -72,36 +51,53 @@ sample_beta <- function(beta, se)
 	rnorm(length(beta), beta, se)
 }
 
-#' Create a theoretical GWAS dataset
+#' Create a GWAS summary dataset
 #'
-#' Choose nsnp, nid, h2
-#' Create true effects
-#' Create expected se
-#' Create sampled effects
 #'
-#' @param beta Array of beta values
+#' @param beta Array of true beta values
 #' @param maf array of maf values
-#' @param h2 h2 of trait
 #' @param nid sample size
+#' @param vy Variance of trait
 #' @param minmaf minimum allowed maf. default=0.01 to prevent instability
 #'
 #' @export
 #' @return list of data frames
-theoretical_gwas <- function(beta, maf, h2, nid, minmaf=0.01)
+generate_gwas_ss <- function(beta, maf, nid, vy=1, minmaf=0.01)
 {
 	stopifnot(length(beta) == length(maf))
 	stopifnot(all(maf > 0 & maf < 1))
 	maf <- pmax(minmaf, maf)
 	dat <- dplyr::tibble(
 		snp = 1:length(beta),
-		beta = beta,
+		b = beta,
 		maf = maf,
-		se = gwas_se(nid, h2, beta, maf),
-
-		betahat = sample_beta(beta, se),
-		pval = pnorm(abs(betahat / se), low=FALSE) * 2
+		se = expected_se(b, maf, nid, vy),
+		bhat = sample_beta(b, se),
+		pval = pnorm(abs(bhat / se), low=FALSE) * 2
 	)
 	return(dat)
 }
 
 
+#' Generate SNP effects given MAF, h2 and selection
+#'
+#' @param maf Vector of allele frequencies, one for each SNP
+#' @param h2 Variance explained by all SNPs
+#' @param S Selection coefficient on trait. Default = 0
+#'
+#' @export
+#' @return data frame of maf and beta
+generate_gwas_params <- function(maf, h2, S=0)
+{
+	nsnp <- length(maf)
+	if(h2 == 0)
+	{
+		return(dplyr::tibble(beta=0, maf=maf))
+	}
+	beta <- rnorm(nsnp, mean=0, sd = sqrt((maf * 2 * (1-maf))^S))
+	vg <- sum(maf * 2 * (1-maf) * beta^2)
+	ve <- (vg - h2 * vg) / h2
+	vy <- vg + ve
+	beta <- beta / sqrt(vy)
+	return(dplyr::tibble(beta=beta, maf=maf))
+}

@@ -1,6 +1,6 @@
 Package: simulateGP
 Title: Functions for simulating genotype-phenotype relationships
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Gibran", "Hemani", email = "explodecomputer@gmail.com", role = c("aut", "cre"))
 Description: Functions for simulating SNP effects on phenotypes. Functions for
     simulating disease risk on probability and liability scales. Simulations to
