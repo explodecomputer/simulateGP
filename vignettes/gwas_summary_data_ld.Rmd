@@ -1,0 +1,296 @@
+---
+title: "Simulating GWAS summary data with LD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating GWAS summary data with LD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simulateGP)
+library(mvtnorm)
+```
+
+If a set of SNPs have some effect on y, and those SNPs are correlated, can we calculate the expected marginal effect sizes?
+
+$$
+\textbf{y} = \textbf{Xb} + \textbf{e}
+$$
+
+Intercept ignored for simplicity, so the genotyped matrix $\textbf{X}$ needs to be centered by subtracting the mean genotype value ($2p_j$) from each genotype.
+
+Linear regression is solved by:
+
+$$
+\hat{\textbf{b}} = \textbf{(X'X)}^{-1}\textbf{X'y}
+$$
+
+where
+
+$$
+var(\hat{\textbf{b}}) = \sigma^2_j (\textbf{X'X})^{-1}
+$$
+
+and $\sigma^2_j$ is the residual variance given by
+
+$$
+(1-R^2)var(y)
+$$
+
+and
+
+$$
+R^2 = \frac{\hat{\boldsymbol{b}}' \boldsymbol{X}'\boldsymbol{y} \boldsymbol{\hat{\beta}}}{var(y)}
+$$
+
+We can obtain the causal effects from the marginal estimates using:
+
+$$
+\boldsymbol{\hat{b}} = \boldsymbol{(X'X)^{-1}D\hat{\beta}}
+$$
+
+Where $\boldsymbol{D}$ is the diagonal matrix of $\boldsymbol{X'X}$ (i.e. the sums of squares for each of the SNPs).
+
+Therefore, to generate a set of marginal estimates from a given set of causal effects and a set of correlated SNPs:
+
+$$
+\boldsymbol{\hat{\beta}} = \boldsymbol{\hat{b}X'XD^{-1}}
+$$
+
+We would like to generate this just from a correlation matrix, rather than $\boldsymbol{X'X}$ which is the matrix of the sums of squares of X. Given that
+
+$$
+\rho_{jk} = \frac{\sum^n{ x_j x_k}}{\sqrt{\sum^n{x_j^2}\sum^n{x_k^2}}}
+$$
+
+We can generate the $\boldsymbol{X'X}$ matrix by first calculating the sums of squares of each of the SNPs such that 
+
+$$
+s_j = \sum^n{x_j} = 2p_j(1-p_j)n
+$$
+
+and the denominater of the correlation equation can be obtained from
+
+$$
+\boldsymbol{ss'}
+$$
+
+Finally, given a correlation matrix $$\boldsymbol{\rho}$$
+
+$$
+\boldsymbol{X'X} = \boldsymbol{\rho} \circ \sqrt{\boldsymbol{ss'}}
+$$
+
+Putting it together:
+
+$$
+\boldsymbol{\beta} = \boldsymbol{b (\rho \circ \sqrt{ss'}) D^{-1}}
+$$
+
+This all reduces to:
+
+$$
+\boldsymbol{\beta} = \boldsymbol{b \rho}
+$$
+
+```{r}
+calcs <- function(x, y, b)
+{
+	xpx <- t(x) %*% x
+	D <- matrix(0, ncol(x), ncol(x))
+	diag(D) <- diag(xpx)
+	betahat <- gwas(y, x)$bhat
+	bhat <- drop(solve(xpx) %*% D %*% betahat)
+	betahatc <- b %*% xpx %*% solve(D) %>% drop
+  rho <- cor(x)
+	betahatrho <- b %*% rho %>% drop
+	tibble(b, bhat, betahat, betahatc, betahatrho)
+}
+
+n <- 10000
+nsnp <- 20
+sigma <- matrix(0.7, nsnp, nsnp)
+diag(sigma) <- 1
+x <- rmvnorm(n, rep(0, nsnp), sigma)
+
+b <- rnorm(nsnp) * 100
+y <- x %*% b + rnorm(n)
+res <- calcs(x, y, b)
+
+plot(res$b ~ res$bhat)
+plot(res$betahat ~ res$betahatc)
+plot(res$betahat ~ res$betahatrho)
+```
+
+This works well. Now try with two correlated binomial variables
+
+```{r}
+nsnp <- 2
+x <- simulateGP:::correlated_binomial(n, 0.3, 0.3, 0.7)
+b <- rnorm(nsnp)
+y <- x %*% b + rnorm(n)
+res <- calcs(x, y, b)
+res
+```
+
+Not working so well now. Try scaling
+
+```{r}
+x <- simulateGP:::correlated_binomial(n, 0.3, 0.3, 0.7) %>% scale
+b <- rnorm(nsnp)
+y <- x %*% b + rnorm(n)
+res <- calcs(x, y, b)
+res
+```
+
+This works - it's because there is no intercept term in the model!
+
+Now try with LD reference panel data
+
+```{r}
+read_x <- function(variants, bfile, plink_bin=genetics.binaRies::get_plink_binary())
+{
+	# Make textfile
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
+	fn <- tempfile()
+	write.table(data.frame(variants), file=fn, row.names=F, col.names=F, quote=F)
+
+		fun1 <- paste0(
+		shQuote(plink_bin, type=shell),
+		" --bfile ", shQuote(bfile, type=shell),
+		" --extract ", shQuote(fn, type=shell), 
+		" --recode A ", 
+		" --out ", shQuote(fn, type=shell)
+	)
+	system(fun1)
+
+	x <- data.table::fread(paste0(fn, ".raw")) %>% {.[,-c(1:6)]} %>% as.matrix()
+	unlink(paste0(fn, ".raw"))
+	return(x)
+}
+
+greedy_remove <- function(r)
+{
+	diag(r) <- 0
+	flag <- 1
+	rem <- c()
+	nom <- colnames(r)
+	while(flag == 1)
+	{
+		message("iteration")
+		count <- apply(r, 2, function(x) sum(x >= 0.99))
+		if(any(count > 0))
+		{
+			worst <- which.max(count)[1]
+			rem <- c(rem, names(worst))
+			r <- r[-worst,-worst]
+		} else {
+			flag <- 0
+		}
+	}
+	return(which(nom %in% rem))
+}
+pop <- "EUR"
+ldref <- paste0("/Users/gh13047/repo/mr-base-api/app/ld_files/", pop)
+bim <- data.table::fread(paste0(ldref, ".bim"))
+regionfile <- paste0("/Users/gh13047/repo/gwasglue/inst/extdata/ldetect/", pop, ".bed")
+regions <- data.table::fread(regionfile, header=TRUE) %>%
+	dplyr::mutate(
+		chr=as.numeric(gsub("chr", "", chr)),
+		start=as.numeric(start),
+		stop=as.numeric(stop)
+	) %>% dplyr::as_tibble()
+region1 <- subset(bim, V1 == regions$chr[1] & V4 > regions$start[1] & V4 < regions$stop[1])$V2
+
+x <- read_x(region1, ldref)[,1008:1030]
+```
+
+When calculating causal effects from marginal effects need to invert the correlation matrix. To avoid matrix being singular, remove any correlations that are >= 0.99
+
+```{r}
+r <- cor(x)
+rem <- greedy_remove(r)
+x <- x[,-rem]
+# x <- scale(x)
+normalise_x <- function(x)
+{
+	p <- colMeans(x)
+	t(t(x) - p)
+}
+xn <- normalise_x(x)
+xs <- scale(x)
+
+colMeans(xn)
+colMeans(xs)
+colMeans(x)
+apply(x, 2, var)
+apply(xn, 2, var)
+apply(xs, 2, var)
+xo <- x
+x <- xn
+x <- xs
+x <- xo
+```
+
+Simulate
+
+```{r}
+n <- nrow(x)
+nsnp <- ncol(x)
+b <- rnorm(nsnp) * 100
+y <- x %*% b + rnorm(n)
+res <- calcs(x, y, b)
+res
+
+plot(res$b ~ res$bhat)
+```
+
+Now need to do this using just correlations
+
+```{r}
+calcs <- function(x, y, b, w)
+{
+	xpx <- t(x) %*% x
+	D <- matrix(0, ncol(x), ncol(x))
+	diag(D) <- diag(xpx)
+	betahat <- gwas(y, x)$bhat
+	bhat <- drop(solve(xpx) %*% D %*% betahat)
+	betahatc <- b %*% xpx %*% solve(D) %>% drop
+
+	Dw <- matrix(0, ncol(x), ncol(x))
+	wpw <- t(w) %*% w
+	diag(Dw) <- diag()
+	B <- 
+
+
+	tibble(b, bhat, betahat, betahatc)
+}
+sqrt(D) %*% solve(sqrt(D)) %*% t(x) %*% x %*% solve(sqrt(D)) %*% sqrt(D)
+```
+
+
+
+```{r}
+n <- 10000
+x <- rmvnorm(n, rep(0, nsnp), sigma)
+xpx <- t(x) %*% x
+r <- cor(x)
+xpx / (nrow(x) - 1)
+
+ssx <- apply(x, 2, function(i) sum(i^2))
+den <- sqrt(ssx %*% t(ssx))
+
+plot(r * den, xpx)
+
+
+```
+
+

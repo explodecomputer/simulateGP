@@ -50,7 +50,7 @@ expected_gwas <- function(eff, n, vx, vy)
 	se <- sqrt(ve / ((n-2) * vx))
 	tval <- eff / se
 	p <- pt(abs(tval), n-1, lower.tail=FALSE)
-	dat <- tibble::data_frame(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
+	dat <- tibble::tibble(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
 	return(dat)
 }
 
@@ -70,7 +70,7 @@ gwas <- function(y, g)
 		o <- fast_assoc(y, g[,i])
 		out[i, ] <- unlist(o)
 	}
-	out <- tibble::as_data_frame(out)
+	out <- tibble::as_tibble(out)
 	names(out) <- names(o)
 	out$snp <- 1:ncol(g)
 	return(out)
@@ -105,7 +105,7 @@ get_effs <- function(x, y, g, xname="X", yname="Y")
 make_dat <- function(gwasx, gwasy, xname="X", yname="Y")
 {
 	d <- dplyr::inner_join(gwasx, gwasy, by='snp')
-	dat <- tibble::data_frame(
+	dat <- tibble::tibble(
 		SNP = d$snp,
 		exposure=xname,
 		id.exposure=xname,

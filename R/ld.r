@@ -1,5 +1,17 @@
 # Also see https://github.com/explodecomputer/pic_haps/
 
+#' Simulate two correlated binomial variables
+#'
+#' @param nid Number of samples
+#' @param p1 Frequency 1
+#' @param p2 Frequency 2
+#' @param rho Target correlation
+#' @param n=2 Binomial parameter, should be 2 for genotypes
+#' @param round Round or not Default=TRUE
+#' @param print Print or not Default=FALSE
+#'
+#' @export
+#' @return Matrix
 correlated_binomial <- function(nid, p1, p2, rho, n=2, round=TRUE, print=FALSE)
 {
 	# from https://stats.stackexchange.com/questions/284996/generating-correlated-binomial-random-variables
@@ -49,6 +61,14 @@ correlated_binomial <- function(nid, p1, p2, rho, n=2, round=TRUE, print=FALSE)
 	# abline(lm(y ~ x), lwd=2, lty=3)
 }
 
+#' Estimate haplotype frequencies for two loci
+#'
+#' @param r Required LD r
+#' @param p1 Freq 1
+#' @param p2 Freq 2
+#'
+#' @export
+#' @return vector
 hap_freqs <- function(r, p1, p2)
 {
 	# d = pAB - p1p2
@@ -73,6 +93,15 @@ test_hap_freqs <- function(r, p1, p2)
 	return(ifelse(class(a)=='try-error', FALSE, TRUE))
 }
 
+#' Simulate haplotypes of two loci
+#'
+#' @param nid Number of samples
+#' @param r Desired LD r
+#' @param p1 Freq 1
+#' @param p2 Freq 2
+#'
+#' @export
+#' @return Matrix
 simulate_haplotypes <- function(nid, r, p1, p2)
 {
 	p <- hap_freqs(r, p1, p2)
@@ -107,6 +136,15 @@ simulate_haplotypes <- function(nid, r, p1, p2)
 	return(haps)
 }
 
+#' Simulate genotypes from haplotypes
+#'
+#' @param nid Number of samples
+#' @param r Desired LD r
+#' @param p1 Freq 1
+#' @param p2 Freq 2
+#'
+#' @export
+#' @return Matrix
 simulate_geno <- function(nid, r, p1, p2)
 {
 	a <- simulate_haplotypes(nid, r, p1, p2)
