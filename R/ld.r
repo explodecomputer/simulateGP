@@ -1,3 +1,41 @@
+#' Get LD matrix for a specified region from bfile reference panel
+#'
+#' @param chr Chromosome
+#' @param from from bp
+#' @param to to bp
+#' @param bfile LD reference panel
+#' @param plink_bin Plink binary default=genetics.binaRies::get_plink_binary()
+#'
+#' @export
+#' @return List of LD matrix and map info including MAF
+get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_binary())
+{
+	# Make textfile
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
+	fn <- tempfile()
+
+	fun1 <- paste0(
+		shQuote(plink_bin, type=shell),
+		" --bfile ", shQuote(bfile, type=shell),
+		" --chr ", chr,
+		" --from-bp ", from, 
+		" --to-bp ", to,
+		" --r square ", 
+		" --make-just-bim ",
+		" --freq ",
+		" --out ", shQuote(fn, type=shell)
+	)
+	system(fun1)
+
+	x <- data.table::fread(paste0(fn, ".ld")) %>% as.matrix()
+	y <- data.table::fread(paste0(fn, ".bim")) %>% as_tibble()
+	z <- data.table::fread(paste0(fn, ".frq")) %>% as_tibble()
+	names(y) <- c("chr", "pos", "gp", "bp", "a1", "a2")
+	y$freq <- z$MAF
+	unlink(paste0(fn, c(".ld", ".bim", ".frq")))
+	return(list(ld=x, map=y))
+}
+
 # Also see https://github.com/explodecomputer/pic_haps/
 
 #' Simulate two correlated binomial variables
