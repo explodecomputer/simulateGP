@@ -30,12 +30,11 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 	x <- data.table::fread(paste0(fn, ".ld")) %>% as.matrix()
 	y <- data.table::fread(paste0(fn, ".bim")) %>% as_tibble()
 	z <- data.table::fread(paste0(fn, ".frq")) %>% as_tibble()
-	names(y) <- c("chr", "pos", "gp", "bp", "a1", "a2")
+	names(y) <- c("chr", "rsid", "gp", "bp", "a1", "a2")
 	y$freq <- z$MAF
 	unlink(paste0(fn, c(".ld", ".bim", ".frq")))
 	return(list(ld=x, map=y))
 }
-
 # Also see https://github.com/explodecomputer/pic_haps/
 
 #' Simulate two correlated binomial variables
