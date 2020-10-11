@@ -110,7 +110,7 @@ calcs <- function(x, y, b)
 	betahat <- gwas(y, x)$bhat
 	bhat <- drop(solve(xpx) %*% D %*% betahat)
 	betahatc <- b %*% xpx %*% solve(D) %>% drop
-  rho <- cor(x)
+	rho <- cor(x)
 	betahatrho <- b %*% rho %>% drop
 	tibble(b, bhat, betahat, betahatc, betahatrho)
 }
@@ -198,6 +198,7 @@ greedy_remove <- function(r)
 	}
 	return(which(nom %in% rem))
 }
+
 pop <- "EUR"
 ldref <- paste0("/Users/gh13047/repo/mr-base-api/app/ld_files/", pop)
 bim <- data.table::fread(paste0(ldref, ".bim"))
@@ -252,45 +253,3 @@ res
 
 plot(res$b ~ res$bhat)
 ```
-
-Now need to do this using just correlations
-
-```{r}
-calcs <- function(x, y, b, w)
-{
-	xpx <- t(x) %*% x
-	D <- matrix(0, ncol(x), ncol(x))
-	diag(D) <- diag(xpx)
-	betahat <- gwas(y, x)$bhat
-	bhat <- drop(solve(xpx) %*% D %*% betahat)
-	betahatc <- b %*% xpx %*% solve(D) %>% drop
-
-	Dw <- matrix(0, ncol(x), ncol(x))
-	wpw <- t(w) %*% w
-	diag(Dw) <- diag()
-	B <- 
-
-
-	tibble(b, bhat, betahat, betahatc)
-}
-sqrt(D) %*% solve(sqrt(D)) %*% t(x) %*% x %*% solve(sqrt(D)) %*% sqrt(D)
-```
-
-
-
-```{r}
-n <- 10000
-x <- rmvnorm(n, rep(0, nsnp), sigma)
-xpx <- t(x) %*% x
-r <- cor(x)
-xpx / (nrow(x) - 1)
-
-ssx <- apply(x, 2, function(i) sum(i^2))
-den <- sqrt(ssx %*% t(ssx))
-
-plot(r * den, xpx)
-
-
-```
-
-

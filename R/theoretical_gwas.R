@@ -59,10 +59,11 @@ sample_beta <- function(beta, se)
 #' @param nid sample size
 #' @param vy Variance of trait
 #' @param minmaf minimum allowed maf. default=0.01 to prevent instability
+#' @param reference If present then matches the LD to the 
 #'
 #' @export
 #' @return list of data frames
-generate_gwas_ss <- function(beta, maf, nid, vy=1, minmaf=0.01)
+generate_gwas_ss <- function(beta, maf, nid, vy=1, minmaf=0.01, reference=NULL)
 {
 	stopifnot(length(beta) == length(maf))
 	stopifnot(all(maf > 0 & maf < 1))

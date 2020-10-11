@@ -2,11 +2,11 @@
 title: Data generating process for genetic effects on complex traits
 author: Gibran Hemani
 date: '`r format(Sys.Date())`'
-output: 
-  html_notebook:
-    toc: true
-    toc_float: true
-  
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data generating process for genetic effects on complex traits}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
 ---
 
 Deep IV can infer causal effects in which the sample is stratified by one or many covariates, and there is a different causal effect within each stratum.

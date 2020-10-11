@@ -18,7 +18,7 @@ get_ld(chr, from, to, bfile, plink_bin = genetics.binaRies::get_plink_binary())
 \item{plink_bin}{Plink binary default=genetics.binaRies::get_plink_binary()}
 }
 \value{
-List of LD matrix and map info
+List of LD matrix and map info including MAF
 }
 \description{
 Get LD matrix for a specified region from bfile reference panel

@@ -1,0 +1,51 @@
+---
+title: "summary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Components of GWAS summary data
+
+- genome wide
+- sample overlap
+- distribution of genetic effects
+	- polygenic
+	- following an evolutionary model
+- sparseness
+- genetic effects wrt LD patterns
+- winner's curse - top hits have winner's curse
+- large sample sizes
+- population structure
+
+
+```{r setup}
+library(simulateGP)
+```
+
+```{r}
+pop <- "EUR"
+bfile <- paste0("/Users/gh13047/repo/mr-base-api/app/ld_files/", pop)
+
+varref <- variant_reference(bfile)
+regions <- get_regions(pop)
+
+t1 <- Sys.time()
+generate_ld_matrices(regions[1:2,], varref, bfile)
+Sys.time()-t1
+
+t1 <- Sys.time()
+generate_ld_matrices2(regions[1:2,], varref, bfile)
+Sys.time()-t1
+```
+
