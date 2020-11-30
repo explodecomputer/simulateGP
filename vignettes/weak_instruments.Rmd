@@ -329,7 +329,22 @@ fun <- function(nsnp, pi0, s)
 
 
 
+## Winner's curse schematic
 
+```{r}
+library(dplyr)
+library(ggplot2)
+a <- bind_rows(
+	tibble(b=rnorm(10000, 5, sd=8), strength="weak"),
+	tibble(b=rnorm(10000, 29, sd=1), strength="strong")
+)
+ggplot(a, aes(x=b)) +
+geom_density(aes(fill=strength), alpha=0.5) +
+geom_vline(xintercept=27) +
+geom_vline(data=group_by(a, strength) %>% summarise(m=mean(b)), aes(xintercept=m, colour=strength))
+
+
+```
 
 
 

@@ -21,6 +21,32 @@ library(MASS)
 
 Sample overlap
 
+$$
+\begin{bmatrix}
+\hat{\beta}_1\\ 
+\hat{\beta}_2
+\end{bmatrix} = 
+MVN\left ( 
+\begin{bmatrix}
+\beta_1\\ 
+\beta_2
+\end{bmatrix},
+\boldsymbol{S} 
+ \right )
+$$
+
+$$
+\boldsymbol{C} = \boldsymbol{S}
+
+\begin{bmatrix}
+N_1 & \rho_{1,2}\frac{N_O}{\sqrt{N_1 N_2}}\\ 
+\rho_{1,2}\frac{N_O}{\sqrt{N_1 N_2}} & N_2
+\end{bmatrix}
+
+\boldsymbol{S}
+$$
+
+
 ```{r}
 betas <- function(b1, b2, se1, se2, n1, n2, pcor, n_overlap, Nrep=1)
 {
@@ -53,17 +79,17 @@ betas(b1, b2, se1, se2, 1000, 1000, 0.5, n_overlap=0, 10000) %>% colMeans %>% {.
 betas(b1, b2, se1, se2, 1000, 1000, 0.5, n_overlap=1000, 10000) %>% cor
 betas(b1, b2, se1, se2, 1000, 1000, 0.5, n_overlap=0, 10000) %>% cor
 
-rsq = F / (F + n -1)
+# rsq = F / (F + n -1)
 
-rsq F + rsq(n-1) = F
-rsq F - F = -rsq(n-1)
-F (rsq - 1) = - rsq(n - 1)
-F = (rsq - rsq n) / rsq - 1
+# rsq F + rsq(n-1) = F
+# rsq F - F = -rsq(n-1)
+# F (rsq - 1) = - rsq(n - 1)
+# F = (rsq - rsq n) / rsq - 1
 
-rsq = 20 / (20 + 1000 - 1)
+# rsq = 20 / (20 + 1000 - 1)
 
 
-nrep=200
+nrep=2000
 nsnp=100
 n1 <- 1000
 n2 <- 1000
@@ -95,6 +121,7 @@ ggplot(subset(dat, wr < 3 & wr > -3), aes(x=fval, y=by/bx)) +
 geom_smooth(aes(colour=as.factor(overlap))) +
 facet_grid(. ~ bxy) +
 scale_colour_brewer(type="qual")
+ggsave("sampleoverlap.pdf")
 ```	
 
 

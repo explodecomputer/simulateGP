@@ -79,6 +79,28 @@ generate_ld_matrices_slow <- function(regions, varref, bfile, plink_bin=genetics
 	}
 }
 
+write_ld_matrices <- function(r, fn)
+{
+	y <- r[lower.tri(r, diag=FALSE)]
+	yi <- round(y*127) %>% as.integer
+	fn <- file(fn, "wb")
+	writeBin(nrow(r)-1, fn, integer())
+	writeBin(yi, fn, size=1)
+	close(fn)
+}
+
+read_ld_matrices <- function(fn)
+{
+	fn <- file(fn, "rb")
+	n <- readBin(fn, 1, integer())
+	r <- readBin(fn, integer(), n*(n-1)/2, size=1, signed=TRUE) / 127
+	R <- diag(n+1)
+	R[lower.tri(R, diag=FALSE)] <- r
+	R[upper.tri(R, diag=FALSE)] <- r
+	return(R)
+}
+
+
 
 greedy_remove <- function(r, threshold=0.99)
 {
