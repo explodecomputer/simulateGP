@@ -1,11 +1,14 @@
 pandoc: 2.7.3
-pkgdown: 1.4.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  fast_linreg: fast_linreg.html
   gwas_summary_data: gwas_summary_data.html
-  individual_gwas: individual_gwas.html
-  risk: risk.html
-  simulate_individual_2smr: simulate_individual_2smr.html
+  gwas_summary_data_ld: gwas_summary_data_ld.html
+  ld_matrices: ld_matrices.html
+  mr_dgp: mr_dgp.html
+  sample_overlap: sample_overlap.html
+  simplemr: simplemr.html
+  twosamplemr: twosamplemr.html
   weak_instruments: weak_instruments.html
+last_built: 2021-03-04T23:20Z
 

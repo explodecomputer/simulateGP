@@ -1,8 +1,8 @@
 ---
-title: "summary"
+title: "LD matrices"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{summary}
+  %\VignetteIndexEntry{LD matrices}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -17,10 +17,15 @@ articles:
     desc: >
       The following pages provide illustrations of how to conduct simulations.
     contents:
-    - simplemr
-    - twosamplemr
-    - gwassummary
+      - simplemr
+      - twosamplemr
   - title: "Theory and experiments"
     desc: >
       A set of notebooks that give some background to the functions in the package
-    - 
+    contents:
+      - sample_overlap
+      - weak_instruments
+      - gwas_summary_data
+      - ld_matrices
+      - mr_dgp
+      - gwas_summary_data_ld

@@ -219,5 +219,30 @@ dat <- merge_exp_out(exp, out)
 
 ---
 
-It is a little bit more technically challenging to do the same using summary data alone
+An approach to doing this directly, bypassing simulation of individuals, is also implemented in the `summary_set` function e.g.
+
+```{r}
+nsnp <- 100
+af <- runif(nsnp, 0.01, 0.99)
+beta_gx <- generate_gwas_params(af, h2=0.5)
+beta_gy <- beta_gx
+beta_gy$beta <- beta_gy$beta * 0.3
+
+dat <- summary_set(
+	beta_gx = beta_gx$beta,
+	beta_gy = beta_gy$beta,
+	af = af,
+	n_gx = 10000,
+	n_gy = 10000,
+	n_overlap = 10000,
+	cor_xy = 0.6,
+	prev_y = NA,
+	sigma_x = 1,
+	sigma_y = 1
+)
+
+dat %>%
+	dplyr::filter(pval.exposure < 5e-8) %>%
+	TwoSampleMR::mr(., method_list="mr_ivw")
+```
 

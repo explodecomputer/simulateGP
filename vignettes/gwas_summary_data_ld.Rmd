@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(simulateGP)
 library(mvtnorm)
+library(tidyverse)
 ```
 
 If a set of SNPs have some effect on y, and those SNPs are correlated, can we calculate the expected marginal effect sizes?

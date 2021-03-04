@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(simulateGP)
 library(MASS)
+library(tidyverse)
+library(ggplot2)
 ```
 
 Sample overlap
@@ -121,12 +123,11 @@ ggplot(subset(dat, wr < 3 & wr > -3), aes(x=fval, y=by/bx)) +
 geom_smooth(aes(colour=as.factor(overlap))) +
 facet_grid(. ~ bxy) +
 scale_colour_brewer(type="qual")
-ggsave("sampleoverlap.pdf")
 ```	
 
 
 ```{r}
-nsim <- 5000
+nsim <- 500
 dat1 <- tibble(rsq1=runif(nsim, 0.001, 0.01), overlap=1)
 dat2 <- tibble(rsq1=dat1$rsq1, overlap=0)
 dat3 <- tibble(rsq1=dat1$rsq1, overlap=0.5)
@@ -140,7 +141,6 @@ u2 <- rnorm(n2)
 mid <- round(n2/2)
 for(i in 1:nrow(dat1))
 {
-	message(i)
 	b <- choose_effects(1, dat1$rsq1[i])
 	x1 <- make_phen(c(b, sqrt(0.5)), cbind(g1, u1))
 	x2 <- make_phen(c(b, sqrt(0.5)), cbind(g2, u2))
