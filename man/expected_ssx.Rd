@@ -4,12 +4,12 @@
 \alias{expected_ssx}
 \title{Calculate expected SSX}
 \usage{
-expected_ssx(maf, n)
+expected_ssx(af, n)
 }
 \arguments{
-\item{maf}{<what param does>}
+\item{af}{array of allele frequencies}
 
-\item{n}{<what param does>}
+\item{n}{sample size}
 }
 \value{
 Numeric

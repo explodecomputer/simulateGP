@@ -1,42 +1,42 @@
 #' Calculate expected MSE
 #'
-#' @param beta <what param does>
-#' @param maf <what param does>
-#' @param vy <what param does>
+#' @param beta array of effect sizes
+#' @param af array of allele frequencies
+#' @param vy variance of y
 #'
 #' @export
 #' @return Numeric
-expected_mse <- function(beta, maf, vy)
+expected_mse <- function(beta, af, vy)
 {
-	vy - beta^2 * 2 * maf * (1-maf)
+	vy - beta^2 * 2 * af * (1-af)
 }
 
 #' Calculate expected SSX
 #'
-#' @param maf <what param does>
-#' @param n <what param does>
+#' @param af array of allele frequencies
+#' @param n sample size
 #'
 #' @export
 #' @return Numeric
-expected_ssx <- function(maf, n)
+expected_ssx <- function(af, n)
 {
-	(2 * maf * (1-maf)) * (n - 1)
+	(2 * af * (1-af)) * (n - 1)
 }
 
-#' Expected se given beta, maf, n and vy
+#' Expected se given beta, af, n and vy
 #'
 #' se = sqrt(sigma_e^2 / ss(x))
 #'
 #' @param beta array of effect sizes
-#' @param maf array of allele frequencies
+#' @param af array of allele frequencies
 #' @param n sample size
 #' @param vy variance of y
 #'
 #' @export
 #' @return array of standard errors
-expected_se <- function(beta, maf, n, vy)
+expected_se <- function(beta, af, n, vy)
 {
-	sqrt(expected_mse(beta, maf, vy) / expected_ssx(maf, n))
+	sqrt(expected_mse(beta, af, vy) / expected_ssx(af, n))
 }
 
 #' Sample beta values given standard errors
@@ -55,26 +55,28 @@ sample_beta <- function(beta, se)
 #'
 #'
 #' @param beta Array of true beta values
-#' @param maf array of maf values
+#' @param af Array of effect allele frequency values
 #' @param nid sample size
 #' @param vy Variance of trait
 #' @param minmaf minimum allowed maf. default=0.01 to prevent instability
-#' @param reference If present then matches the LD to the 
 #'
 #' @export
 #' @return list of data frames
-generate_gwas_ss <- function(beta, maf, nid, vy=1, minmaf=0.01, reference=NULL)
+generate_gwas_ss <- function(beta, af, nid, vy=1, minmaf=0.01)
 {
-	stopifnot(length(beta) == length(maf))
-	stopifnot(all(maf > 0 & maf < 1))
-	maf <- pmax(minmaf, maf)
+	stopifnot(length(beta) == length(af))
+	stopifnot(all(af > 0 & af < 1))
+	af <- pmax(minmaf, af)
+	af <- pmin(1-minmaf, 1-af)
 	dat <- dplyr::tibble(
 		snp = 1:length(beta),
 		b = beta,
-		maf = maf,
-		se = expected_se(b, maf, nid, vy),
+		maf = af,
+		se = expected_se(b, af, nid, vy),
 		bhat = sample_beta(b, se),
-		pval = pnorm(abs(bhat / se), low=FALSE) * 2
+		fval = (bhat/se)^2,
+		n = nid,
+		pval = pf(fval, df1=1, df2=nid-1, low=FALSE) * 2
 	)
 	return(dat)
 }
@@ -82,23 +84,23 @@ generate_gwas_ss <- function(beta, maf, nid, vy=1, minmaf=0.01, reference=NULL)
 
 #' Generate SNP effects given MAF, h2 and selection
 #'
-#' @param maf Vector of allele frequencies, one for each SNP
+#' @param af Vector of effect allele frequencies, one for each SNP
 #' @param h2 Variance explained by all SNPs
 #' @param S Selection coefficient on trait. Default = 0
 #'
 #' @export
-#' @return data frame of maf and beta
-generate_gwas_params <- function(maf, h2, S=0)
+#' @return data frame
+generate_gwas_params <- function(af, h2, S=0)
 {
-	nsnp <- length(maf)
+	nsnp <- length(af)
 	if(h2 == 0)
 	{
-		return(dplyr::tibble(beta=0, maf=maf))
+		return(dplyr::tibble(beta=0, af=af))
 	}
-	beta <- rnorm(nsnp, mean=0, sd = sqrt((maf * 2 * (1-maf))^S))
-	vg <- sum(maf * 2 * (1-maf) * beta^2)
+	beta <- rnorm(nsnp, mean=0, sd = sqrt((af * 2 * (1-af))^S))
+	vg <- sum(af * 2 * (1-af) * beta^2)
 	ve <- (vg - h2 * vg) / h2
 	vy <- vg + ve
 	beta <- beta / sqrt(vy)
-	return(dplyr::tibble(beta=beta, maf=maf))
+	return(dplyr::tibble(beta=beta, af=af))
 }

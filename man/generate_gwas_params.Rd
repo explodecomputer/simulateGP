@@ -4,17 +4,17 @@
 \alias{generate_gwas_params}
 \title{Generate SNP effects given MAF, h2 and selection}
 \usage{
-generate_gwas_params(maf, h2, S = 0)
+generate_gwas_params(af, h2, S = 0)
 }
 \arguments{
-\item{maf}{Vector of allele frequencies, one for each SNP}
+\item{af}{Vector of effect allele frequencies, one for each SNP}
 
 \item{h2}{Variance explained by all SNPs}
 
 \item{S}{Selection coefficient on trait. Default = 0}
 }
 \value{
-data frame of maf and beta
+data frame
 }
 \description{
 Generate SNP effects given MAF, h2 and selection

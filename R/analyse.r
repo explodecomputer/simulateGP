@@ -90,7 +90,7 @@ get_effs <- function(x, y, g, xname="X", yname="Y")
 {
 	gwasx <- gwas(x, g)
 	gwasy <- gwas(y, g)
-	return(make_dat(gwasx, gwasy, xname, yname))
+	return(merge_exp_out(gwasx, gwasy, xname, yname))
 }
 
 #' Organise outputs from \code{gwas} into harmonised dat format
@@ -102,7 +102,7 @@ get_effs <- function(x, y, g, xname="X", yname="Y")
 #'
 #' @export
 #' @return data frame
-make_dat <- function(gwasx, gwasy, xname="X", yname="Y")
+merge_exp_out <- function(gwasx, gwasy, xname="X", yname="Y")
 {
 	d <- dplyr::inner_join(gwasx, gwasy, by='snp')
 	dat <- tibble::tibble(

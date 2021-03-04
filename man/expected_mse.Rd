@@ -4,14 +4,14 @@
 \alias{expected_mse}
 \title{Calculate expected MSE}
 \usage{
-expected_mse(beta, maf, vy)
+expected_mse(beta, af, vy)
 }
 \arguments{
-\item{beta}{<what param does>}
+\item{beta}{array of effect sizes}
 
-\item{maf}{<what param does>}
+\item{af}{array of allele frequencies}
 
-\item{vy}{<what param does>}
+\item{vy}{variance of y}
 }
 \value{
 Numeric

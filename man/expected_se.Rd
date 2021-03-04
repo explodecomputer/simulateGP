@@ -2,14 +2,14 @@
 % Please edit documentation in R/theoretical_gwas.R
 \name{expected_se}
 \alias{expected_se}
-\title{Expected se given beta, maf, n and vy}
+\title{Expected se given beta, af, n and vy}
 \usage{
-expected_se(beta, maf, n, vy)
+expected_se(beta, af, n, vy)
 }
 \arguments{
 \item{beta}{array of effect sizes}
 
-\item{maf}{array of allele frequencies}
+\item{af}{array of allele frequencies}
 
 \item{n}{sample size}
 

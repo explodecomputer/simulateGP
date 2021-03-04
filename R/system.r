@@ -403,13 +403,13 @@ test_system <- function(ss, id="test")
 {
 	out <- list()
 
-	dx <- make_dat(ss$x$x, ss$y$y)
+	dx <- merge_exp_out(ss$x$x, ss$y$y)
 	dx$exposure <- paste0("X:", id)
 	dx$outcome <- paste0("Y:", id)
 	dx$id.exposure <- paste0("X:", id)
 	dx$id.outcome <- paste0("Y:", id)
 
-	dy <- make_dat(ss$y$y, ss$x$x)
+	dy <- merge_exp_out(ss$y$y, ss$x$x)
 	dy$exposure <- paste0("Y:", id)
 	dy$outcome <- paste0("X:", id)
 	dy$id.exposure <- paste0("Y:", id)
