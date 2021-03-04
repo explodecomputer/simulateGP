@@ -32,3 +32,5 @@ Remotes:
 	mrcieu/TwoSampleMR,
 	mrcieu/ieugwasr
 VignetteBuilder: knitr
+URL: https://explodecomputer.github.io/simulateGP/
+BugReports: https://github.com/explodecomputer/simulateGP/issues
