@@ -7,11 +7,11 @@
 gx_to_gp(gx, h2x, prev)
 }
 \arguments{
+\item{gx}{score on liability scale}
+
 \item{h2x}{Disease heritability on liability scale}
 
 \item{prev}{Prevalence}
-
-\item{Genetic}{score on liability scale}
 }
 \value{
 Vector of disease probabilities

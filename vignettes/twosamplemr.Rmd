@@ -179,4 +179,45 @@ TwoSampleMR::mr(dat)
 
 ### Sample overlap case
 
-It is of course possible to simulate varying degrees of sample overlap by simulating two individual-level datasets with the same underlying DAG, and then selecting individuals from 
+It is of course possible to simulate varying degrees of sample overlap by simulating two individual-level datasets with the same underlying DAG, and then selecting which individuals contribute to the exposure and outcome effects e.g.
+
+```{r}
+nid <- 10000
+nsnp <- 100
+g <- make_geno(nid, nsnp, 0.5)
+u <- rnorm(nid)
+beta_gx <- choose_effects(nsnp, 0.05)
+x <- make_phen(c(beta_gx, 0.1), cbind(g, u))
+y <- make_phen(c(0.3, 0.1), cbind(x, u))
+```
+
+Complete sample overlap
+
+```{r}
+dat <- get_effs(x, y, g)
+```
+
+No sample overlap
+
+```{r}
+id1 <- 1:(nid/2)
+id2 <- (nid/2+1):nid
+exp <- gwas(x[id1], g[id1,])
+out <- gwas(y[id2], g[id2,])
+dat <- merge_exp_out(exp, out)
+```
+
+Partial sample overlap
+
+```{r}
+id1 <- 1:round(nid/1.5)
+id2 <- round(nid/1.5+1):nid
+exp <- gwas(x[id1], g[id1,])
+out <- gwas(y[id2], g[id2,])
+dat <- merge_exp_out(exp, out)
+```
+
+---
+
+It is a little bit more technically challenging to do the same using summary data alone
+

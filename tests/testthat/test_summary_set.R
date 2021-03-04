@@ -4,7 +4,6 @@ library(simulateGP)
 
 test_that("no sample overlap", {
 
-summary_set <- function()
 	set.seed(1234)
 	nsnp <- 100
 	af <- runif(nsnp, 0.01, 0.99)

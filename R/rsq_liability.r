@@ -6,7 +6,7 @@
 #' @param af Allele frequency of effect allele 
 #' @param prop Proportion of cases
 #' @param odds_ratio Odds ratio
-#' @param eps=1e-15 tolerance
+#' @param eps tolerance. Default = 1e-15
 #'
 #' @export
 #' @return 2x2 contingency table as matrix
@@ -70,10 +70,10 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 #' This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
 #' 
 #' @param b Log odds ratio
-#' @param af 
-#' @param ncase <what param does>
-#' @param ncontrol <what param does>
-#' @param prevalence <what param does>
+#' @param af allele frequency
+#' @param ncase Number of cases
+#' @param ncontrol number of controls
+#' @param prevalence prevalence
 #' @param model Is the effect size estiamted in "logit" (default) or "probit" model
 #'
 #' @export

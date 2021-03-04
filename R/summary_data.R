@@ -25,7 +25,7 @@ variant_reference <- function(bfile, plink_bin=genetics.binaRies::get_plink_bina
 get_regions <- function(pop="ASN")
 {
 	system.file(paste0("extdata/ldetect/", pop, ".bed"), package="simulateGP") %>%
-		data.table::fread(., header=TRUE) %>%
+		data.table::fread(.data, header=TRUE) %>%
 		dplyr::mutate(
 			chr=as.numeric(gsub("chr", "", chr)),
 			start=as.numeric(start),
@@ -70,10 +70,10 @@ generate_ld_matrices_slow <- function(regions, varref, bfile, plink_bin=genetics
 			" --out ", shQuote(fn, type=shell)
 		)
 		system(fun2, ignore.stdout=TRUE)
-		x <- data.table::fread(paste0(fn, ".raw")) %>% {.[,-c(1:6)]} %>% as.matrix()
+		x <- data.table::fread(paste0(fn, ".raw")) %>% {.data[,-c(1:6)]} %>% as.matrix()
 		l[[i]] <- list(
 			info=variants,
-			ld=cor(x, use="pair")
+			ld=stats::cor(x, use="pair")
 		)
 		unlink(paste0(fn, ".raw"))
 	}
@@ -158,7 +158,7 @@ draw_betas_multi_sample <- function(b, se, N, pcor, Nrep=1)
 	stopifnot(all(diag(pcor) == 1))
 	ses <- diag(se)
 	covmat <- ses %*% (pcor * N) %*% ses
-	mvrnorm(Nrep, b, covmat)
+	MASS::mvrnorm(Nrep, b, covmat)
 }
 
 

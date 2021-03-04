@@ -19,15 +19,15 @@ risk_cross_plot(
 
 \item{o}{Disease risk on probability scale}
 
-\item{xlab="Values}{(low to high)" Xlab}
+\item{xlab}{default="Values (low to high)"}
 
-\item{ylab=""}{Ylab}
+\item{ylab}{default=""}
 
-\item{title=""}{Title}
+\item{title}{default=""}
 
-\item{xname="GRS"}{Name of liability}
+\item{xname}{Name of liability. Default="GRS"}
 
-\item{oname="Disease"}{Name of disease}
+\item{oname}{Name of disease. Default="Disease"}
 }
 \value{
 ggplot

@@ -11,7 +11,7 @@ range01 <- function(x)
 
 #' Translate risk from liability to probability scale
 #'
-#' @param Genetic score on liability scale 
+#' @param gx score on liability scale 
 #' @param h2x Disease heritability on liability scale
 #' @param prev Prevalence
 #'
@@ -28,29 +28,28 @@ gx_to_gp <- function(gx, h2x, prev)
 #'
 #' @param x Disease risk on liability scale
 #' @param o Disease risk on probability scale
-#' @param xlab="Values (low to high)" Xlab
-#' @param ylab="" Ylab
-#' @param title="" Title
-#' @param xname="GRS" Name of liability
-#' @param oname="Disease" Name of disease
+#' @param xlab default="Values (low to high)"
+#' @param ylab default=""
+#' @param title default=""
+#' @param xname Name of liability. Default="GRS"
+#' @param oname Name of disease. Default="Disease"
 #'
 #' @export
 #' @return ggplot
 risk_cross_plot <- function(x, o, xlab="Values (low to high)", ylab="", title="", xname="GRS", oname="Disease")
 {
-	require(ggplot2)
-	d <- tibble::data_frame(
+	d <- dplyr::tibble(
 		value = c(range01(o), range01(x)),
 		key = c(rep(oname, length(o)), rep(xname, length(x))),
 		gr = rep(1:length(x), times=2)
 	)
 	d$key <- factor(d$key, levels=c(xname, oname))
-	ggplot(d, aes(x=value, y=key)) +
-	geom_line(aes(group=gr), alpha=0.1) +
-	geom_point(aes(colour=key)) +
-	labs(x=xlab,y=ylab,title=title) +
-	scale_colour_discrete(guide=FALSE) +
-	theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
+	ggplot2::ggplot(d, ggplot2::aes(x=value, y=key)) +
+	ggplot2::geom_line(ggplot2::aes(group=gr), alpha=0.1) +
+	ggplot2::geom_point(ggplot2::aes(colour=key)) +
+	ggplot2::labs(x=xlab,y=ylab,title=title) +
+	ggplot2::scale_colour_discrete(guide=FALSE) +
+	ggplot2::theme(axis.text.x=ggplot2::element_blank(),axis.ticks.x=ggplot2::element_blank())
 }
 
 #' Make simulation to compare disease and liability scales
@@ -75,7 +74,7 @@ risk_simulation <- function(G, eff, prevalence, prop_discovered)
 	eff_pred <- eff
 	eff_pred[sample(1:nsnp, nsnp * (1-prop_discovered))] <- 0
 	gx_pred <- as.numeric(G %*% eff_pred / sqrt(nsnp))
-	dat <- tibble::data_frame(gx_true=as.numeric(gx_true), gx_pred=gx_pred, prob_disease=as.numeric(prob_disease), disease=disease)
+	dat <- dplyr::tibble(gx_true=as.numeric(gx_true), gx_pred=gx_pred, prob_disease=as.numeric(prob_disease), disease=disease)
 	return(dat)
 }
 

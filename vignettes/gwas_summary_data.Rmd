@@ -185,28 +185,28 @@ generate_gwas_params
 Negative selection:
 
 ```{r}
-g <- generate_gwas_params(maf=runif(1000, 0.01, 0.5), h2=0.4, S=-2)
+g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=-2)
 plot(g)
 ```
 
 Positive selection:
 
 ```{r}
-g <- generate_gwas_params(maf=runif(1000, 0.01, 0.5), h2=0.4, S=2)
+g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=2)
 plot(g)
 ```
 
 Neutral model:
 
 ```{r}
-g <- generate_gwas_params(maf=runif(1000, 0.01, 0.5), h2=0.4, S=0)
+g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=0)
 plot(g)
 ```
 
 Note that the genetic variance is the heritability
 
 ```{r}
-sum(g$beta^2 * 2 * g$maf * (1-g$maf))
+sum(g$beta^2 * 2 * g$af * (1-g$af))
 ```
 
 
@@ -218,13 +218,13 @@ Bringing it all together, we can simulate a set of GWAS summary stats by first s
 # a polygenic background of 10000 SNPs, 
 # and all others with no effects
 param <- rbind(
-	generate_gwas_params(maf=runif(10, 0.4, 0.5), h2=0.1, S=0),
-	generate_gwas_params(maf=runif(10000, 0.01, 0.5), h2=0.3, S=0),
-	generate_gwas_params(maf=runif(1000000-10-10000, 0.01, 0.5), h2=0, S=0)
+	generate_gwas_params(af=runif(10, 0.4, 0.5), h2=0.1, S=0),
+	generate_gwas_params(af=runif(10000, 0.01, 0.5), h2=0.3, S=0),
+	generate_gwas_params(af=runif(1000000-10-10000, 0.01, 0.5), h2=0, S=0)
 )
 
 # Generate GWAS summary stats
-res <- generate_gwas_ss(param$beta, param$maf, 450000)
+res <- generate_gwas_ss(param$beta, param$af, 450000)
 ```
 
 Compare to individual level data results to summary data simulations
@@ -234,10 +234,10 @@ Compare to individual level data results to summary data simulations
 set.seed(100)
 h2 <- 0.1
 nid <- 10000
-param <- generate_gwas_params(maf=runif(100, 0.01, 0.5), h2=h2, S=0)
-res1 <- generate_gwas_ss(param$beta, param$maf, nid)
+param <- generate_gwas_params(af=runif(100, 0.01, 0.5), h2=h2, S=0)
+res1 <- generate_gwas_ss(param$beta, param$af, nid)
 
-g <- lapply(param$maf, function(x) rbinom(nid, 2, x)) %>%
+g <- lapply(param$af, function(x) rbinom(nid, 2, x)) %>%
 	bind_cols %>%
 	as.matrix
 

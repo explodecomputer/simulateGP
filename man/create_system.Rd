@@ -25,39 +25,39 @@ create_system(
 )
 }
 \arguments{
-\item{nidx}{}
+\item{nidx}{number of individuals for x}
 
-\item{nidy}{}
+\item{nidy}{number of individuals for y}
 
-\item{var_x.y}{}
+\item{nidu}{Default=0 If 0 then don't simulate separate populations for the u variables}
 
-\item{nsnp_x}{}
+\item{nu}{Default=0 Number of confounders influencing x and y}
 
-\item{var_gx.x}{}
+\item{na}{Default=0 Number of traits upstream of x}
 
-\item{nidu=0}{If 0 then don't simulate separate populations for the u variables}
+\item{nb}{Default=0 Number of traits upstream of y}
 
-\item{nu=0}{Number of confounders influencing x and y}
+\item{var_x.y}{var in y explained by x}
 
-\item{na=0}{Number of traits upstream of x}
+\item{nsnp_x}{nsnp influencing x}
 
-\item{nb=0}{Number of traits upstream of y}
+\item{var_gx.x}{variance in x explained by instruments for x}
 
-\item{var_gx.y=0}{}
+\item{var_gx.y}{Default=0}
 
-\item{mu_gx.y=0}{}
+\item{mu_gx.y}{Default=0}
 
-\item{prop_gx.y=1}{}
+\item{prop_gx.y}{Default=1}
 
-\item{nsnp_y=0}{}
+\item{nsnp_y}{Default=0}
 
-\item{var_gy.y=0}{}
+\item{var_gy.y}{Default=0}
 
-\item{var_gy.x=0}{}
+\item{var_gy.x}{Default=0}
 
-\item{mu_gy.x=0}{}
+\item{mu_gy.x}{Default=0}
 
-\item{prop_gy.x=1}{}
+\item{prop_gy.x}{Default=1}
 }
 \value{
 List of effects across system

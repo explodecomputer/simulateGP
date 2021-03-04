@@ -39,18 +39,18 @@ summary_set <- function(beta_gx, beta_gy, af, n_gx, n_gy, n_overlap, cor_xy, pre
   {
     myfunc <- function(af, Gamma0, Gamma1, prev)
     {  
-      af^2 * plogis(Gamma0 + Gamma1 * 2) + 2 * af * (1 - af) * plogis(Gamma0 + Gamma1) + (1 - af)^2 * plogis(Gamma0) - prev 
+      af^2 * stats::plogis(Gamma0 + Gamma1 * 2) + 2 * af * (1 - af) * stats::plogis(Gamma0 + Gamma1) + (1 - af)^2 * stats::plogis(Gamma0) - prev 
     }
 
     Gamma0 <- numeric(nsnp)
     for(i in 1:nsnp)
     {
-      Gamma0[i] <- uniroot(myfunc, Gamma1=beta_gy[i], af=af[i], prev=prev_y, lower=-10, upper=10)$root
+      Gamma0[i] <- stats::uniroot(myfunc, Gamma1=beta_gy[i], af=af[i], prev=prev_y, lower=-10, upper=10)$root
     }
 
     var_gy <- asymp_var_logistic(n_gy, G_prob, Gamma0, beta_gy)
     var_gx <- asymp_var_linear(n_gx, G_prob, sigma=sigma_x)
-    cov_gx_gy <- asymp_cov_linear_logistic(overlap, n_gx, n_gy, G_prob, cor_xy=cor_xy, sigma=sigma_x, Gamma_0=Gamma0, Gamma_1=beta_gy, prev=prev_y)
+    cov_gx_gy <- asymp_cov_linear_logistic(n_overlap, n_gx, n_gy, G_prob, cor_xy=cor_xy, sigma=sigma_x, Gamma_0=Gamma0, Gamma_1=beta_gy, prev=prev_y)
   }
 
   var_gy <- asymp_var_linear(n_gy, G_prob, sigma=sigma_y)
@@ -70,7 +70,7 @@ summary_set <- function(beta_gx, beta_gy, af, n_gx, n_gy, n_overlap, cor_xy, pre
 
   summary_stats <- t(summary_stats + rbind(beta_gx, beta_gy))
 
-  dat <- tibble(
+  dat <- dplyr::tibble(
     SNP = 1:nsnp,
     id.exposure="X",
     id.outcome="Y",
@@ -96,7 +96,7 @@ summary_set <- function(beta_gx, beta_gy, af, n_gx, n_gy, n_overlap, cor_xy, pre
 ## calculate asymptotic version of (X^t W X) 
 asymp_var_logistic <- function(n,G_prob,Gamma_0,Gamma_1){
   N <- length(Gamma_0)
-  disease_probs <- plogis(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
+  disease_probs <- stats::plogis(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
   diag_weights <- disease_probs*(1-disease_probs)
     
   a <- n*apply(G_prob*diag_weights,1,sum)
@@ -140,7 +140,7 @@ asymp_cov_linear_linear <- function(n_overlap,n_gx,n_gy,G_prob,sigma_x=1,sigma_y
 asymp_cov_linear_logistic <- function(n_overlap,n_gx,n_gy,G_prob,cor_xy=0,sigma=1,Gamma_0,Gamma_1,prev=0.01){
   N <- length(Gamma_0)
   cov_xy <- cor_xy*sigma*sqrt(prev*(1-prev))
-  disease_probs <- plogis(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
+  disease_probs <- stats::plogis(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
   diag_weights <- disease_probs*(1-disease_probs)
   
   a <- apply(G_prob*diag_weights,1,sum)

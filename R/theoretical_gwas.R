@@ -48,7 +48,7 @@ expected_se <- function(beta, af, n, vy)
 #' @return array of beta hats
 sample_beta <- function(beta, se)
 {
-	rnorm(length(beta), beta, se)
+	stats::rnorm(length(beta), beta, se)
 }
 
 #' Create a GWAS summary dataset
@@ -76,7 +76,7 @@ generate_gwas_ss <- function(beta, af, nid, vy=1, minmaf=0.01)
 		bhat = sample_beta(b, se),
 		fval = (bhat/se)^2,
 		n = nid,
-		pval = pf(fval, df1=1, df2=nid-1, low=FALSE) * 2
+		pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
 	)
 	return(dat)
 }
@@ -97,7 +97,7 @@ generate_gwas_params <- function(af, h2, S=0)
 	{
 		return(dplyr::tibble(beta=0, af=af))
 	}
-	beta <- rnorm(nsnp, mean=0, sd = sqrt((af * 2 * (1-af))^S))
+	beta <- stats::rnorm(nsnp, mean=0, sd = sqrt((af * 2 * (1-af))^S))
 	vg <- sum(af * 2 * (1-af) * beta^2)
 	ve <- (vg - h2 * vg) / h2
 	vy <- vg + ve

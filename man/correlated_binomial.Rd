@@ -15,11 +15,11 @@ correlated_binomial(nid, p1, p2, rho, n = 2, round = TRUE, print = FALSE)
 
 \item{rho}{Target correlation}
 
+\item{n}{Binomial parameter, should be 2 (default) for genotypes}
+
 \item{round}{Round or not Default=TRUE}
 
 \item{print}{Print or not Default=FALSE}
-
-\item{n=2}{Binomial parameter, should be 2 for genotypes}
 }
 \value{
 Matrix

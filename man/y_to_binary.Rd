@@ -9,9 +9,9 @@ y_to_binary(y, prevalence = NULL, threshold = NULL)
 \arguments{
 \item{y}{Phenotype vector}
 
-\item{prevalence=NULL}{Disease prevalence}
+\item{prevalence}{Disease prevalence. Default = NULL}
 
-\item{threshold=NULL}{Disease threshold}
+\item{threshold}{Disease threshold Default = NULL}
 }
 \value{
 Vector of binary trait

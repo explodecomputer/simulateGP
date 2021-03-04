@@ -12,7 +12,7 @@ fast_assoc <- function(y, x)
 	y <- y[index]
 	x <- x[index]
 	vx <- var(x)
-	bhat <- cov(y, x) / vx
+	bhat <- stats::cov(y, x) / vx
 	ahat <- mean(y) - bhat * mean(x)
 	# fitted <- ahat + x * bhat
 	# residuals <- y - fitted
@@ -26,7 +26,7 @@ fast_assoc <- function(y, x)
 
 	# Fval <- (SSF) / (SSR/(n-2))
 	# pval <- pf(Fval, 1, n-2, lowe=F)
-	p <- pf(fval, 1, n-2, lower.tail=FALSE)
+	p <- stats::pf(fval, 1, n-2, lower.tail=FALSE)
 	return(list(
 		ahat=ahat, bhat=bhat, se=se, fval=fval, pval=p, n=n
 	))
@@ -49,8 +49,8 @@ expected_gwas <- function(eff, n, vx, vy)
 	ve <- varexp_xy / rsq - varexp_xy
 	se <- sqrt(ve / ((n-2) * vx))
 	tval <- eff / se
-	p <- pt(abs(tval), n-1, lower.tail=FALSE)
-	dat <- tibble::tibble(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
+	p <- stats::pt(abs(tval), n-1, lower.tail=FALSE)
+	dat <- dplyr::tibble(bhat=eff, se=se, fval=tval^2, pval=p, n=n)
 	return(dat)
 }
 
@@ -70,7 +70,7 @@ gwas <- function(y, g)
 		o <- fast_assoc(y, g[,i])
 		out[i, ] <- unlist(o)
 	}
-	out <- tibble::as_tibble(out)
+	out <- dplyr::as_tibble(out)
 	names(out) <- names(o)
 	out$snp <- 1:ncol(g)
 	return(out)
@@ -97,15 +97,15 @@ get_effs <- function(x, y, g, xname="X", yname="Y")
 #'
 #' @param gwasx Output from \code{gwas}
 #' @param gwasy Output from \code{gwas}
-#' @param xname
-#' @param yname
+#' @param xname exposure name
+#' @param yname outcome name
 #'
 #' @export
 #' @return data frame
 merge_exp_out <- function(gwasx, gwasy, xname="X", yname="Y")
 {
 	d <- dplyr::inner_join(gwasx, gwasy, by='snp')
-	dat <- tibble::tibble(
+	dat <- dplyr::tibble(
 		SNP = d$snp,
 		exposure=xname,
 		id.exposure=xname,

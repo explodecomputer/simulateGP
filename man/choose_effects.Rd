@@ -11,9 +11,9 @@ choose_effects(nsnp, totvar, sqrt = TRUE, mua = 0)
 
 \item{totvar}{Total variance explained by all SNPs}
 
-\item{sqrt=TRUE}{Output effect sizes in terms of standard deviations}
+\item{sqrt}{Output effect sizes in terms of standard deviations. Default=TRUE}
 
-\item{mua=0}{Constant term to be added to effects}
+\item{mua}{Constant term to be added to effects. Default = 0}
 }
 \value{
 Vector of effects

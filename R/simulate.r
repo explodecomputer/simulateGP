@@ -24,7 +24,7 @@ make_phen <- function(effs, indep, vy=1, vx=rep(1, length(effs)), my=0)
 		stop("effects explain more than 100% of variance")
 	}
 	cors <- c(cors, sqrt(1-sum(cors^2)))
-	indep <- t(t(scale(cbind(indep, rnorm(nrow(indep))))) * cors * c(vx, 1))
+	indep <- t(t(scale(cbind(indep, stats::rnorm(nrow(indep))))) * cors * c(vx, 1))
 	y <- drop(scale(rowSums(indep)) * sqrt(vy)) + my
 	return(y)
 }
@@ -46,14 +46,14 @@ make_geno <- function(nid, nsnp, af)
 #'
 #' @param nsnp Number of SNPs
 #' @param totvar Total variance explained by all SNPs
-#' @param sqrt=TRUE Output effect sizes in terms of standard deviations
-#' @param mua=0 Constant term to be added to effects
+#' @param sqrt Output effect sizes in terms of standard deviations. Default=TRUE
+#' @param mua Constant term to be added to effects. Default = 0
 #'
 #' @export
 #' @return Vector of effects
 choose_effects <- function(nsnp, totvar, sqrt=TRUE, mua=0)
 {
-	eff <- rnorm(nsnp)
+	eff <- stats::rnorm(nsnp)
 	eff <- sign(eff) * eff^2
 	aeff <- abs(eff)
 	sc <- sum(aeff) / totvar
@@ -68,8 +68,8 @@ choose_effects <- function(nsnp, totvar, sqrt=TRUE, mua=0)
 #' Convert continuous trait to binary 
 #'
 #' @param y Phenotype vector
-#' @param prevalence=NULL Disease prevalence
-#' @param threshold=NULL Disease threshold
+#' @param prevalence Disease prevalence. Default = NULL
+#' @param threshold Disease threshold Default = NULL
 #'
 #' @export
 #' @return Vector of binary trait

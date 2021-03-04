@@ -21,23 +21,16 @@ library(simulateGP)
 
 ## Weak instrument bias
 
+Useful links:
 
-https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf
-
-https://en.wikipedia.org/wiki/Instrumental_variables_estimation#Interpretation_as_two-stage_least_squares
-
-https://www.youtube.com/watch?v=JK-8XNIoAkI
-
-http://econ.lse.ac.uk/staff/spischke/ec533/Weak%20IV.pdf
-
-https://ocw.mit.edu/courses/economics/14-384-time-series-analysis-fall-2013/lecture-notes/MIT14_384F13_lec7and8.pdf
-
-https://www.nber.org/econometrics_minicourse_2018/2018si_methods.pdf
-
-https://www.ncbi.nlm.nih.gov/pubmed/21414999
-
-https://stats.stackexchange.com/questions/48366/standard-errors-for-covariance-estimate-in-r
-
+- https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf
+- https://en.wikipedia.org/wiki/Instrumental_variables_estimation#Interpretation_as_two-stage_least_squares
+- https://www.youtube.com/watch?v=JK-8XNIoAkI
+- http://econ.lse.ac.uk/staff/spischke/ec533/Weak%20IV.pdf
+- https://ocw.mit.edu/courses/economics/14-384-time-series-analysis-fall-2013/lecture-notes/MIT14_384F13_lec7and8.pdf
+- https://www.nber.org/econometrics_minicourse_2018/2018si_methods.pdf
+- https://www.ncbi.nlm.nih.gov/pubmed/21414999
+- https://stats.stackexchange.com/questions/48366/standard-errors-for-covariance-estimate-in-r
 
 
 Parameters include:

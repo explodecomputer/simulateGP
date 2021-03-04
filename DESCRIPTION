@@ -1,19 +1,34 @@
 Package: simulateGP
 Title: Functions for simulating genotype-phenotype relationships
-Version: 0.1.1
-Authors@R: person("Gibran", "Hemani", email = "explodecomputer@gmail.com", role = c("aut", "cre"))
+Version: 0.1.2
+Authors@R: c(
+	person("Gibran", "Hemani", email = "explodecomputer@gmail.com", role = c("aut", "cre")),
+	person("John", "Ferguson", email = "john.ferguson@nuigalway.ie", role = c("aut")))
 Description: Functions for simulating SNP effects on phenotypes. Functions for
     simulating disease risk on probability and liability scales. Simulations to
     quickly obtain estimates of effect sizes for simulated genotype-phenotypes.
 Depends:
-    R (>= 3.2.1),
-    tidyverse
-License: MIT
+    R (>= 4.0.0)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+Imports:
+    MASS,
+    dplyr,
+    TwoSampleMR,
+    ggplot2,
+    data.table,
+    ieugwasr,
+    stats,
+    magrittr,
+    graphics,
+    rlang
 Suggests: 
     testthat,
     knitr,
     rmarkdown
+Remotes:
+	mrcieu/TwoSampleMR,
+	mrcieu/ieugwasr
 VignetteBuilder: knitr

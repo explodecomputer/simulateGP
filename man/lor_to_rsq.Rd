@@ -9,13 +9,13 @@ lor_to_rsq(b, af, ncase, ncontrol, prevalence, model = "logit")
 \arguments{
 \item{b}{Log odds ratio}
 
-\item{af}{}
+\item{af}{allele frequency}
 
-\item{ncase}{<what param does>}
+\item{ncase}{Number of cases}
 
-\item{ncontrol}{<what param does>}
+\item{ncontrol}{number of controls}
 
-\item{prevalence}{<what param does>}
+\item{prevalence}{prevalence}
 
 \item{model}{Is the effect size estiamted in "logit" (default) or "probit" model}
 }

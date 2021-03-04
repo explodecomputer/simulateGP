@@ -1,6 +1,3 @@
-library(dplyr)
-
-
 #' Choose initial parameters for direct effects on X and Y
 #'
 #' @param nsnp_x nsnp_x
@@ -129,8 +126,6 @@ sample_system_effects <- function(parameters)
 #' @return List of matrices and vectors that represent individual level data
 simulate_population <- function(parameters, nid)
 {
-	require(dplyr)
-
 	Gx <- matrix(rbinom(parameters$nsnp_x * nid, 2, 0.5), nid, parameters$nsnp_x)
 
 	Gy <- matrix(rbinom(parameters$nsnp_y * nid, 2, 0.5), nid, parameters$nsnp_y)
@@ -274,23 +269,23 @@ estimate_system_effects <- function(sim)
 #'
 #' Based on the parameters specified this function will call \code{init_parameters}, \code{add_u}, \code{sample_system_effects}, \code{simulate_population} and \code{estimate_system_effects}. A separate population is generated for each phenotype (x, y and each of u) to allow 2SMR and PRS analyses
 #'
-#' @param nidx 
-#' @param nidy 
-#' @param nidu=0 If 0 then don't simulate separate populations for the u variables
-#' @param nu=0 Number of confounders influencing x and y
-#' @param na=0 Number of traits upstream of x
-#' @param nb=0 Number of traits upstream of y
-#' @param var_x.y 
-#' @param nsnp_x 
-#' @param var_gx.x 
-#' @param var_gx.y=0 
-#' @param mu_gx.y=0 
-#' @param prop_gx.y=1 
-#' @param nsnp_y=0 
-#' @param var_gy.y=0 
-#' @param var_gy.x=0 
-#' @param mu_gy.x=0 
-#' @param prop_gy.x=1 
+#' @param nidx number of individuals for x
+#' @param nidy number of individuals for y
+#' @param nidu Default=0 If 0 then don't simulate separate populations for the u variables
+#' @param nu Default=0 Number of confounders influencing x and y
+#' @param na Default=0 Number of traits upstream of x
+#' @param nb Default=0 Number of traits upstream of y
+#' @param var_x.y var in y explained by x
+#' @param nsnp_x nsnp influencing x
+#' @param var_gx.x variance in x explained by instruments for x
+#' @param var_gx.y Default=0 
+#' @param mu_gx.y Default=0 
+#' @param prop_gx.y Default=1 
+#' @param nsnp_y Default=0 
+#' @param var_gy.y Default=0 
+#' @param var_gy.x Default=0 
+#' @param mu_gy.x Default=0 
+#' @param prop_gy.x Default=1 
 #'
 #' @export
 #' @return List of effects across system
@@ -304,9 +299,9 @@ create_system <- function(nidx, nidy, nidu=0, nu=0, na=0, nb=0, var_x.y, nsnp_x,
 			parameters <- add_u(
 				parameters, 
 				nsnp_u=sample(5:30, 1), 
-				var_u.x=runif(1, min=0.01, max=0.1), 
-				var_u.y=runif(1, min=0.01, max=0.1), 
-				var_gu.u=runif(1, min=0.02, 0.2)
+				var_u.x=stats::runif(1, min=0.01, max=0.1), 
+				var_u.y=stats::runif(1, min=0.01, max=0.1), 
+				var_gu.u=stats::runif(1, min=0.02, 0.2)
 			)
 		}
 	}
@@ -317,9 +312,9 @@ create_system <- function(nidx, nidy, nidu=0, nu=0, na=0, nb=0, var_x.y, nsnp_x,
 			parameters <- add_u(
 				parameters, 
 				nsnp_u=sample(5:30, 1), 
-				var_u.x=runif(1, min=0.01, max=0.1), 
+				var_u.x=stats::runif(1, min=0.01, max=0.1), 
 				var_u.y=0,
-				var_gu.u=runif(1, min=0.02, 0.2)
+				var_gu.u=stats::runif(1, min=0.02, 0.2)
 			)
 		}
 	}
@@ -331,8 +326,8 @@ create_system <- function(nidx, nidy, nidu=0, nu=0, na=0, nb=0, var_x.y, nsnp_x,
 				parameters, 
 				nsnp_u=sample(5:30, 1), 
 				var_u.x=0,
-				var_u.y=runif(1, min=0.01, max=0.1),
-				var_gu.u=runif(1, min=0.02, 0.2)
+				var_u.y=stats::runif(1, min=0.01, max=0.1),
+				var_gu.u=stats::runif(1, min=0.02, 0.2)
 			)
 		}
 	}

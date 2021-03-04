@@ -1,0 +1,26 @@
+template:
+  params:
+    bootswatch: united
+
+navbar:
+  left:
+    - text: "Guide"
+      href: articles/index.html
+    - text: "Functions"
+      href: reference/index.html
+  right:
+    - text: "Source"
+      href: https://github.com/mrcieu/TwoSampleMR
+
+articles:
+  - title: "Guides"
+    desc: >
+      The following pages provide illustrations of how to conduct simulations.
+    contents:
+    - simplemr
+    - twosamplemr
+    - gwassummary
+  - title: "Theory and experiments"
+    desc: >
+      A set of notebooks that give some background to the functions in the package
+    - 
