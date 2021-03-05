@@ -37,15 +37,13 @@ test_that("merge_exp_out", {
 	g <- make_geno(10000, 80, 0.5)
 
 	# Choose effect sizes for instruments for each trait
-	effs1 <- choose_effects(50, 0.05)
-	effs2 <- choose_effects(50, 0.05)
+	effs <- choose_effects(80, 0.05)
 
 	# Create X1 and X2, where they overlap some variants
-	x1 <- make_phen(effs1, g[,1:50])
-	x2 <- make_phen(effs2, g[,31:80])
+	x <- make_phen(effs, g)
 
 	# Create Y - x1 has a -0.3 influence on it and x2 has a +0.3 influence on it
-	y <- make_phen(c(-0.3, 0.3), cbind(x1, x2))
+	y <- make_phen(-0.3, x)
 
 	gx <- gwas(x, g)
 	gy <- gwas(y, g)
