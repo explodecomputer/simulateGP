@@ -4,7 +4,7 @@ author: Gibran Hemani
 date: '`r format(Sys.Date())`'
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data generating process for genetic effects on complex traits}
+  %\VignetteIndexEntry{Data generating process for genetic effects on complex traits with interactions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
 ---

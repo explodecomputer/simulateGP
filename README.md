@@ -6,14 +6,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 # Simulate genotype-phenotype data or GWAS summary data 
 
-This package contains functions that simulate individual-level genotype and phenotype data that conform to pre-specified directed acyclic graphs. It can also simulate GWAS summary data for arbitrary sample sizes rapidly, with realistic genetic architectures, sample overlap effects and LD structures.
+This package contains functions that simulate individual-level genotype and phenotype data arising from pre-specified directed acyclic graphs. It can also simulate large scale GWAS summary data for arbitrary sample sizes rapidly, with realistic genetic architectures, sample overlap effects and LD structures.
 
-To install:
+# Installation
 
 ```
-devtools::install_github("explodecomputer/simulateGP")
+remotes::install_github("explodecomputer/simulateGP")
 ```
-
-## Documentation
-
-For extended information see the documentation [here](https://explodecomputer.github.io/simulateGP).

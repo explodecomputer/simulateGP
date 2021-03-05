@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(simulateGP)
 library(tidyverse)
+library(mvtnorm)
 ```
 
 
@@ -167,11 +168,10 @@ geom_point(aes(colour=r2))
 Weak instrument bias
 
 ```{r}
-library(mvtnorm)
 
 get_biv_bias <- function(n, rho, beta, pi1)
 {
-	err <- rmvnorm(n, c(0,0), matrix(c(1,rho,rho,1), 2, 2))
+	err <- mvtnorm::rmvnorm(n, c(0,0), matrix(c(1,rho,rho,1), 2, 2))
 	eta <- err[,1]
 	zeta <- err[,2]
 	z <- rnorm(n)

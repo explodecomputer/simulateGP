@@ -27,7 +27,12 @@ Imports:
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    systemfit,
+    tidyverse,
+    ggdag,
+	dagitty,
+	mvtnorm
 Remotes:
 	mrcieu/TwoSampleMR,
 	mrcieu/ieugwasr

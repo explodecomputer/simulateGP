@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(simulateGP)
+library(systemfit)
 ```
 
 The Mendelian randomisation statistical method aims to estimate the causal effect of some exposure $x$ on some outcome $y$ using a genetic instrumental variable for the exposure, $g$. The assumptions of the model are that
@@ -78,8 +79,7 @@ y <- make_phen(effs=c(beta_xy, 0.3), cbind(x, u))
 We now have an X and Y, and the genotypes. To perform 2-stage least squares MR on this we can use the `systemfit` package.
 
 ```{r}
-library(systemfit)
-summary(systemfit(y ~ x, method="2SLS", inst = ~ g))
+summary(systemfit::systemfit(y ~ x, method="2SLS", inst = ~ g))
 ```
 
 Compare against confounded observational estimate
