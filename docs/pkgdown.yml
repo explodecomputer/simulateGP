@@ -7,8 +7,9 @@ articles:
   ld_matrices: ld_matrices.html
   mr_dgp: mr_dgp.html
   sample_overlap: sample_overlap.html
+  sample_overlap_theory: sample_overlap_theory.html
   simplemr: simplemr.html
   twosamplemr: twosamplemr.html
   weak_instruments: weak_instruments.html
-last_built: 2021-03-05T00:02Z
+last_built: 2021-03-05T11:36Z
 

@@ -122,9 +122,9 @@
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">bv</span><span class="op">)</span>
 <span class="co">#&gt;          [,1]</span>
-<span class="co">#&gt; [1,] 39.19044</span>
+<span class="co">#&gt; [1,] 37.49411</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">bv</span><span class="op">)</span>
-<span class="co">#&gt; [1] 6.260227</span>
+<span class="co">#&gt; [1] 6.123243</span>
 
 
 <span class="co"># h2 &lt;- b^2 * 2 * maf * (1 - maf) / vy</span>
@@ -138,19 +138,15 @@
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="va">h2</span><span class="op">)</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">G</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
-<span class="co">#&gt; [1]  1.5845015  0.5558443  0.6652768 -0.1481803  0.4776362 -1.4979761</span>
+<span class="co">#&gt; [1] -0.31977801  0.09641074 -0.43948211 -0.28124294 -0.34636810 -1.04422920</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1</span>
 
 <span class="va">bv</span> <span class="op">&lt;-</span> <span class="va">G</span> <span class="op">%*%</span> <span class="va">b</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">bv</span>, <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
 <span class="co">#&gt;           [,1]</span>
-<span class="co">#&gt; [1,] 0.4008447</span>
-<span class="va">bhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">G</span><span class="op">)</span>
-<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
-<span class="co">#&gt; Using compatibility `.name_repair`.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span></pre></div>
+<span class="co">#&gt; [1,] 0.3962548</span>
+<span class="va">bhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">G</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="va">btheory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">nsnp</span><span class="op">)</span>, <span class="va">nid</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">btheory</span><span class="op">$</span><span class="va">beta</span> <span class="op">~</span> <span class="va">bhat</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span>

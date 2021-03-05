@@ -5,7 +5,7 @@
 \alias{simulateGP-package}
 \alias{simulateGP}
 \alias{simulategp}
-\title{simulateGP: Functions for simulating genotype-phenotype relationships}
+\title{simulateGP: Functions for Simulating Genotype-Phenotype Relationships}
 \description{
 This package is a collection of utilities relating to simulating genotype phenotype maps
 The simulations are largely used for Mendelian randomisation, and link up with the TwoSampleMR R package

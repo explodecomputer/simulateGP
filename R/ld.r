@@ -28,8 +28,8 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 	system(fun1)
 
 	x <- data.table::fread(paste0(fn, ".ld")) %>% as.matrix()
-	y <- data.table::fread(paste0(fn, ".bim")) %>% as_tibble()
-	z <- data.table::fread(paste0(fn, ".frq")) %>% as_tibble()
+	y <- data.table::fread(paste0(fn, ".bim")) %>% dplyr::as_tibble()
+	z <- data.table::fread(paste0(fn, ".frq")) %>% dplyr::as_tibble()
 	names(y) <- c("chr", "rsid", "gp", "bp", "a1", "a2")
 	y$freq <- z$MAF
 	unlink(paste0(fn, c(".ld", ".bim", ".frq")))

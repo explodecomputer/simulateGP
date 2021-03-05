@@ -242,8 +242,8 @@ estimate_system_effects <- function(sim)
 				gy.u[[i]]$snp <- paste0(1:nrow(gy.u[[i]]), gy.u[[i]]$inst)
 			}
 		}
-		gx <- rbind(gx, bind_rows(gu.x))
-		gy <- rbind(gy, bind_rows(gu.y))
+		gx <- rbind(gx, dplyr::bind_rows(gu.x))
+		gy <- rbind(gy, dplyr::bind_rows(gu.y))
 		gu <- list()
 		for(i in 1:nconf)
 		{
@@ -251,7 +251,7 @@ estimate_system_effects <- function(sim)
 			{
 				gu[[i]] <- rbind(gx.u[[i]], gy.u[[i]], gu.u[[i]])
 			} else {
-				gu[[i]] <- rbind(gx.u[[i]], gy.u[[i]])
+				gu[[i]] <- rbind(gx.u[[i]], gu.u[[i]])
 			}
 		}
 		names(gu) <- paste0("u", 1:nconf)
@@ -430,7 +430,7 @@ test_system <- function(ss, id="test")
 	o <- list()
 	for(i in 1:nrow(param))
 	{
-		o[[i]] <- data_frame(
+		o[[i]] <- dplyr::tibble(
 			hypothesis = param$hypothesis[i],
 			selection = param$selection[i],
 			type = param$type[i],
@@ -444,7 +444,7 @@ test_system <- function(ss, id="test")
 		)
 	}
 
-	out$instrument_validity <- dplyr::bind_rows(o) %>% group_by(hypothesis, selection, type) %>% mutate(n=first(counts), pcounts=counts/n)
+	out$instrument_validity <- dplyr::bind_rows(o) %>% dplyr::group_by(hypothesis, selection, type) %>% dplyr::mutate(n=dplyr::first(counts), pcounts=counts/n)
 	out$instrument_validity$id <- id
 
 	# Best model
