@@ -48,7 +48,7 @@ gwas <- function(y, g)
 		o <- fast_assoc(y, g[,i])
 		out[i, ] <- unlist(o)
 	}
-	out <- dplyr::as_tibble(out)
+	out <- dplyr::as_tibble(out, .name_repair="minimal")
 	names(out) <- names(o)
 	out$snp <- 1:ncol(g)
 	return(out)

@@ -3,6 +3,7 @@ library(simulateGP)
 
 test_that("get ld matrix", {
 
+	skip("needs gwas files")
 	chr <- 1
 	from <- 1892607
 	to <- 3582736

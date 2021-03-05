@@ -1,0 +1,189 @@
+---
+title: "Directly simulating summary datasets with sample overlap"
+author: John Ferguson
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Directly simulating summary datasets with sample overlap}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+library(MASS)
+
+## calculation of asymptotic covariance matrix for Odds ratio
+
+
+###  convert logit values to probabilities
+expit <- function(x){exp(x)/(1+exp(x))}
+
+
+## calculate asymptotic version of (X^t W X) 
+asymp_var_logistic <- function(n,G_prob,Gamma_0,Gamma_1){
+  N <- length(Gamma_0)
+  disease_probs <- expit(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
+  diag_weights <- disease_probs*(1-disease_probs)
+  
+  a <- n*apply(G_prob*diag_weights,1,sum)
+  b <- n*apply(G_prob*diag_weights*matrix(rep(c(0,1,2),N),byrow=TRUE,nrow=N),1,sum)
+  c <-  b 
+  d <- n*apply(G_prob*diag_weights*matrix(rep(c(0,1,4),N),byrow=TRUE,nrow=N),1,sum)                     
+  
+  ##  invert matrix and take element for Gamma1
+  return(a/(a*d-b*c))
+
+}
+
+asymp_var_linear <- function(n,G_prob,sigma=1){
+  N <- nrow(G_prob)
+ 
+  a <- n*apply(G_prob,1,sum)
+  b <- n*apply(G_prob*matrix(rep(c(0,1,2),N),byrow=TRUE,nrow=N),1,sum)
+  c <-  b 
+  d <- n*apply(G_prob*matrix(rep(c(0,1,4),N),byrow=TRUE,nrow=N),1,sum)                     
+  
+  ##  invert matrix and take element for Gamma1
+  return(a/(a*d-b*c)*sigma^2)
+  
+}
+
+
+asymp_cov_linear_linear <- function(n_overlap,n_gx,n_gy,G_prob,sigma_x=1,sigma_y=1,cor_xy=.5){
+  N <- nrow(G_prob)
+    cov_xy <- cor_xy*sigma_x*sigma_y
+  
+  a <- apply(G_prob,1,sum)
+  b <- apply(G_prob*matrix(rep(c(0,1,2),N),byrow=TRUE,nrow=N),1,sum)
+  c <-  b 
+  d <- apply(G_prob*matrix(rep(c(0,1,4),N),byrow=TRUE,nrow=N),1,sum)                     
+  
+  ##  invert matrix and take element for Gamma1
+  return(n_overlap*(a/(a*d-b*c))*cov_xy/(n_gx*n_gy))
+  
+}
+
+asymp_cov_linear_logistic <- function(n_overlap,n_gx,n_gy,G_prob,cor_xy=0,sigma=1,Gamma_0,Gamma_1,prev=0.01){
+  N <- length(Gamma_0)
+  cov_xy <- cor_xy*sigma*sqrt(prev*(1-prev))
+  disease_probs <- expit(outer(Gamma_0,c(1,1,1)) +  outer(Gamma_1,c(0,1,2)))
+  diag_weights <- disease_probs*(1-disease_probs)
+  
+  a <- apply(G_prob*diag_weights,1,sum)
+  b <- apply(G_prob*diag_weights*matrix(rep(c(0,1,2),N),byrow=TRUE,nrow=N),1,sum)
+  c <-  b 
+  d <- apply(G_prob*diag_weights*matrix(rep(c(0,1,4),N),byrow=TRUE,nrow=N),1,sum)                     
+  
+  ##  invert matrix and take element for Gamma1
+  return(n_overlap*(a/(a*d-b*c))*cov_xy/(n_gx*n_gy))
+  
+}
+
+##################################################  Linear Logistic case ###################################################
+
+## parameters
+N <- 100000                       # number of snps to simulate (assumed in LD and HWE) 
+prev <- 0.1                       # disease prevalence
+gamma1 <- rnorm(N,mean=0,sd=0.3)  # true instrument strengths
+beta <- 0.1                       # causal effect
+OR <- exp(beta*gamma1)  ## true odds ratio (G-Y association)
+MAF <- seq(from=.01,to=.5,length=N) # minor allele frequency
+n_G_X <- 100000  # sample size G-X (# individuals genotyped on G with X phenotype)
+n_G_Y <- 200000  # sample size G-Y (# individuals genotyped on G with Y phenotype)
+overlap <- 100000 # shared sample size
+sigma_x=1   #variation in trait
+cor_xy=0.1   # correlation between x and y on same person
+
+
+
+##  assuming HWE
+G_prob <- cbind(MAF^2,2*MAF*(1-MAF),(1-MAF)^2)
+
+## find Gamma0 for logistic model so prevalence is 0.1
+Gamma1 <- log(OR)  # G, Y association on log-odds scale
+myfunc <- function(MAF,Gamma0, Gamma1, prev){
+  
+  MAF^2*expit(Gamma0+Gamma1*2)+2*MAF*(1-MAF)*expit(Gamma0+Gamma1)+(1-MAF)^2*expit(Gamma0)-prev
+  
+}
+Gamma0 <- numeric(N)
+for(i in 1:N) Gamma0[i] <- uniroot(myfunc,Gamma1=Gamma1[i],MAF=MAF[i],prev=prev,lower=-10, upper=10)$root 
+
+var_Gamma_y <- asymp_var_logistic(n_G_Y,G_prob,Gamma0,Gamma1)
+var_gamma_x <- asymp_var_linear(n_G_X,G_prob,sigma=sigma_x)
+cov_gamma_x_Gamma_y <- asymp_cov_linear_logistic(overlap, n_G_X,n_G_Y,G_prob,cor_xy=cor_xy,sigma=sigma_x,Gamma_0=Gamma0,Gamma_1=Gamma1,prev=prev) 
+##  now what if G-X and G-Y GWASs share sample overlap (simulate joint association)
+
+
+##  simulate summary statistics
+##  create array, first 2 dimensions represent individual covariance matrices, 3rd dimension indexing SNPs
+
+library(MASS)
+
+cov_array <- array(dim=c(2,2,length(var_gamma_x)))
+cov_array[1,1,] <- var_gamma_x
+cov_array[2,1,] <- cov_gamma_x_Gamma_y
+cov_array[1,2,] <- cov_array[2,1,]
+cov_array[2,2,] <- var_Gamma_y
+
+summary_stats <- apply(cov_array,3,function(x){mvrnorm(n=1,mu=c(0,0),Sigma=x)})
+summary_stats <- t(summary_stats + rbind(gamma1,Gamma1))
+
+##  checking correlation
+
+cor(summary_stats-cbind(gamma1,Gamma1))
+
+
+##################################################  Linear Linear case ###################################################
+
+## parameters
+N <- 100000                       # number of snps to simulate (assumed in LD and HWE) 
+prev <- 0.1                       # disease prevalence
+beta <- 0.1                       # causal effect of X and Y
+gamma1 <- rnorm(N,mean=0,sd=0.3)  # true instrument strengths
+Gamma1 <- beta*gamma1  # true G/Y associations
+
+MAF <- seq(from=.01,to=.5,length=N) # minor allele frequency
+n_G_X <- 100000  # sample size G-X
+n_G_Y <- 200000  # sample size G-Y
+overlap <- 100000 # shared sample size (must be less than or equal to min(n_G_X,n_G_Y))
+sigma_x=1   #variation in trait
+sigma_y=1   #variation in outcome
+cor_xy=0.1   # correlation between x and y on same person  #  note if there is no confounding this will be beta*sqrt(var_X)/sqrt(var_Y)
+
+
+
+##  assuming HWE
+G_prob <- cbind(MAF^2,2*MAF*(1-MAF),(1-MAF)^2)
+
+
+var_Gamma_y <- asymp_var_linear(n_G_Y,G_prob,sigma=sigma_y)
+var_gamma_x <- asymp_var_linear(n_G_X,G_prob,sigma=sigma_x)
+cov_gamma_x_Gamma_y <- asymp_cov_linear_linear(overlap, n_G_X,n_G_Y,G_prob,sigma_x=sigma_x,sigma_y=sigma_y,cor_xy=cor_xy) 
+##  now what if G-X and G-Y GWASs share sample overlap (simulate joint association)
+
+
+##  simulate summary statistics
+##  create array, first 2 dimensions represent individual covariance matrices, 3rd dimension indexing SNPs
+
+
+cov_array <- array(dim=c(2,2,length(var_gamma_x)))
+cov_array[1,1,] <- var_gamma_x
+cov_array[2,1,] <- cov_gamma_x_Gamma_y
+cov_array[1,2,] <- cov_array[2,1,]
+cov_array[2,2,] <- var_Gamma_y
+
+summary_stats <- apply(cov_array,3,function(x){mvrnorm(n=1,mu=c(0,0),Sigma=x)})
+summary_stats <- t(summary_stats + rbind(gamma1,Gamma1))
+
+##  checking correlation
+
+cor(summary_stats-cbind(gamma1,Gamma1))
+```
