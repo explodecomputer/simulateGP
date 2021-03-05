@@ -31,8 +31,9 @@ Suggests:
     systemfit,
     tidyverse,
     ggdag,
-	dagitty,
-	mvtnorm
+    dagitty,
+    mvtnorm,
+    covr
 Remotes:
 	mrcieu/TwoSampleMR,
 	mrcieu/ieugwasr

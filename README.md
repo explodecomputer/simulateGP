@@ -2,7 +2,8 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R build status](https://github.com/explodecomputer/simulateGP/workflows/R-CMD-check/badge.svg)](https://github.com/explodecomputer/simulateGP/actions)
- <!-- badges: end -->
+[![Codecov test coverage](https://codecov.io/gh/explodecomputer/simulateGP/branch/master/graph/badge.svg)](https://codecov.io/gh/explodecomputer/simulateGP?branch=master)
+<!-- badges: end -->
 
 # Simulate genotype-phenotype data or GWAS summary data 
 
