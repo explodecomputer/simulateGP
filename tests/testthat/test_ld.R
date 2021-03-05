@@ -14,3 +14,10 @@ test_that("get ld matrix", {
 	expect_true(nrow(a[[1]]) == nrow(a[[2]]))
 	expect_true(nrow(a[[1]]) == ncol(a[[1]]))
 })
+
+
+test_that("test_ldobj", {
+	ldobj <- test_ldobj(nsnp=1050, chunksize=100)
+	expect_equal(length(ldobj), ceiling(1050/100))	
+})
+

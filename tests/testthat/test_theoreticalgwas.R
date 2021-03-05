@@ -21,4 +21,13 @@ test_that("expected se works", {
 })
 
 
+test_that("gwas summary data", {
+	nsnp <- 1000
+	ldobj <- test_ldobj(nsnp, 100)
+	out <- generate_gwas_params(af=runif(nsnp), h2=0.3, S=0.3, snp=1:nsnp) %>%
+		add_ld_to_params(ldobj) %>%
+		generate_gwas_ss(100000)
+	expect_equal(nrow(out), nsnp)
+})
+
 

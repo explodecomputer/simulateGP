@@ -23,7 +23,8 @@ Imports:
     stats,
     magrittr,
     graphics,
-    rlang
+    rlang,
+    parallel
 Suggests: 
     testthat,
     knitr,

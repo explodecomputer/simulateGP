@@ -4,12 +4,10 @@
 \alias{generate_gwas_ss}
 \title{Create a GWAS summary dataset}
 \usage{
-generate_gwas_ss(beta, af, nid, vy = 1, minmaf = 0.01)
+generate_gwas_ss(params, nid, vy = 1, minmaf = 0.01)
 }
 \arguments{
-\item{beta}{Array of true beta values}
-
-\item{af}{Array of effect allele frequency values}
+\item{params}{Output from \code{generate_gwas_params}}
 
 \item{nid}{sample size}
 
@@ -21,5 +19,5 @@ generate_gwas_ss(beta, af, nid, vy = 1, minmaf = 0.01)
 list of data frames
 }
 \description{
-Create a GWAS summary dataset
+Determines SE and generates effect estimates given input parameters
 }

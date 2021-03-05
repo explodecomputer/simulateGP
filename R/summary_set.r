@@ -27,8 +27,8 @@ summary_set <- function(beta_gx, beta_gy, af, n_gx, n_gy, n_overlap, cor_xy, pre
 
   if(n_overlap == 0)
   {
-    bhat_gx <- generate_gwas_ss(beta=beta_gx, af=af, nid=n_gx, vy=sigma_x^2)
-    bhat_gy <- generate_gwas_ss(beta=beta_gy, af=af, nid=n_gy, vy=sigma_y^2)
+    bhat_gx <- generate_gwas_ss(params=dplyr::tibble(beta=beta_gx, af=af, snp=1:nsnp), nid=n_gx, vy=sigma_x^2)
+    bhat_gy <- generate_gwas_ss(params=dplyr::tibble(beta=beta_gy, af=af, snp=1:nsnp), nid=n_gy, vy=sigma_y^2)
     dat <- merge_exp_out(bhat_gx, bhat_gy)
     return(dat)
   }

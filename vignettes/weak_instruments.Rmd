@@ -92,7 +92,7 @@ bhat <- gwas(y, G)
 
 
 ```{r, eval=FALSE}
-btheory <- generate_gwas_ss(b, rep(0.5, nsnp), nid)
+btheory <- generate_gwas_ss(dplyr::tibble(beta=b, af=rep(0.5, nsnp), snp=1:nsnp), nid)
 plot(btheory$beta ~ bhat$bhat)
 plot(btheory$se ~ bhat$se)
 plot(log10(btheory$pval) ~ log10(bhat$pval))

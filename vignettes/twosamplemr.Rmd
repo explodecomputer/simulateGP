@@ -136,7 +136,7 @@ Generate sample effects for 1 million samples
 
 ```{r}
 nid_x <- 1000000
-bhat_gx <- generate_gwas_ss(beta=b_gx$beta, af=b_gx$af, nid=nid_x)
+bhat_gx <- generate_gwas_ss(b_gx, nid=nid_x)
 ```
 
 Assume $x$ has an effect on $y$ of -0.3
@@ -164,7 +164,7 @@ Generate summary data for g-y associations, assuming sample size of 800000
 
 ```{r}
 nid_y <- 800000
-bhat_gy <- generate_gwas_ss(beta=b_gy$beta, af=b_gy$af, nid=nid_y)
+bhat_gy <- generate_gwas_ss(b_gy, nid=nid_y)
 ```
 
 Perform MR

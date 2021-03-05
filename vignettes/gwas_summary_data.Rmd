@@ -225,7 +225,7 @@ param <- rbind(
 )
 
 # Generate GWAS summary stats
-res <- generate_gwas_ss(param$beta, param$af, 450000)
+res <- generate_gwas_ss(param, 450000)
 ```
 
 Compare to individual level data results to summary data simulations
@@ -236,7 +236,7 @@ set.seed(100)
 h2 <- 0.1
 nid <- 10000
 param <- generate_gwas_params(af=runif(100, 0.01, 0.5), h2=h2, S=0)
-res1 <- generate_gwas_ss(param$beta, param$af, nid)
+res1 <- generate_gwas_ss(param, nid)
 
 g <- lapply(param$af, function(x) rbinom(nid, 2, x)) %>%
 	bind_cols %>%
