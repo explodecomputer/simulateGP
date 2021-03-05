@@ -1,5 +1,5 @@
 Package: simulateGP
-Title: Functions for simulating genotype-phenotype relationships
+Title: Functions for Simulating Genotype-Phenotype Relationships
 Version: 0.1.2
 Authors@R: c(
 	person("Gibran", "Hemani", email = "explodecomputer@gmail.com", role = c("aut", "cre")),
