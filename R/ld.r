@@ -1,9 +1,45 @@
+#' Create test LD object
+#'
+#' @param nsnp Number of SNPs
+#' @param chunksize Chunksize for splitting
+#'
+#' @export
+#' @return list of chunks, which each contain map and LD matrix
+test_ldobj <- function(nsnp, chunksize)
+{
+	snp <- 1:nsnp
+	nchunk <- ceiling(nsnp/chunksize)
+	start <- 0:(nchunk-1) * chunksize + 1
+	end <- pmin(1:nchunk * chunksize, nsnp)
+
+	ldobj <- lapply(1:nchunk, function(i){
+		n <- length(start[i]:end[i])
+		p <- qr.Q(qr(matrix(rnorm(n^2), n)))
+		Sigma <- crossprod(p, p*(5:1))
+		denom <- sqrt(diag(Sigma)) %*% t(sqrt(diag(Sigma)))
+		rho <- Sigma / denom
+		map <- dplyr::tibble(
+			snp=start[i]:end[i],
+			chr=i,
+			pos=1:n,
+			ref="A",
+			alt="C"
+		)
+		rownames(rho) <- colnames(rho) <- map$snp
+		return(list(map=map, ld=rho))
+	})
+	return(ldobj)
+}
+
+
 #' Get LD matrix for a specified region from bfile reference panel
 #'
 #' @param chr Chromosome
 #' @param from from bp
 #' @param to to bp
 #' @param bfile LD reference panel
+#' @param snplist list of rsids to retain. Default is NULL (i.e. retain all)
+#' @param idlist list of sample ids to retain. Default is NULL (i.e. retain all)
 #' @param plink_bin Plink binary default=genetics.binaRies::get_plink_binary()
 #'
 #' @export
@@ -21,21 +57,70 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 		" --from-bp ", from, 
 		" --to-bp ", to,
 		" --r square ", 
+		" --keep-allele-order ",
 		" --make-just-bim ",
 		" --freq ",
 		" --out ", shQuote(fn, type=shell)
 	)
-	system(fun1)
 
-	x <- data.table::fread(paste0(fn, ".ld")) %>% as.matrix()
-	y <- data.table::fread(paste0(fn, ".bim")) %>% dplyr::as_tibble()
-	z <- data.table::fread(paste0(fn, ".frq")) %>% dplyr::as_tibble()
-	names(y) <- c("chr", "rsid", "gp", "bp", "a1", "a2")
-	y$freq <- z$MAF
+	stat <- system(fun1, ignore.stdout=TRUE)
+
+	if(stat==0)
+	{
+		x <- data.table::fread(paste0(fn, ".ld")) %>% as.matrix()
+		y <- data.table::fread(paste0(fn, ".bim")) %>% dplyr::as_tibble()
+		z <- data.table::fread(paste0(fn, ".frq")) %>% dplyr::as_tibble()
+		names(y) <- c("chr", "snp", "gp", "pos", "alt", "ref")
+		y <- dplyr::select(y, -gp)
+		y$af <- z$MAF
+		out <- list(ld=x, map=y)
+	} else {
+		out <- NULL
+	}
 	unlink(paste0(fn, c(".ld", ".bim", ".frq")))
-	return(list(ld=x, map=y))
+	return(out)
 }
 # Also see https://github.com/explodecomputer/pic_haps/
+
+
+#' <brief desc>
+#'
+#' <full description>
+#'
+#' @param bfile <what param does>
+#' @param regionfile <what param does>
+#' @param plink_bin=genetics.binaRies::get_plink_binary() <what param does>
+#' @param nthreads=1 <what param does>
+#'
+#' @export
+#' @return
+generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::get_plink_binary(), nthreads=1)
+{
+	codes <- paste0(regions$chr, "_", regions$start, "_", regions$stop)
+	map <- parallel::mclapply(1:nrow(regions), function(i)
+	{
+		message(i, " of ", nrow(regions))
+		out <- get_ld(
+			chr=regions$chr[i] %>% gsub("chr", "", .),
+			from=regions$start[i],
+			to=regions$stop[i],
+			bfile=bfile,
+			plink_bin=plink_bin
+		)
+		if(!is.null(out))
+		{
+			fn <- file.path(outdir, paste0("ldobj_", codes[i], ".rds"))
+			saveRDS(out, file=fn)
+			return(out$map)
+		} else {
+			return(NULL)
+		}
+	}, mc.cores=nthreads) %>%
+		dplyr::bind_rows()
+	saveRDS(map, file.path(outdir, "map.rds"))
+	return(map)
+}
+
 
 #' Simulate two correlated binomial variables
 #'

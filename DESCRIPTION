@@ -34,7 +34,8 @@ Suggests:
     ggdag,
     dagitty,
     mvtnorm,
-    covr
+    covr,
+    jsonlite
 Remotes:
 	mrcieu/TwoSampleMR,
 	mrcieu/ieugwasr

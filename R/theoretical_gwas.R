@@ -57,11 +57,12 @@ sample_beta <- function(beta, se)
 #' @param af Vector of effect allele frequencies, one for each SNP
 #' @param h2 Variance explained by all SNPs
 #' @param S Selection coefficient on trait. Default = 0
+#' @param Pi Proportion of variants that have an effect - sampled randomly. Default=1
 #' @param snp Variant identifiers. Default NULL means 1:nsnp
 #'
 #' @export
 #' @return data frame
-generate_gwas_params <- function(af, h2, S=0, snp=NULL)
+generate_gwas_params <- function(af, h2, S=0, Pi=1, snp=NULL)
 {
 	nsnp <- length(af)
 	if(is.null(snp))
@@ -74,7 +75,11 @@ generate_gwas_params <- function(af, h2, S=0, snp=NULL)
 	{
 		return(dplyr::tibble(snp=snp, beta=0, af=af))
 	}
-	beta <- stats::rnorm(nsnp, mean=0, sd = sqrt((af * 2 * (1-af))^S))
+
+	index <- sample(1:nsnp, ceiling(nsnp * Pi), replace=FALSE)
+
+	beta <- rep(0, nsnp)
+	beta[index] <- stats::rnorm(length(index), mean=0, sd = sqrt((af * 2 * (1-af))^S))
 	vg <- sum(af * 2 * (1-af) * beta^2)
 	ve <- (vg - h2 * vg) / h2
 	vy <- vg + ve
@@ -89,25 +94,70 @@ generate_gwas_params <- function(af, h2, S=0, snp=NULL)
 #' After generating the set of causal effects at each SNP, use an LD correlation matrix to transform the effects to reflect the correlation structure at the SNPs. Note if running many repeats, only need to generate the LD-modified params once and then can repeatedly re-sample using generate_gwas_ss
 #'
 #' @param params Output from \code{generate_gwas_params}
-#' @param ldobj LD object (e.g. see test_ldobj)
+#' @param ldobj LD objects (e.g. see test_ldobj)
+#' @param ldobjlist List of LD objects 
+#' @param ldobjfiles Array of filenames containing LD object files (e.g. see \code{generate_ldobj})
 #' @param nthreads Number of threads (can be slow for complete GWAS and large LD regions)
 #'
 #' @export
 #' @return Updated params
-add_ld_to_params <- function(params, ldobj, nthreads=1)
+add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, nthreads=1)
 {
-	stopifnot(is.list(ldobj))
-	stopifnot(all(c("map", "ld") %in% names(ldobj[[1]])))
-	nchunk <- 1:length(ldobj)
-	l <- parallel::mclapply(1:length(ldobj), function(i)
+	if(!is.null(ldobj))
 	{
-		parami <- dplyr::inner_join(ldobj[[i]][["map"]], params, by="snp")
-		parami$beta <- parami$beta %*% ldobj[[i]][["ld"]] %>% drop()
-		return(parami)
-	}, mc.cores=nthreads) %>%
-		dplyr::bind_rows() %>%
-		dplyr::arrange(chr, pos)
-	return(l)
+		stopifnot(is.list(ldobj))
+		stopifnot(all(c("map", "ld") %in% names(ldobj)))
+		params <- dplyr::inner_join(ldobj[["map"]] %>% dplyr::select(-af), params, by="snp")
+		if(nrow(params) > 0)
+		{
+			params$beta <- params$beta %*% ldobj[["ld"]] %>% drop()
+		}
+		return(params)
+	}
+
+	if(!is.null(ldobjlist))
+	{
+		stopifnot(is.list(ldobjlist))
+		stopifnot(all(c("map", "ld") %in% names(ldobjlist[[1]])))
+		nchunk <- 1:length(ldobjlist)
+		l <- parallel::mclapply(1:length(ldobjlist), function(i)
+		{
+			message(i, " of ", length(ldobjlist))
+			parami <- dplyr::inner_join(ldobjlist[[i]][["map"]] %>% dplyr::select(-af), params, by="snp")
+			if(nrow(parami) > 0)
+			{
+				parami$beta <- parami$beta %*% ldobjlist[[i]][["ld"]] %>% drop()
+			}
+			return(parami)
+		}, mc.cores=nthreads) %>%
+			dplyr::bind_rows() %>%
+			dplyr::arrange(chr, pos)
+		return(l)
+	}
+
+
+	if(!is.null(ldobjfiles))
+	{
+		stopifnot(is.character(ldobjfiles))
+		stopifnot(all(file.exists(ldobjfiles)))
+		nchunk <- 1:length(ldobjfiles)
+		l <- parallel::mclapply(1:length(ldobjfiles), function(i)
+		{
+			message(i, " of ", length(ldobjfiles))
+			ldobj <- readRDS(ldobjfiles[i])
+			parami <- dplyr::inner_join(ldobj[["map"]] %>% dplyr::select(-af), params, by="snp")
+			if(nrow(parami) > 0)
+			{
+				parami$beta <- parami$beta %*% ldobj[["ld"]] %>% drop()
+			}
+			return(parami)
+		}, mc.cores=nthreads) %>%
+			dplyr::bind_rows() %>%
+			dplyr::arrange(chr, pos)
+		return(l)
+	}
+
+	stop("At least one of ldobj, ldobjlist, ldobjfiles should be specified")
 }
 
 
@@ -139,41 +189,5 @@ generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.01)
 		dplyr::select(-beta)
 	return(params)
 }
-
-
-
-#' Create test LD object
-#'
-#' @param nsnp Number of SNPs
-#' @param chunksize Chunksize for splitting
-#'
-#' @export
-#' @return list of chunks, which each contain map and LD matrix
-test_ldobj <- function(nsnp, chunksize)
-{
-	snp <- 1:nsnp
-	nchunk <- ceiling(nsnp/chunksize)
-	start <- 0:(nchunk-1) * chunksize + 1
-	end <- pmin(1:nchunk * chunksize, nsnp)
-
-	ldobj <- lapply(1:nchunk, function(i){
-		n <- length(start[i]:end[i])
-		p <- qr.Q(qr(matrix(rnorm(n^2), n)))
-		Sigma <- crossprod(p, p*(5:1))
-		denom <- sqrt(diag(Sigma)) %*% t(sqrt(diag(Sigma)))
-		rho <- Sigma / denom
-		map <- dplyr::tibble(
-			snp=start[i]:end[i],
-			chr=i,
-			pos=1:n,
-			ref="A",
-			alt="C"
-		)
-		rownames(rho) <- colnames(rho) <- map$snp
-		return(list(map=map, ld=rho))
-	})
-	return(ldobj)
-}
-
 
 

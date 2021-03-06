@@ -1,0 +1,155 @@
+---
+title: "Generating LD matrices"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Generating LD matrices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simulateGP)
+library(jsonlite)
+library(data.table)
+library(tidyverse)
+```
+
+## Obtain independent LD regions
+
+Use [https://bitbucket.org/nygcresearch/ldetect-data](https://bitbucket.org/nygcresearch/ldetect-data/src/master/) from [Berisa and Pickrell (2016)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4731402/) - a list of independent LD regions for Africans, Europeans and Asians.
+
+Note: The Africans dataset has a couple of None values that I am interpolating in a simple way to avoid errors.
+
+```{r}
+a <- data.table::fread("https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/AFR/fourier_ls-all.bed")
+midpoint <- round((108823642 + 111048570)/2)
+a$stop[a$stop=="None"] <- midpoint
+a$start[a$start=="None"] <- midpoint
+a$start <- as.numeric(a$start)
+a$stop <- as.numeric(a$stop)
+a$pop <- "AFR"
+
+b <- data.table::fread("https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/ASN/fourier_ls-all.bed")
+b$pop <- "EAS"
+
+c <- data.table::fread("https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/EUR/fourier_ls-all.bed")
+c$pop <- "EUR"
+
+ldetect <- dplyr::bind_rows(a,b,c)
+```
+
+This `ldetect` object is saved as a data object in this package.
+
+
+## Generate LD matrix objects
+
+For each region create an `.rds` object that contains a list of `map` and `ld`
+
+Create a `generate_ldobj_config.json` file:
+
+```json
+{
+	"dl_dir": "/path/to/downloads"
+}
+```
+
+Setup directories
+
+```{r}
+conf <- read_json("generate_ldobj_config.json")
+dir.create(conf$dl_dir)
+dir.create(file.path(conf$dl_dir, "EUR_1kg_hm3"))
+dir.create(file.path(conf$dl_dir, "EAS_1kg_hm3"))
+dir.create(file.path(conf$dl_dir, "AFR_1kg_hm3"))
+setwd(conf$dl_dir)
+```
+
+Get the 1000 genomes files
+
+```{r, engine="bash", eval=FALSE}
+wget -O 1kg.v3.tgz http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz
+tar xzvf 1kg.v3.tgz
+rm 1kg.v3.tgz
+wget https://github.com/MRCIEU/gwasglue/raw/master/inst/hapmap3/hapmap3_autosome.snplist.gz
+gunzip hapmap3_autosome.snplist.gz
+plink --bfile EUR --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out EUR_1kg_hm3
+plink --bfile EAS --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out EAS_1kg_hm3
+plink --bfile AFR --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out AFR_1kg_hm3
+```
+
+Generate matrices for each population
+
+```{r}
+data(ldetect)
+
+map_afr <- generate_ldobj(
+	outfile=file.path(conf$dl_dir, "AFR_1kg_hm3", "ldobj"), 
+	bfile=file.path(conf$dl_dir, "AFR_1kg_hm3"), 
+	regions=subset(ldetect, pop=="AFR")
+)
+
+map_eur <- generate_ldobj(
+	outfile=file.path(conf$dl_dir, "EUR_1kg_hm3", "ldobj"), 
+	bfile=file.path(conf$dl_dir, "EUR_1kg_hm3"), 
+	regions=subset(ldetect, pop=="EUR")
+)
+
+map_eas <- generate_ldobj(
+	outfile=file.path(conf$dl_dir, "EAS_1kg_hm3", "ldobj"), 
+	bfile=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
+	regions=subset(ldetect, pop=="EAS")
+)
+```
+
+## Try it out for generating summary data
+
+Using just one region
+
+```{r}
+set.seed(1234)
+fn <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE)[1]
+ldobj_eas <- readRDS(fn)
+ss <- ldobj_eas$map %>%
+	{generate_gwas_params(af=.$af, h2=0.01, Pi=1/nrow(.), snp=.$snp)} %>%
+	add_ld_to_params(ldobj=ldobj_eas) %>%
+	generate_gwas_ss(100000)
+
+ggplot(ss, aes(x=pos, y=-log10(pval))) +
+geom_point()
+```
+
+All regions
+
+```{r}
+ldobjfiles_eas <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE) %>% grep("ldobj_chr", ., value=TRUE)
+map_eas %>%
+	{generate_gwas_params(af=.$af, h2=0.01, Pi=100/nrow(.), snp=.$snp)} %>%
+	add_ld_to_params(ldobjfiles = ldobjfiles_eas) %>%
+	generate_gwas_ss(100000)
+```
+
+All regions from list
+
+```{r}
+ldobjlist_eas <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE) %>%
+	lapply(., function(fn)
+	{
+		message(fn)
+		readRDS(fn)
+	})
+ss <- map_eas %>%
+	{generate_gwas_params(af=.$af, h2=0.01, Pi=100/nrow(.), snp=.$snp)} %>%
+	add_ld_to_params(ldobjlist = ldobjlist_eas) %>%
+	generate_gwas_ss(100000)
+
+```
+
+
+

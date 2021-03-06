@@ -4,12 +4,22 @@
 \alias{add_ld_to_params}
 \title{Modify SNP effects to account for LD}
 \usage{
-add_ld_to_params(params, ldobj, nthreads = 1)
+add_ld_to_params(
+  params,
+  ldobj = NULL,
+  ldobjlist = NULL,
+  ldobjfiles = NULL,
+  nthreads = 1
+)
 }
 \arguments{
 \item{params}{Output from \code{generate_gwas_params}}
 
-\item{ldobj}{LD object (e.g. see test_ldobj)}
+\item{ldobj}{LD objects (e.g. see test_ldobj)}
+
+\item{ldobjlist}{List of LD objects}
+
+\item{ldobjfiles}{Array of filenames containing LD object files (e.g. see \code{generate_ldobj})}
 
 \item{nthreads}{Number of threads (can be slow for complete GWAS and large LD regions)}
 }
