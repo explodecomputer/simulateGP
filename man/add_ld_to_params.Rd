@@ -9,6 +9,7 @@ add_ld_to_params(
   ldobj = NULL,
   ldobjlist = NULL,
   ldobjfiles = NULL,
+  ldobjdir = NULL,
   nthreads = 1
 )
 }
@@ -20,6 +21,8 @@ add_ld_to_params(
 \item{ldobjlist}{List of LD objects}
 
 \item{ldobjfiles}{Array of filenames containing LD object files (e.g. see \code{generate_ldobj})}
+
+\item{ldobjdir}{Directory containing output from \code{generate_ldobj}}
 
 \item{nthreads}{Number of threads (can be slow for complete GWAS and large LD regions)}
 }

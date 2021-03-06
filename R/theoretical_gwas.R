@@ -54,38 +54,34 @@ sample_beta <- function(beta, se)
 
 #' Generate SNP effects given MAF, h2 and selection
 #'
-#' @param af Vector of effect allele frequencies, one for each SNP
+#' @param map Data frame containing at least `af` allele frequency and `snp` SNP columns. SNPs must be unique, `af` must be between 0 and 1. Optionally also include the chr, pos, ref, alt columns if using LD-aware simulations
 #' @param h2 Variance explained by all SNPs
 #' @param S Selection coefficient on trait. Default = 0
 #' @param Pi Proportion of variants that have an effect - sampled randomly. Default=1
-#' @param snp Variant identifiers. Default NULL means 1:nsnp
 #'
 #' @export
 #' @return data frame
-generate_gwas_params <- function(af, h2, S=0, Pi=1, snp=NULL)
+generate_gwas_params <- function(map, h2, S=0, Pi=1)
 {
-	nsnp <- length(af)
-	if(is.null(snp))
-	{
-		snp <- 1:nsnp
-	} else {
-		stopifnot(length(snp) == nsnp)
-	}
+	stopifnot(all(c("snp", "af") %in% names(map)))
+	stopifnot(all(map$af > 0 & map$af < 1))
+	stopifnot(!any(duplicated(map$snp)))
+	nsnp <- nrow(map)
 	if(h2 == 0)
 	{
-		return(dplyr::tibble(snp=snp, beta=0, af=af))
+		map$beta <- 0
+		return(map)
 	}
 
 	index <- sample(1:nsnp, ceiling(nsnp * Pi), replace=FALSE)
 
-	beta <- rep(0, nsnp)
-	beta[index] <- stats::rnorm(length(index), mean=0, sd = sqrt((af * 2 * (1-af))^S))
-	vg <- sum(af * 2 * (1-af) * beta^2)
+	map$beta <- 0
+	map$beta[index] <- stats::rnorm(length(index), mean=0, sd = sqrt((map$af * 2 * (1-map$af))^S))
+	vg <- sum(map$af * 2 * (1-map$af) * map$beta^2)
 	ve <- (vg - h2 * vg) / h2
 	vy <- vg + ve
-	beta <- beta / sqrt(vy)
-	dat <- dplyr::tibble(snp=snp, beta=beta, af=af)
-	return(dat)
+	map$beta <- map$beta / sqrt(vy)
+	return(map)
 }
 
 
@@ -97,17 +93,20 @@ generate_gwas_params <- function(af, h2, S=0, Pi=1, snp=NULL)
 #' @param ldobj LD objects (e.g. see test_ldobj)
 #' @param ldobjlist List of LD objects 
 #' @param ldobjfiles Array of filenames containing LD object files (e.g. see \code{generate_ldobj})
+#' @param ldobjdir Directory containing output from \code{generate_ldobj}
 #' @param nthreads Number of threads (can be slow for complete GWAS and large LD regions)
 #'
 #' @export
 #' @return Updated params
-add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, nthreads=1)
+add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
 {
+	params <- subset(params, !duplicated(snp))
+	stopifnot(c("chr", "pos", "snp", "beta") %in% names(params))
 	if(!is.null(ldobj))
 	{
 		stopifnot(is.list(ldobj))
 		stopifnot(all(c("map", "ld") %in% names(ldobj)))
-		params <- dplyr::inner_join(ldobj[["map"]] %>% dplyr::select(-af), params, by="snp")
+		params <- subset(params, snp %in% ldobj$map$snp)
 		if(nrow(params) > 0)
 		{
 			params$beta <- params$beta %*% ldobj[["ld"]] %>% drop()
@@ -120,46 +119,68 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 		stopifnot(is.list(ldobjlist))
 		stopifnot(all(c("map", "ld") %in% names(ldobjlist[[1]])))
 		nchunk <- 1:length(ldobjlist)
-		l <- parallel::mclapply(1:length(ldobjlist), function(i)
+		l <- pbapply::pblapply(1:length(ldobjlist), function(i)
 		{
-			message(i, " of ", length(ldobjlist))
-			parami <- dplyr::inner_join(ldobjlist[[i]][["map"]] %>% dplyr::select(-af), params, by="snp")
+			parami <- subset(params, snp %in% ldobjlist[[i]][["map"]]$snp)
 			if(nrow(parami) > 0)
 			{
 				parami$beta <- parami$beta %*% ldobjlist[[i]][["ld"]] %>% drop()
 			}
 			return(parami)
-		}, mc.cores=nthreads) %>%
+		}, cl=nthreads) %>%
 			dplyr::bind_rows() %>%
 			dplyr::arrange(chr, pos)
 		return(l)
 	}
-
 
 	if(!is.null(ldobjfiles))
 	{
 		stopifnot(is.character(ldobjfiles))
 		stopifnot(all(file.exists(ldobjfiles)))
 		nchunk <- 1:length(ldobjfiles)
-		l <- parallel::mclapply(1:length(ldobjfiles), function(i)
+		l <- pbapply::pblapply(1:length(ldobjfiles), function(i)
 		{
-			message(i, " of ", length(ldobjfiles))
 			ldobj <- readRDS(ldobjfiles[i])
-			parami <- dplyr::inner_join(ldobj[["map"]] %>% dplyr::select(-af), params, by="snp")
+			parami <- subset(params, snp %in% ldobj[["map"]]$snp)
 			if(nrow(parami) > 0)
 			{
 				parami$beta <- parami$beta %*% ldobj[["ld"]] %>% drop()
 			}
 			return(parami)
-		}, mc.cores=nthreads) %>%
+		}, cl=nthreads) %>%
 			dplyr::bind_rows() %>%
 			dplyr::arrange(chr, pos)
 		return(l)
 	}
 
-	stop("At least one of ldobj, ldobjlist, ldobjfiles should be specified")
-}
+	if(!is.null(ldobjdir))
+	{
+		fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_chr", .data, value=TRUE)
+		message("Found ", length(fn), " region files")
+		message("Splitting map by region")
+		code <- fn %>%
+			basename() %>%
+			gsub("ldobj_chr", "", .data) %>%
+			gsub("\\.rds", "", .data)
 
+		l <- pbapply::pblapply(1:length(code), function(i)
+		{
+			ldobj <- readRDS(fn[i])
+			parami <- subset(params, region == code[i])
+			parami <- subset(parami, snp %in% ldobj[["map"]]$snp)
+			if(nrow(parami) > 0)
+			{
+				parami$beta <- parami$beta %*% ldobj[["ld"]] %>% drop()
+			}
+			return(parami)
+		}, cl=nthreads) %>%
+			dplyr::bind_rows() %>%
+			dplyr::arrange(chr, pos)
+		return(l)
+	}
+
+	stop("At least one of ldobj, ldobjlist, ldobjfiles, ldobjdir should be specified")
+}
 
 #' Create a GWAS summary dataset
 #'

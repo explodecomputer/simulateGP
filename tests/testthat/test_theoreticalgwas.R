@@ -22,12 +22,26 @@ test_that("expected se works", {
 
 
 test_that("gwas summary data", {
+	set.seed(1345)
 	nsnp <- 1000
-	ldobj <- test_ldobj(nsnp, 100)
-	out <- generate_gwas_params(af=runif(nsnp), h2=0.3, S=0.3, snp=1:nsnp) %>%
-		add_ld_to_params(ldobj) %>%
+	ldobjlist <- test_ldobj(nsnp, 100)
+	map <- lapply(ldobjlist, function(x) x$map) %>%
+		dplyr::bind_rows()
+	out <- map %>%
+		generate_gwas_params(h2=0.3, S=0.3, Pi=3/nsnp) %>%
+		add_ld_to_params(ldobjlist=ldobjlist) %>%
 		generate_gwas_ss(100000)
 	expect_equal(nrow(out), nsnp)
-})
+	expect_true(sum(out$pval < 5e-8) > 3)
+	# ggplot(out, aes(pos, -log10(pval))) + geom_point() + facet_grid(. ~ chr)
 
+	ldobj <- ldobjlist[[1]]
+	nsnp <- nrow(ldobj$map)
+	out <- ldobj$map %>%
+		generate_gwas_params(h2=0.3, S=0.3, Pi=3/nsnp) %>%
+		add_ld_to_params(ldobj=ldobj) %>%
+		generate_gwas_ss(100000)
+	expect_equal(nrow(out), nsnp)
+	expect_true(sum(out$pval < 5e-8) > 3)
+})
 

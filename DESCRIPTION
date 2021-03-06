@@ -24,7 +24,9 @@ Imports:
     magrittr,
     graphics,
     rlang,
-    parallel
+    parallel,
+    genetics.binaRies,
+    pbapply
 Suggests: 
     testthat,
     knitr,
@@ -38,7 +40,8 @@ Suggests:
     jsonlite
 Remotes:
 	mrcieu/TwoSampleMR,
-	mrcieu/ieugwasr
+	mrcieu/ieugwasr,
+    explodecomputer/genetics.binaRies
 VignetteBuilder: knitr
 URL: https://explodecomputer.github.io/simulateGP/
 BugReports: https://github.com/explodecomputer/simulateGP/issues

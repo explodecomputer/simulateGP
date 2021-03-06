@@ -4,18 +4,16 @@
 \alias{generate_gwas_params}
 \title{Generate SNP effects given MAF, h2 and selection}
 \usage{
-generate_gwas_params(af, h2, S = 0, Pi = 1, snp = NULL)
+generate_gwas_params(map, h2, S = 0, Pi = 1)
 }
 \arguments{
-\item{af}{Vector of effect allele frequencies, one for each SNP}
+\item{map}{Data frame containing at least `af` allele frequency and `snp` SNP columns. SNPs must be unique, `af` must be between 0 and 1. Optionally also include the chr, pos, ref, alt columns if using LD-aware simulations}
 
 \item{h2}{Variance explained by all SNPs}
 
 \item{S}{Selection coefficient on trait. Default = 0}
 
 \item{Pi}{Proportion of variants that have an effect - sampled randomly. Default=1}
-
-\item{snp}{Variant identifiers. Default NULL means 1:nsnp}
 }
 \value{
 data frame

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ld.r
 \name{generate_ldobj}
 \alias{generate_ldobj}
-\title{<brief desc>}
+\title{Generate LD matrix objects from reference panel}
 \usage{
 generate_ldobj(
   outdir,
@@ -13,17 +13,19 @@ generate_ldobj(
 )
 }
 \arguments{
-\item{bfile}{<what param does>}
+\item{outdir}{Directory in which to store the ldobj files}
 
-\item{regionfile}{<what param does>}
+\item{bfile}{Binary plink dataset}
 
-\item{plink_bin=genetics.binaRies::get_plink_binary()}{<what param does>}
+\item{regions}{A data frame containing the independent regions (see \code{data(ldetect)})}
 
-\item{nthreads=1}{<what param does>}
+\item{plink_bin}{Plink executable. Default=genetics.binaRies::get_plink_binary()}
+
+\item{nthreads}{How many threads. Default=1}
 }
 \value{
-
+map file
 }
 \description{
-<full description>
+Creates a set of ldobj files, each corresponding to a single independent LD region from the reference panel. It also generates a map file.
 }

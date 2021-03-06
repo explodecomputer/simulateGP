@@ -43,6 +43,9 @@ c <- data.table::fread("https://bitbucket.org/nygcresearch/ldetect-data/raw/ac12
 c$pop <- "EUR"
 
 ldetect <- dplyr::bind_rows(a,b,c)
+
+# Avoid overlap between regions
+ldetect$stop <- ldetect$stop - 1
 ```
 
 This `ldetect` object is saved as a data object in this package.
@@ -89,67 +92,86 @@ Generate matrices for each population
 ```{r}
 data(ldetect)
 
+map_eas <- generate_ldobj(
+	outdir=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
+	bfile=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
+	regions=subset(ldetect, pop=="EAS"),
+	nthreads=2
+)
+
 map_afr <- generate_ldobj(
-	outfile=file.path(conf$dl_dir, "AFR_1kg_hm3", "ldobj"), 
+	outdir=file.path(conf$dl_dir, "AFR_1kg_hm3"), 
 	bfile=file.path(conf$dl_dir, "AFR_1kg_hm3"), 
-	regions=subset(ldetect, pop=="AFR")
+	regions=subset(ldetect, pop=="AFR"),
+	nthreads=2
 )
 
 map_eur <- generate_ldobj(
-	outfile=file.path(conf$dl_dir, "EUR_1kg_hm3", "ldobj"), 
+	outdir=file.path(conf$dl_dir, "EUR_1kg_hm3"), 
 	bfile=file.path(conf$dl_dir, "EUR_1kg_hm3"), 
-	regions=subset(ldetect, pop=="EUR")
-)
-
-map_eas <- generate_ldobj(
-	outfile=file.path(conf$dl_dir, "EAS_1kg_hm3", "ldobj"), 
-	bfile=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
-	regions=subset(ldetect, pop=="EAS")
+	regions=subset(ldetect, pop=="EUR"),
+	nthreads=2
 )
 ```
 
+Package them up
+
+```{r}
+cmd <- paste0("cd ", conf$dl_dir, "; tar cvf EUR_1kg_hm3_ldobj.tar EUR_1kg_hm3")
+system(cmd)
+
+cmd <- paste0("cd ", conf$dl_dir, "; tar cvf EAS_1kg_hm3_ldobj.tar EAS_1kg_hm3")
+system(cmd)
+
+cmd <- paste0("cd ", conf$dl_dir, "; tar cvf AFR_1kg_hm3_ldobj.tar AFR_1kg_hm3")
+system(cmd)
+```
+
+
 ## Try it out for generating summary data
 
-Using just one region
+Using just one region with just one causal variant. Read in a regional LD matrix
 
 ```{r}
 set.seed(1234)
-fn <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE)[1]
+fn <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE) %>% 
+	grep("ldobj_chr", ., value=TRUE) %>% 
+	{.[7]}
 ldobj_eas <- readRDS(fn)
-ss <- ldobj_eas$map %>%
-	{generate_gwas_params(af=.$af, h2=0.01, Pi=1/nrow(.), snp=.$snp)} %>%
-	add_ld_to_params(ldobj=ldobj_eas) %>%
+```
+
+Generate the LD-aware effects from a single causal variant
+
+```{r}
+params <- ldobj_eas$map %>%
+	generate_gwas_params(h2=0.01, Pi=1/nrow(.)) %>%
+	add_ld_to_params(ldobj=ldobj_eas)
+```
+
+Add some random noise for a sample size of 100000 and plot
+
+```{r}
+ss <- params %>%
 	generate_gwas_ss(100000)
 
 ggplot(ss, aes(x=pos, y=-log10(pval))) +
 geom_point()
 ```
 
-All regions
+Now try whole genome with 100 causal variants - from files - takes less than 2 minutes for HapMap3 
 
 ```{r}
-ldobjfiles_eas <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE) %>% grep("ldobj_chr", ., value=TRUE)
-map_eas %>%
-	{generate_gwas_params(af=.$af, h2=0.01, Pi=100/nrow(.), snp=.$snp)} %>%
-	add_ld_to_params(ldobjfiles = ldobjfiles_eas) %>%
-	generate_gwas_ss(100000)
+# Generate effects
+params <- map_eas %>% 
+	generate_gwas_params(h2=0.01, Pi=100/nrow(.)) %>%
+	add_ld_to_params(ldobjdir = file.path(conf$dl_dir, "EAS_1kg_hm3"), nthreads=1)
+
+# Generate sample estimates
+ss <- params %>%
+	generate_gwas_ss(10000000)
+
+# Plot
+ggplot(ss, aes(x=pos, y=-log10(pval))) +
+geom_point() +
+facet_grid(. ~ chr, scale="free_x", space="free_x")
 ```
-
-All regions from list
-
-```{r}
-ldobjlist_eas <- list.files(file.path(conf$dl_dir, "EAS_1kg_hm3"), full.names=TRUE) %>%
-	lapply(., function(fn)
-	{
-		message(fn)
-		readRDS(fn)
-	})
-ss <- map_eas %>%
-	{generate_gwas_params(af=.$af, h2=0.01, Pi=100/nrow(.), snp=.$snp)} %>%
-	add_ld_to_params(ldobjlist = ldobjlist_eas) %>%
-	generate_gwas_ss(100000)
-
-```
-
-
-

@@ -23,7 +23,8 @@ test_ldobj <- function(nsnp, chunksize)
 			chr=i,
 			pos=1:n,
 			ref="A",
-			alt="C"
+			alt="C",
+			af=runif(n, 0.01, 0.99)
 		)
 		rownames(rho) <- colnames(rho) <- map$snp
 		return(list(map=map, ld=rho))
@@ -38,8 +39,6 @@ test_ldobj <- function(nsnp, chunksize)
 #' @param from from bp
 #' @param to to bp
 #' @param bfile LD reference panel
-#' @param snplist list of rsids to retain. Default is NULL (i.e. retain all)
-#' @param idlist list of sample ids to retain. Default is NULL (i.e. retain all)
 #' @param plink_bin Plink binary default=genetics.binaRies::get_plink_binary()
 #'
 #' @export
@@ -83,25 +82,27 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 # Also see https://github.com/explodecomputer/pic_haps/
 
 
-#' <brief desc>
+#' Generate LD matrix objects from reference panel
 #'
-#' <full description>
+#' Creates a set of ldobj files, each corresponding to a single independent LD region from the reference panel. It also generates a map file.
 #'
-#' @param bfile <what param does>
-#' @param regionfile <what param does>
-#' @param plink_bin=genetics.binaRies::get_plink_binary() <what param does>
-#' @param nthreads=1 <what param does>
+#' @param outdir Directory in which to store the ldobj files
+#' @param bfile Binary plink dataset
+#' @param regions A data frame containing the independent regions (see \code{data(ldetect)})
+#' @param plink_bin Plink executable. Default=genetics.binaRies::get_plink_binary()
+#' @param nthreads How many threads. Default=1
 #'
 #' @export
-#' @return
+#' @return map file
 generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::get_plink_binary(), nthreads=1)
 {
+	dir.create(outdir)
 	codes <- paste0(regions$chr, "_", regions$start, "_", regions$stop)
 	map <- parallel::mclapply(1:nrow(regions), function(i)
 	{
 		message(i, " of ", nrow(regions))
 		out <- get_ld(
-			chr=regions$chr[i] %>% gsub("chr", "", .),
+			chr=regions$chr[i] %>% gsub("chr", "", .data),
 			from=regions$start[i],
 			to=regions$stop[i],
 			bfile=bfile,
@@ -110,7 +111,8 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 		if(!is.null(out))
 		{
 			fn <- file.path(outdir, paste0("ldobj_", codes[i], ".rds"))
-			saveRDS(out, file=fn)
+			saveRDS(out, file=fn, compress=TRUE)
+			out$map$region <- codes[i]
 			return(out$map)
 		} else {
 			return(NULL)
@@ -121,6 +123,54 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 	return(map)
 }
 
+
+#' Determine regions from LD file
+#'
+#'
+#' @param ldobjdir Directory containing output from \code{generate_ldobj}
+#'
+#' @export
+#' @return Data frame
+get_regions_from_ldobjdir <- function(ldobjdir)
+{
+	fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_chr", .data, value=TRUE)
+	regions <- fn %>%
+		basename() %>%
+		gsub("ldobj_chr", "", .data) %>%
+		gsub("\\.rds", "", .data) %>%
+		strsplit(split="_") %>%
+		unlist() %>%
+		as.numeric() %>%
+		matrix(.data, nrow=3) %>%
+		t() %>%
+		dplyr::as_tibble(.name_repair="minimal") %>%
+		`names<-`(c("chr", "start", "stop")) %>%
+		dplyr::mutate(
+			region=paste(chr, start, stop, sep="_"),
+			file=fn
+		)
+	return(regions)
+}
+
+
+#' Read in LD objects into list
+#'
+#'
+#' @param ldobjdir Directory containing output from \code{generate_ldobj}
+#' @param nthreads Number of threads. Default=1
+#'
+#' @export
+#' @return List of ldobj
+read_ldobjdir <- function(ldobjdir, nthreads=1)
+{
+	regions <- get_regions_from_ldobjdir(ldobjdir)
+	ldobjlist <- parallel::mclapply(1:nrow(regions), function(i){
+		message(i, " of ", nrow(regions))
+		readRDS(regions$file[i])
+	}) %>%
+		`names<-`(regions$region)
+	return(ldobjlist)
+}
 
 #' Simulate two correlated binomial variables
 #'

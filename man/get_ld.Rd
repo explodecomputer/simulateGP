@@ -16,10 +16,6 @@ get_ld(chr, from, to, bfile, plink_bin = genetics.binaRies::get_plink_binary())
 \item{bfile}{LD reference panel}
 
 \item{plink_bin}{Plink binary default=genetics.binaRies::get_plink_binary()}
-
-\item{snplist}{list of rsids to retain. Default is NULL (i.e. retain all)}
-
-\item{idlist}{list of sample ids to retain. Default is NULL (i.e. retain all)}
 }
 \value{
 List of LD matrix and map info including MAF

@@ -6,15 +6,18 @@ test_that("no sample overlap", {
 
 	set.seed(1234)
 	nsnp <- 100
-	af <- runif(nsnp, 0.01, 0.99)
-	beta_gx <- generate_gwas_params(af, h2=0.5)
+	map <- dplyr::tibble(
+		af = runif(nsnp, 0.01, 0.99),
+		snp = 1:nsnp
+	)
+	beta_gx <- generate_gwas_params(map, h2=0.5)
 	beta_gy <- beta_gx
 	beta_gy$beta <- beta_gy$beta * 0.3
 
 	dat <- summary_set(
 		beta_gx = beta_gx$beta,
 		beta_gy = beta_gy$beta,
-		af = af,
+		af = beta_gx$af,
 		n_gx = 10000,
 		n_gy = 10000,
 		n_overlap = 0,
@@ -37,15 +40,18 @@ test_that("complete sample overlap linear linear", {
 
 	set.seed(1234)
 	nsnp <- 100
-	af <- runif(nsnp, 0.01, 0.99)
-	beta_gx <- generate_gwas_params(af, h2=0.5)
+	map <- dplyr::tibble(
+		af = runif(nsnp, 0.01, 0.99),
+		snp = 1:nsnp
+	)	
+	beta_gx <- generate_gwas_params(map, h2=0.5)
 	beta_gy <- beta_gx
 	beta_gy$beta <- beta_gy$beta * 0.3
 
 	dat <- summary_set(
 		beta_gx = beta_gx$beta,
 		beta_gy = beta_gy$beta,
-		af = af,
+		af = beta_gx$af,
 		n_gx = 10000,
 		n_gy = 10000,
 		n_overlap = 10000,
@@ -66,21 +72,24 @@ test_that("complete sample overlap linear linear", {
 
 test_that("partial sample overlap linear linear", {
 
-	set.seed(1234)
+	set.seed(123456)
 	nsnp <- 100
-	af <- runif(nsnp, 0.01, 0.99)
-	beta_gx <- generate_gwas_params(af, h2=0.5)
+	map <- dplyr::tibble(
+		af = runif(nsnp, 0.01, 0.99),
+		snp = 1:nsnp
+	)
+	beta_gx <- generate_gwas_params(map, h2=0.7)
 	beta_gy <- beta_gx
 	beta_gy$beta <- beta_gy$beta * 0.3
 
 	dat <- summary_set(
 		beta_gx = beta_gx$beta,
 		beta_gy = beta_gy$beta,
-		af = af,
+		af = beta_gx$af,
 		n_gx = 10000,
 		n_gy = 10000,
 		n_overlap = 5000,
-		cor_xy = 0.6,
+		cor_xy = 0.1,
 		prev_y=NA,
 		sigma_x=1,
 		sigma_y=1
@@ -96,17 +105,20 @@ test_that("partial sample overlap linear linear", {
 
 test_that("partial sample overlap linear logistic", {
 
-	set.seed(1234)
+	set.seed(1234567)
 	nsnp <- 100
-	af <- runif(nsnp, 0.01, 0.99)
-	beta_gx <- generate_gwas_params(af, h2=0.5)
+	map <- dplyr::tibble(
+		af = runif(nsnp, 0.01, 0.99),
+		snp = 1:nsnp
+	)	
+	beta_gx <- generate_gwas_params(map, h2=0.5)
 	beta_gy <- beta_gx
 	beta_gy$beta <- beta_gy$beta * 0.3
 
 	dat <- summary_set(
 		beta_gx = beta_gx$beta,
 		beta_gy = beta_gy$beta,
-		af = af,
+		af = beta_gx$af,
 		n_gx = 10000,
 		n_gy = 10000,
 		n_overlap = 5000,
