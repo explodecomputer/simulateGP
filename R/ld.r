@@ -97,12 +97,12 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::get_plink_binary(), nthreads=1)
 {
 	dir.create(outdir)
-	codes <- paste0(regions$chr, "_", regions$start, "_", regions$stop)
+	codes <- paste0(gsub("chr", "", regions$chr), "_", regions$start, "_", regions$stop)
 	map <- parallel::mclapply(1:nrow(regions), function(i)
 	{
 		message(i, " of ", nrow(regions))
 		out <- get_ld(
-			chr=regions$chr[i] %>% gsub("chr", "", .data),
+			chr=gsub("chr", "", regions$chr[i]),
 			from=regions$start[i],
 			to=regions$stop[i],
 			bfile=bfile,
@@ -133,11 +133,11 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 #' @return Data frame
 get_regions_from_ldobjdir <- function(ldobjdir)
 {
-	fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_chr", .data, value=TRUE)
+	fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_", ., value=TRUE)
 	regions <- fn %>%
 		basename() %>%
-		gsub("ldobj_chr", "", .data) %>%
-		gsub("\\.rds", "", .data) %>%
+		gsub("ldobj_", "", .) %>%
+		gsub("\\.rds", "", .) %>%
 		strsplit(split="_") %>%
 		unlist() %>%
 		as.numeric() %>%
