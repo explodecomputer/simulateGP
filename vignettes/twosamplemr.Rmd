@@ -128,7 +128,9 @@ rsq_gx <- 0.4
 Generate some effects that correspond to these values
 
 ```{r}
-b_gx <- generate_gwas_params(af=af, h2=rsq_gx)
+
+b_gx <- dplyr::tibble(af=af, snp=1:nsnp) %>%
+	generate_gwas_params(h2=rsq_gx)
 
 ```
 
@@ -149,7 +151,8 @@ Simulate some balanced pleiotropy - assume that 50% of the instruments have a di
 
 ```{r}
 plei_index <- sample(1:nsnp, nsnp*0.5)
-b_gy_plei <- generate_gwas_params(af=af[plei_index], h2=0.02)
+b_gy_plei <- dplyr::tibble(af=af[plei_index], snp=plei_index) %>%
+	generate_gwas_params(h2=0.02)
 ```
 
 Sum the genetic effects on $y$
@@ -224,14 +227,15 @@ An approach to doing this directly, bypassing simulation of individuals, is also
 ```{r}
 nsnp <- 100
 af <- runif(nsnp, 0.01, 0.99)
-beta_gx <- generate_gwas_params(af, h2=0.5)
+beta_gx <- dplyr::tibble(af=af, snp=1:nsnp) %>%
+	generate_gwas_params(h2=0.5)
 beta_gy <- beta_gx
 beta_gy$beta <- beta_gy$beta * 0.3
 
 dat <- summary_set(
 	beta_gx = beta_gx$beta,
 	beta_gy = beta_gy$beta,
-	af = af,
+	af = beta_gx$af,
 	n_gx = 10000,
 	n_gy = 10000,
 	n_overlap = 10000,

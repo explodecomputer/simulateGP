@@ -10,7 +10,7 @@ navbar:
       href: reference/index.html
   right:
     - text: "Source"
-      href: https://github.com/mrcieu/TwoSampleMR
+      href: https://github.com/explodecomputer/simulateGP
 
 articles:
   - title: "Guides"
@@ -19,6 +19,7 @@ articles:
     contents:
       - simplemr
       - twosamplemr
+      - simulate_gwas
   - title: "Theory and experiments"
     desc: >
       A set of notebooks that give some background to the functions in the package
@@ -29,3 +30,4 @@ articles:
       - ld_matrices
       - mr_dgp
       - gwas_summary_data_ld
+      - generate_ldobj

@@ -1,0 +1,202 @@
+---
+title: "Simulating GWAS summary data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating GWAS summary data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval=FALSE
+)
+```
+
+```{r setup}
+library(simulateGP)
+library(tidyverse)
+set.seed(12345)
+```
+
+We'd like to be able to simulate realistic GWAS summary data for a large (e.g. millions) of SNPs and representing arbitrarily large sample sizes. The simplest way to do this is to take a genetic reference dataset (e.g. UK Biobank, 500000 samples), and generate a phenotype based on the SNPs that we want to be causal. We would then run a GWAS on the simulated phenotype to obtain the GWAS summary data. However this would be very slow. The `simulateGP` package has a few methods to rapidly simulate GWAS summary data directly without going via analysis of individual level datasets.
+
+Features of GWAS:
+
+- Specified heritability
+- Distribution of effect sizes according to a model of natural selection
+- Effect sizes have patterns relating to linkage disequilibrium
+- LD patterns reflect specific major populations
+- Two GWAS summary datasets are correlated due to sample overlap
+
+## Genetic architecture
+
+We use the following model to describe the distribution of effect sizes for each SNP $j...M$ across the genome:
+
+$$
+\beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)\pi + \vartheta (1 - \pi)
+$$
+
+where $\beta_j$ is the effect size, $p_j$ is the allele frequency, $S$ is the selection coefficient acting on the trait, $\pi$ is the fraction of SNPs that have an effect and $\vartheta()$ represents a null value for all SNPs that have no effect. If the phenotypic variance is 1 then $M \sigma^2_\beta$ is the heritability.
+
+We can generate effect sizes for an arbitrary number of SNPs by starting with a set of allele frequencies and supplying the relevant parameters described above
+
+First create a map of all the SNPs to be simulated, containing at least the SNP names and the effect allele frequencies
+
+```{r}
+nsnp <- 1000000
+map <- tibble(snp=1:nsnp, af=runif(nsnp, 0.01, 0.99))
+```
+
+Next, generate effect sizes for each SNP
+
+```{r}
+params <- generate_gwas_params(map=map, h2=0.4, S=-0.4, Pi=0.005)
+```
+
+Here there is negative selection acting on a small number of causal variants, and the overall heritability explained by all causal variants is 0.4. Observe the relationship between allele frequency and effect size for this selection coefficient:
+
+```{r}
+ggplot(params[params$beta!=0,], aes(af, abs(beta))) +
+geom_point() +
+geom_smooth()
+```
+
+Finally, generate sample effect estimates, standard errors and p-values for an arbitrary sample size, e.g. for 10 million samples here
+
+```{r}
+nid <- 10000000
+ss <- generate_gwas_ss(params, nid=nid)
+ss
+```
+
+Note that you can generate more complex underlying genetic architectures manually. For example if there is a mixture of distributions, where some SNPs have large effects and many have small effects:
+
+```{r}
+map <- rbind(
+	tibble(af = runif(10, 0.4, 0.5), group=1),
+	tibble(af = runif(10000, 0.01, 0.5), group=2),
+	tibble(af = runif(1000000-10-10000, 0.01, 0.5), group=3)
+	) %>%
+	mutate(snp=1:n())
+
+param <- rbind(
+	generate_gwas_params(subset(map, group==1), h2=0.1, S=0),
+	generate_gwas_params(subset(map, group==2), h2=0.3, S=0),
+	generate_gwas_params(subset(map, group==3), h2=0, S=0)
+)
+
+# Generate GWAS summary stats
+res <- generate_gwas_ss(param, 450000)
+res
+```
+
+## Linkage disequilibrium
+
+The above effects assume all SNPs are completely independent. In order for the characteristic patterns of LD around a causal variant to be generated, we need to transform the distribution of effects according to the correlation matrix amongst the SNPs. 
+
+We need a set of LD matrices to generate realistic LD patterns for a large set of SNPs. LD matrices are available for three major human populations for download here:
+
+- Africans
+- East Asians
+- Europeans
+
+The above are large (~5Gb) `.tar` files. Download one and extract, it should contain a directory called `<POP>_1kg_hm3/`, which contains a `map.rds` and a number of `ldobj_<region>.rds` files. We will use the `map.rds` as our genome scaffold - it contains SNPs, chromosomes, positions, alleles and allele frequencies for the specific population. We can then select causal variants for the trait as above, and then introduce the LD transformation before sampling the effect estimates / SEs / p-values etc from the LD-aware effect sizes.
+
+Set the LD matrix data directory:
+
+```{r}
+datadir <- "~/data/ld_files/ldmat/AFR_1kg_hm3"
+file.exists(datadir)
+```
+
+Begin with a small number of SNPs for illustration. E.g. let's use the first region in the set of regions downloaded
+
+```{r}
+fn <- list.files(datadir, full.names=TRUE) %>% 
+	grep("ldobj_chr", ., value=TRUE) %>% 
+	{.[1]}
+ldobj <- readRDS(fn)
+str(ldobj)
+```
+
+We see it contains two items in a list, the `map` and the `ld` objects. The `map` is a data frame containing information about the SNPs in the region. The `ld` is a matrix containing LD correlations amongst all the SNPs in the region. To use this to transform our data - let's simulate a single causal variant in the region
+
+```{r}
+params <- ldobj$map %>%
+	generate_gwas_params(h2=0.01, S=0, Pi=1/nrow(.))
+```
+
+Now add LD to the effects
+
+```{r}
+params_ld <- params %>%
+	add_ld_to_params(ldobj=ldobj)
+```
+
+We can now sample effect estimates for either the the raw effects or the LD-aware effects
+
+```{r}
+ss_raw <- params %>%
+	generate_gwas_ss(nid=10000)
+ss_ld <- params_ld %>%
+	generate_gwas_ss(nid=10000)
+```
+
+Compare the associations in the region. With no LD:
+
+```{r}
+ggplot(ss_raw, aes(x=pos, y=-log10(pval))) +
+geom_point()
+```
+
+Now when LD is added:
+
+```{r}
+ggplot(ss_ld, aes(x=pos, y=-log10(pval))) +
+geom_point()
+```
+
+The same process can be achieved for more complex architectures across the entire genome. It takes about 2 minutes to generate the LD-aware effect sizes, from which multiple independent sample effect estimates can be drawn nearly instantaneously.
+
+```{r}
+map <- readRDS(file.path(datadir, "map.rds"))
+params <- map %>%
+	generate_gwas_params(h2=0.5, S=-0.3, Pi=1000/nrow(.)) %>%
+	add_ld_to_params(ldobjdir=datadir)
+
+ss <- params %>%
+	generate_gwas_ss(nid=1000000)
+```
+
+## Sample overlap
+
+Finally, we can draw joint estimates of two different GWASs that share some amount of sample overlap using the `summary_set` function. The steps are:
+
+For a set of variants, generate the true effect sizes for each of two different datasets. Here we make a simple example using the single small region as above. Trait 1 has a causal effect of 0.3 on trait 2.
+
+```{r}
+params1 <- ldobj$map %>%
+	generate_gwas_params(h2=0.01, S=0, Pi=3/nrow(.))
+
+params2 <- params2
+params2$beta <- params1$beta * 0.3
+```
+
+Now sample the effect estimates jointly. We specify the sample sizes of each GWAS, and the number of overlapping samples. We also specify an observational correlation, which represents the total association due to the causal relationship and any confounding.
+
+```{r}
+ss <- summary_set(
+	beta_gx=params1$beta,
+	beta_gy=params2$beta,
+	af=params1$af,
+	n_gx=100000,
+	n_gy=10000,
+	n_overlap=5000,
+	cor_xy=0.5
+)
+```
+
+

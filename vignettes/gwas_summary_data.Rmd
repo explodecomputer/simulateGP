@@ -1,8 +1,8 @@
 ---
-title: "Simulating GWAS summary data"
+title: "Background notes: Simulating GWAS summary data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simulating GWAS summary data}
+  %\VignetteIndexEntry{Background notes: Simulating GWAS summary data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -183,24 +183,30 @@ I think ultimately the presence of $\sigma^2_\beta$ in this model does not actua
 generate_gwas_params
 ```
 
+Create a map
+
+```{r}
+map <- tibble(af=runif(1000, 0.01, 0.5), snp=1:1000)
+```
+
 Negative selection:
 
 ```{r}
-g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=-2)
+g <- generate_gwas_params(map, h2=0.4, S=-2)
 plot(g)
 ```
 
 Positive selection:
 
 ```{r}
-g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=2)
+g <- generate_gwas_params(map, h2=0.4, S=2)
 plot(g)
 ```
 
 Neutral model:
 
 ```{r}
-g <- generate_gwas_params(af=runif(1000, 0.01, 0.5), h2=0.4, S=0)
+g <- generate_gwas_params(map, h2=0.4, S=0)
 plot(g)
 ```
 
@@ -218,10 +224,18 @@ Bringing it all together, we can simulate a set of GWAS summary stats by first s
 # with 10 large effects, 
 # a polygenic background of 10000 SNPs, 
 # and all others with no effects
+
+map <- rbind(
+	tibble(af = runif(10, 0.4, 0.5), group=1),
+	tibble(af = runif(10000, 0.01, 0.5), group=2),
+	tibble(af = runif(1000000-10-10000, 0.01, 0.5), group=3)
+	) %>%
+	mutate(snp=1:n())
+
 param <- rbind(
-	generate_gwas_params(af=runif(10, 0.4, 0.5), h2=0.1, S=0),
-	generate_gwas_params(af=runif(10000, 0.01, 0.5), h2=0.3, S=0),
-	generate_gwas_params(af=runif(1000000-10-10000, 0.01, 0.5), h2=0, S=0)
+	generate_gwas_params(subset(map, group==1), h2=0.1, S=0),
+	generate_gwas_params(subset(map, group==2), h2=0.3, S=0),
+	generate_gwas_params(subset(map, group==3), h2=0, S=0)
 )
 
 # Generate GWAS summary stats
@@ -235,12 +249,13 @@ Compare to individual level data results to summary data simulations
 set.seed(100)
 h2 <- 0.1
 nid <- 10000
-param <- generate_gwas_params(af=runif(100, 0.01, 0.5), h2=h2, S=0)
+param <- tibble(af=runif(100, 0.01, 0.5), snp=1:100) %>%
+	generate_gwas_params(h2=h2, S=0)
 res1 <- generate_gwas_ss(param, nid)
 
 g <- lapply(param$af, function(x) rbinom(nid, 2, x)) %>%
-	bind_cols %>%
-	as.matrix
+	bind_cols() %>%
+	as.matrix()
 
 score <- g %*% param$beta
 err <- rnorm(nid, mean=0, sd=sqrt(var(score) * (1-h2) / h2))

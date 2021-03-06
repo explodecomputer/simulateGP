@@ -76,7 +76,7 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 	index <- sample(1:nsnp, ceiling(nsnp * Pi), replace=FALSE)
 
 	map$beta <- 0
-	map$beta[index] <- stats::rnorm(length(index), mean=0, sd = sqrt((map$af * 2 * (1-map$af))^S))
+	map$beta[index] <- stats::rnorm(length(index), mean=0, sd = sqrt((map$af[index] * 2 * (1-map$af[index]))^S))
 	vg <- sum(map$af * 2 * (1-map$af) * map$beta^2)
 	ve <- (vg - h2 * vg) / h2
 	vy <- vg + ve

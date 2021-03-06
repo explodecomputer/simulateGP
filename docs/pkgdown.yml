@@ -2,6 +2,7 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  generate_ldobj: generate_ldobj.html
   gwas_summary_data: gwas_summary_data.html
   gwas_summary_data_ld: gwas_summary_data_ld.html
   ld_matrices: ld_matrices.html
@@ -9,7 +10,8 @@ articles:
   sample_overlap: sample_overlap.html
   sample_overlap_theory: sample_overlap_theory.html
   simplemr: simplemr.html
+  simulate_gwas: simulate_gwas.html
   twosamplemr: twosamplemr.html
   weak_instruments: weak_instruments.html
-last_built: 2021-03-05T11:36Z
+last_built: 2021-03-06T22:51Z
 

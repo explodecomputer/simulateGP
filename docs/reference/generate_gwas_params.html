@@ -87,7 +87,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/mrcieu/TwoSampleMR">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
 </li>
       </ul>
       
@@ -111,14 +111,14 @@
     <p>Generate SNP effects given MAF, h2 and selection</p>
     </div>
 
-    <pre class="usage"><span class='fu'>generate_gwas_params</span><span class='op'>(</span><span class='va'>af</span>, <span class='va'>h2</span>, S <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>generate_gwas_params</span><span class='op'>(</span><span class='va'>map</span>, <span class='va'>h2</span>, S <span class='op'>=</span> <span class='fl'>0</span>, Pi <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>af</th>
-      <td><p>Vector of effect allele frequencies, one for each SNP</p></td>
+      <th>map</th>
+      <td><p>Data frame containing at least `af` allele frequency and `snp` SNP columns. SNPs must be unique, `af` must be between 0 and 1. Optionally also include the chr, pos, ref, alt columns if using LD-aware simulations</p></td>
     </tr>
     <tr>
       <th>h2</th>
@@ -127,6 +127,10 @@
     <tr>
       <th>S</th>
       <td><p>Selection coefficient on trait. Default = 0</p></td>
+    </tr>
+    <tr>
+      <th>Pi</th>
+      <td><p>Proportion of variants that have an effect - sampled randomly. Default=1</p></td>
     </tr>
     </table>
 

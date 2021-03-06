@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Create a GWAS summary dataset — generate_gwas_ss" />
-<meta property="og:description" content="Create a GWAS summary dataset" />
+<meta property="og:description" content="Determines SE and generates effect estimates given input parameters" />
 
 
 
@@ -87,7 +87,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/mrcieu/TwoSampleMR">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
 </li>
       </ul>
       
@@ -108,21 +108,17 @@
     </div>
 
     <div class="ref-description">
-    <p>Create a GWAS summary dataset</p>
+    <p>Determines SE and generates effect estimates given input parameters</p>
     </div>
 
-    <pre class="usage"><span class='fu'>generate_gwas_ss</span><span class='op'>(</span><span class='va'>beta</span>, <span class='va'>af</span>, <span class='va'>nid</span>, vy <span class='op'>=</span> <span class='fl'>1</span>, minmaf <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>generate_gwas_ss</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>nid</span>, vy <span class='op'>=</span> <span class='fl'>1</span>, minmaf <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>beta</th>
-      <td><p>Array of true beta values</p></td>
-    </tr>
-    <tr>
-      <th>af</th>
-      <td><p>Array of effect allele frequency values</p></td>
+      <th>params</th>
+      <td><p>Output from <code>generate_gwas_params</code></p></td>
     </tr>
     <tr>
       <th>nid</th>

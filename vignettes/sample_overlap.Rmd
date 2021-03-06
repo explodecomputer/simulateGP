@@ -98,7 +98,7 @@ n2 <- 1000
 maf <- 0.4
 pcor <- 0.6
 
-a <- generate_gwas_params(rep(maf, nsnp), 1, S=5)
+a <- generate_gwas_params(tibble(snp=1:nsnp, af=maf), 1, S=5)
 a <- expand.grid(b1=a$beta, overlap=c(0, 0.5, 1), bxy=c(0, 0.3)) %>% as_tibble
 a$se1 <- expected_se(a$b1, maf, n1, 1)
 a$fval <- (a$b1/a$se1)^2
