@@ -155,13 +155,13 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 
 	if(!is.null(ldobjdir))
 	{
-		fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_chr", .data, value=TRUE)
+		fn <- list.files(ldobjdir, full.names=TRUE) %>% grep("ldobj_", ., value=TRUE)
 		message("Found ", length(fn), " region files")
 		message("Splitting map by region")
 		code <- fn %>%
 			basename() %>%
-			gsub("ldobj_chr", "", .data) %>%
-			gsub("\\.rds", "", .data)
+			gsub("ldobj_", "", .) %>%
+			gsub("\\.rds", "", .)
 
 		l <- pbapply::pblapply(1:length(code), function(i)
 		{
