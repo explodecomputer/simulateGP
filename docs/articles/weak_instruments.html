@@ -122,9 +122,9 @@
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">bv</span><span class="op">)</span>
 <span class="co">#&gt;          [,1]</span>
-<span class="co">#&gt; [1,] 39.83776</span>
+<span class="co">#&gt; [1,] 39.29876</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">bv</span><span class="op">)</span>
-<span class="co">#&gt; [1] 6.311716</span>
+<span class="co">#&gt; [1] 6.268872</span>
 
 
 <span class="co"># h2 &lt;- b^2 * 2 * maf * (1 - maf) / vy</span>
@@ -138,14 +138,14 @@
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="va">h2</span><span class="op">)</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">G</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
-<span class="co">#&gt; [1] -0.43886965  0.09527013  1.04871433  0.93000177  0.03017855  0.67621129</span>
+<span class="co">#&gt; [1]  0.58181941  0.86716529 -1.39435129  0.27284929 -0.06037527 -0.45869272</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1</span>
 
 <span class="va">bv</span> <span class="op">&lt;-</span> <span class="va">G</span> <span class="op">%*%</span> <span class="va">b</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">bv</span>, <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
 <span class="co">#&gt;           [,1]</span>
-<span class="co">#&gt; [1,] 0.4030591</span>
+<span class="co">#&gt; [1,] 0.3996989</span>
 <span class="va">bhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">G</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="va">btheory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">b</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">nsnp</span><span class="op">)</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span>, <span class="va">nid</span><span class="op">)</span>

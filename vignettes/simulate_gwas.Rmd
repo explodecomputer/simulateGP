@@ -99,9 +99,9 @@ The above effects assume all SNPs are completely independent. In order for the c
 
 We need a set of LD matrices to generate realistic LD patterns for a large set of SNPs. LD matrices are available for three major human populations for download here:
 
-- Africans
-- East Asians
-- Europeans
+- Africans - [http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar](http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar)
+- East Asians - [http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar](http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar)
+- Europeans - [http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar](http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar)
 
 The above are large (~5Gb) `.tar` files. Download one and extract, it should contain a directory called `<POP>_1kg_hm3/`, which contains a `map.rds` and a number of `ldobj_<region>.rds` files. We will use the `map.rds` as our genome scaffold - it contains SNPs, chromosomes, positions, alleles and allele frequencies for the specific population. We can then select causal variants for the trait as above, and then introduce the LD transformation before sampling the effect estimates / SEs / p-values etc from the LD-aware effect sizes.
 
@@ -198,5 +198,3 @@ ss <- summary_set(
 	cor_xy=0.5
 )
 ```
-
-

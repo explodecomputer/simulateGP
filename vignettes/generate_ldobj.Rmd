@@ -97,21 +97,21 @@ map_eas <- generate_ldobj(
 	outdir=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
 	bfile=file.path(conf$dl_dir, "EAS_1kg_hm3"), 
 	regions=subset(ldetect, pop=="EAS"),
-	nthreads=2
+	nthreads=16
 )
 
 map_afr <- generate_ldobj(
 	outdir=file.path(conf$dl_dir, "AFR_1kg_hm3"), 
 	bfile=file.path(conf$dl_dir, "AFR_1kg_hm3"), 
 	regions=subset(ldetect, pop=="AFR"),
-	nthreads=2
+	nthreads=16
 )
 
 map_eur <- generate_ldobj(
 	outdir=file.path(conf$dl_dir, "EUR_1kg_hm3"), 
 	bfile=file.path(conf$dl_dir, "EUR_1kg_hm3"), 
 	regions=subset(ldetect, pop=="EUR"),
-	nthreads=2
+	nthreads=16
 )
 ```
 
@@ -159,13 +159,13 @@ ggplot(ss, aes(x=pos, y=-log10(pval))) +
 geom_point()
 ```
 
-Now try whole genome with 100 causal variants - from files - takes less than 2 minutes for HapMap3 
+Now try whole genome with 100 causal variants - from files - takes less than 2 minutes for HapMap3 with 1 thread
 
 ```{r}
 # Generate effects
 params <- map_eas %>% 
 	generate_gwas_params(h2=0.01, Pi=100/nrow(.)) %>%
-	add_ld_to_params(ldobjdir = file.path(conf$dl_dir, "EAS_1kg_hm3"), nthreads=1)
+	add_ld_to_params(ldobjdir = file.path(conf$dl_dir, "EAS_1kg_hm3"), nthreads=16)
 
 # Generate sample estimates
 ss <- params %>%
