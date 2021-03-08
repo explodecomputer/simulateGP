@@ -116,7 +116,7 @@ Begin with a small number of SNPs for illustration. E.g. let's use the first reg
 
 ```{r}
 fn <- list.files(datadir, full.names=TRUE) %>% 
-	grep("ldobj_chr", ., value=TRUE) %>% 
+	grep("ldobj_", ., value=TRUE) %>% 
 	{.[1]}
 ldobj <- readRDS(fn)
 str(ldobj)
@@ -198,3 +198,50 @@ ss <- summary_set(
 	cor_xy=0.5
 )
 ```
+
+## Synthesising sample overlap, LD and architecture
+
+In principle each of these three components are independent modular aspects of the data generating process. This means that we can 
+
+1. Specify the true underlying causal effects according to some model of genetic architecture
+2. Imposing an LD structure on the causal and non-causal effects
+3. Sampling the effect estimates for some sample size and overlap structure
+
+As illustration, assume a polygenic model for both trait X and trait Y, and trait X also has a causal effect on trait Y .
+
+```{r}
+# Define the causal effect
+b_xy <- 0.3
+
+# Start with a variant map
+map <- readRDS(file.path(datadir, "map.rds"))
+
+# Generate genetic effects on trait 1
+paramsx <- map %>%
+	generate_gwas_params(h2=0.5, S=-0.3, Pi=1000/nrow(.))
+
+# Generate genetic effects on trait 2
+paramsy <- map %>%
+	generate_gwas_params(h2=0.5, S=-0.3, Pi=2000/nrow(.))
+paramsy$beta <- paramsy$beta + paramsx$beta * b_xy
+
+# Introduce LD
+paramsx <- paramsx %>%
+	add_ld_to_params(ldobjdir=datadir)
+
+paramsy <- paramsy %>%
+	add_ld_to_params(ldobjdir=datadir)
+
+# Create sample estimates where there is some non-genetic confounding of X and Y and partial overlap of the G-X and G-Y datasets
+ss <- summary_set(
+	beta_gx = paramsx$beta,
+	beta_gy = paramsy$beta,
+	af = paramsx$af,
+	n_gx = 100000,
+	n_gy = 100000,
+	n_overlap = 50000,
+	cor_xy = 0.5
+)
+```
+
+

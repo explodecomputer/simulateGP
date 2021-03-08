@@ -131,18 +131,18 @@ MVN\left (
 <span class="va">se2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">b2</span>, <span class="va">maf</span>, <span class="va">n2</span>, <span class="fl">1</span><span class="op">)</span>
 
 <span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">colMeans</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span>
-<span class="co">#&gt; [1] -0.0009173772</span>
+<span class="co">#&gt; [1] 0.001418015</span>
 <span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">colMeans</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span>
-<span class="co">#&gt; [1] -0.0002007015</span>
+<span class="co">#&gt; [1] 0.000686869</span>
 
 <span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">cor</span>
 <span class="co">#&gt;           [,1]      [,2]</span>
-<span class="co">#&gt; [1,] 1.0000000 0.4999847</span>
-<span class="co">#&gt; [2,] 0.4999847 1.0000000</span>
+<span class="co">#&gt; [1,] 1.0000000 0.5032299</span>
+<span class="co">#&gt; [2,] 0.5032299 1.0000000</span>
 <span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">cor</span>
-<span class="co">#&gt;              [,1]         [,2]</span>
-<span class="co">#&gt; [1,] 1.0000000000 0.0001961305</span>
-<span class="co">#&gt; [2,] 0.0001961305 1.0000000000</span>
+<span class="co">#&gt;            [,1]       [,2]</span>
+<span class="co">#&gt; [1,]  1.0000000 -0.0111895</span>
+<span class="co">#&gt; [2,] -0.0111895  1.0000000</span>
 
 <span class="co"># rsq = F / (F + n -1)</span>
 
@@ -245,18 +245,18 @@ MVN\left (
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_colour_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span><span class="op">)</span>
 <span class="co">#&gt; `geom_smooth()` using method = 'loess' and formula 'y ~ x'</span>
-<span class="co">#&gt; Warning: Removed 136 rows containing non-finite values (stat_smooth).</span>
-<span class="co">#&gt; Warning: Removed 136 rows containing missing values (geom_point).</span></pre></div>
+<span class="co">#&gt; Warning: Removed 29 rows containing non-finite values (stat_smooth).</span>
+<span class="co">#&gt; Warning: Removed 29 rows containing missing values (geom_point).</span></pre></div>
 <p><img src="sample_overlap_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
 
 
 <span class="va">dat1</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.3060952</span>
+<span class="co">#&gt; [1] 0.3291172</span>
 <span class="va">dat2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.3211403</span>
+<span class="co">#&gt; [1] 0.2676392</span>
 <span class="va">dat3</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.3151712</span></pre></div>
+<span class="co">#&gt; [1] 0.2995849</span></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
