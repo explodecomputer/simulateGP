@@ -40,10 +40,11 @@ test_ldobj <- function(nsnp, chunksize)
 #' @param to to bp
 #' @param bfile LD reference panel
 #' @param plink_bin Plink binary default=genetics.binaRies::get_plink_binary()
+#' @param nref Sample size of reference panel
 #'
 #' @export
 #' @return List of LD matrix and map info including MAF
-get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_binary())
+get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_binary(), nref=NULL)
 {
 	# Make textfile
 	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
@@ -72,7 +73,12 @@ get_ld <- function(chr, from, to, bfile, plink_bin=genetics.binaRies::get_plink_
 		names(y) <- c("chr", "snp", "gp", "pos", "alt", "ref")
 		y <- dplyr::select(y, -gp)
 		y$af <- z$MAF
-		out <- list(ld=x, map=y)
+		if(is.null(nref))
+		{
+			cmd <- paste0("cat ", bfile, ".fam | wc -l")
+			nref <- system(cmd, intern=TRUE) %>% trimws() %>% as.numeric()
+		}
+		out <- list(ld=x, map=y, nref=nref)
 	} else {
 		out <- NULL
 	}
@@ -98,6 +104,8 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 {
 	dir.create(outdir)
 	codes <- paste0(gsub("chr", "", regions$chr), "_", regions$start, "_", regions$stop)
+	cmd <- paste0("cat ", bfile, ".fam | wc -l")
+	nref <- system(cmd, intern=TRUE) %>% trimws() %>% as.numeric()
 	map <- parallel::mclapply(1:nrow(regions), function(i)
 	{
 		message(i, " of ", nrow(regions))
@@ -106,7 +114,8 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 			from=regions$start[i],
 			to=regions$stop[i],
 			bfile=bfile,
-			plink_bin=plink_bin
+			plink_bin=plink_bin,
+			nref=nref
 		)
 		if(!is.null(out))
 		{

@@ -4,7 +4,14 @@
 \alias{get_ld}
 \title{Get LD matrix for a specified region from bfile reference panel}
 \usage{
-get_ld(chr, from, to, bfile, plink_bin = genetics.binaRies::get_plink_binary())
+get_ld(
+  chr,
+  from,
+  to,
+  bfile,
+  plink_bin = genetics.binaRies::get_plink_binary(),
+  nref = NULL
+)
 }
 \arguments{
 \item{chr}{Chromosome}
@@ -16,6 +23,8 @@ get_ld(chr, from, to, bfile, plink_bin = genetics.binaRies::get_plink_binary())
 \item{bfile}{LD reference panel}
 
 \item{plink_bin}{Plink binary default=genetics.binaRies::get_plink_binary()}
+
+\item{nref}{Sample size of reference panel}
 }
 \value{
 List of LD matrix and map info including MAF
