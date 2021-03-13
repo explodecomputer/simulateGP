@@ -32,22 +32,48 @@ fast_assoc <- function(y, x)
 	))
 }
 
+logistic_assoc <- function(y, x)
+{
+	mod <- summary(glm(y ~ x, family="binomial"))$coefficients
+	n <- sum(is.finite(y) & is.finite(x))
+
+	return(list(
+		ahat=mod[1,1],
+		bhat=mod[2,1],
+		se=mod[2,2],
+		fval=mod[2,3]^2,
+		pval=mod[2,4],
+		n=n
+	))
+}
 
 #' Perform association of many SNPs against phenotype
 #'
 #' @param y Vector of phenotypes
 #' @param g Matrix of genotypes
+#' @param logistic Use logistic regression (much slower)? Default=FALSE
 #'
 #' @export
 #' @return Data frame
-gwas <- function(y, g)
+gwas <- function(y, g, logistic=FALSE)
 {
 	out <- matrix(0, ncol(g), 6)
-	for(i in 1:ncol(g))
+	if(logistic)
 	{
-		o <- fast_assoc(y, g[,i])
-		out[i, ] <- unlist(o)
+		stopifnot(all(y %in% c(0,1)))
+		for(i in 1:ncol(g))
+		{
+			o <- logistic_assoc(y, g[,i])
+			out[i, ] <- unlist(o)
+		}
+	} else {
+		for(i in 1:ncol(g))
+		{
+			o <- fast_assoc(y, g[,i])
+			out[i, ] <- unlist(o)
+		}
 	}
+
 	out <- dplyr::as_tibble(out, .name_repair="minimal")
 	names(out) <- names(o)
 	out$snp <- 1:ncol(g)

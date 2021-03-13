@@ -4,12 +4,14 @@
 \alias{gwas}
 \title{Perform association of many SNPs against phenotype}
 \usage{
-gwas(y, g)
+gwas(y, g, logistic = FALSE)
 }
 \arguments{
 \item{y}{Vector of phenotypes}
 
 \item{g}{Matrix of genotypes}
+
+\item{logistic}{Use logistic regression (much slower)? Default=FALSE}
 }
 \value{
 Data frame
