@@ -266,6 +266,160 @@ plot(res2$se, res1$se)
 ```
 
 
-**TODO: simulate effect estimates for SNPs given LD matrix**
+## Sensitivitiy to HWE
 
+The summary data results are not always perfect.
 
+```{r}
+make_correlated_vars <- function(nid, nsnp, af)
+{
+  x <- matrix(0, nid, nsnp)
+  x[,1] <- rbinom(nid, 2, af)
+  for(i in 2:nsnp)
+  {
+    x[,i] <- rbinom(nid, 2, plogis(scale(x[,i-1])))
+  }
+  return(x)
+}
+
+make_correlated_vars <- function(nid, nsnp, af)
+{
+  x <- matrix(0, nid, nsnp)
+  x[,1] <- rbinom(nid, 2, af)
+  for(i in 2:nsnp)
+  {
+  	index <- sample(1:nid, runif(1) * nid, replace=FALSE)
+  	x[,i] <- x[,i-1]
+    x[index,i] <- sample(x[index,i-1])
+  }
+  return(x)
+}
+
+```
+
+Simulate correlated variables
+
+```{r}
+set.seed(12345)
+nid <- 1000000
+nsnp <- 10
+X <- make_correlated_vars(nid, nsnp, 0.5)
+rho <- cor(X)
+heatmap(rho)
+```
+
+Get estimates from individual level data
+
+```{r}
+b <- c(0.4, rep(0,nsnp-1))
+y <- X %*% b + rnorm(nid)
+out <- gwas(y, X)
+```
+
+Now from summary data directly
+
+```{r}
+map <- tibble(snp=1:10, af=colMeans(X)/2)
+out2 <- map %>%
+  mutate(beta=b) %>%
+  generate_gwas_ss(nid, ld=rho, vy=var(y))
+```
+
+Compare beta estimates
+
+```{r}
+plot(out2$bhat ~ out$bhat)
+```
+
+Compare se
+
+```{r}
+plot(out2$se ~ out$se)
+```
+
+When there is a real effect the SE is correct, but the SE for the null effects are slightly too large.
+
+Check with uncorrelated variables
+
+```{r}
+Xu <- matrix(rbinom(nid * nsnp, 2, 0.5), nid, nsnp)
+y <- Xu %*% b + rnorm(nid)
+outu <- gwas(y, Xu)
+
+rhou <- cor(Xu)
+heatmap(rhou)
+```
+
+Generate summary data
+
+```{r}
+map <- tibble(snp=1:10, af=colMeans(Xu)/2)
+out3 <- map %>%
+  mutate(beta=b) %>%
+  generate_gwas_ss(nid, vy=var(y))
+```
+
+Compare betas
+
+```{r}
+plot(out3$bhat ~ outu$bhat)
+```
+
+Compare se
+
+```{r}
+plot(out3$se ~ outu$se)
+```
+
+Suddenly well behaved...?
+
+Try to re-generate the expected SEs, where is the problem arising?
+
+```{r}
+mod <- lm(y ~ X[,10])
+resid <- residuals(mod)
+af <- colMeans(X)/2
+```
+
+Actual SE
+
+```{r}
+summary(mod)$coef[2,2]
+```
+
+Which comes from
+
+```{r}
+(sd(resid) * sqrt((nid-1)/(nid-2))) / sqrt(nid) * (1/sd(X[,10]))
+```
+
+Now work backwards, introducing more summary level information to replace individual level calculations. Estimate residual variance:
+
+```{r}
+(sqrt(var(y) - out$bhat[10]^2 * var(X[,10])) * sqrt((nid-1)/(nid-2))) / sqrt(nid) * (1/sd(X[,10]))
+```
+
+Estimate residual variance from simulated beta
+
+```{r}
+(sqrt(var(y) - b[10]^2 * 2 * af[10] * (1-af[10])) * sqrt((nid-1)/(nid-2))) / sqrt(nid) * (1/sd(X[,10]))
+```
+
+Use allele frequency to estimate residual variance (very marginal as it explains a tiny amount)
+
+```{r}
+(sqrt(var(y) - b[10]^2 * 2 * af[10] * (1-af[10])) * sqrt((nid-1)/(nid-2))) / sqrt(nid) * (1/sd(X[,10]))
+```
+
+Now use allele frequency to estimate variance of X
+
+```{r}
+(sqrt(var(y) - b[10]^2 * 2 * af[10] * (1-af[10])) * sqrt((nid-1)/(nid-2))) / sqrt(nid) * (1/sqrt(2*af[10]*(1-af[10])))
+```
+
+If the SNP is not in HWE then there will be a problem
+
+```{r}
+sd(X[,10])
+sqrt(2 * af[10] * (1-af[10]))
+```

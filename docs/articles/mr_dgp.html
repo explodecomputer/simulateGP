@@ -254,7 +254,7 @@ p_j \sim Beta(\alpha=2,\beta=2)
 <div class="sourceCode" id="cb22"><pre class="downlit">
 <span class="va">bgx</span> <span class="op">&lt;-</span> <span class="fu">generate_beta_gx</span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">rbeta</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, h2 <span class="op">=</span> <span class="fl">0.5</span>, S <span class="op">=</span> <span class="fl">0</span>, h2_inst <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">bgx</span><span class="op">$</span><span class="va">instrument</span><span class="op">)</span></pre></div>
-<pre><code>## [1] 398</code></pre>
+<pre><code>## [1] 388</code></pre>
 <p>These parameters give something similar to the number of detected hits for BMI. Check that the distribution of rsq values are similar. BMI (black) and simulated (red):</p>
 <div class="sourceCode" id="cb24"><pre class="downlit">
 <span class="va">bmi_hits</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">rsq</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">rsq</span><span class="op">)</span><span class="op">}</span>
@@ -285,7 +285,7 @@ p_j \sim Beta(\alpha=2,\beta=2)
 <div class="sourceCode" id="cb26"><pre class="downlit">
 <span class="va">bgx</span> <span class="op">&lt;-</span> <span class="fu">generate_beta_gx2</span><span class="op">(</span>af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">90000</span><span class="op">)</span><span class="op">)</span>, h2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.48</span><span class="op">)</span>, S<span class="op">=</span><span class="fl">0</span>, h2_inst<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">bgx</span><span class="op">$</span><span class="va">instrument</span><span class="op">)</span></pre></div>
-<pre><code>## [1] 441</code></pre>
+<pre><code>## [1] 439</code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit">
 <span class="va">bmi_hits</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">rsq</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">rsq</span><span class="op">)</span><span class="op">}</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">bgx</span>, <span class="va">instrument</span><span class="op">)</span><span class="op">$</span><span class="va">rsq</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></pre></div>
@@ -420,15 +420,15 @@ y_i &amp;= a^y + \beta_{yx} x_i + \beta_{yC}C_i + \beta_{yG}G_i + \epsilon^y_i
 ## 
 ## Weighted Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -6.8233 -1.9684 -0.0491  1.5358  7.8172 
+## -7.9113 -1.8288  0.0775  1.8394  9.0463 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)
-## bgxhat$bhat  0.02338    0.06412   0.365    0.716
+## bgxhat$bhat  0.06911    0.06633   1.042    0.298
 ## 
-## Residual standard error: 2.731 on 294 degrees of freedom
-## Multiple R-squared:  0.0004519,  Adjusted R-squared:  -0.002948 
-## F-statistic: 0.1329 on 1 and 294 DF,  p-value: 0.7157</code></pre>
+## Residual standard error: 2.78 on 290 degrees of freedom
+## Multiple R-squared:  0.00373,    Adjusted R-squared:  0.0002944 
+## F-statistic: 1.086 on 1 and 290 DF,  p-value: 0.2983</code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit">
 <span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span>
   h2 <span class="op">=</span> <span class="fl">0.5</span>,
@@ -539,16 +539,16 @@ y_i &amp;= a^y + \beta_{yx} x_i + \beta_{yC}C_i + \beta_{yG}G_i + \epsilon^y_i
 ## lm(formula = bgyhat$bhat ~ 0 + bgxhat$bhat, weights = 1/bgyhat$se^2)
 ## 
 ## Weighted Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.6842 -0.5765 -0.0174  0.7065  3.4501 
+##      Min       1Q   Median       3Q      Max 
+## -3.00661 -0.69051 -0.00418  0.63580  2.52028 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)
-## bgxhat$bhat -0.02710    0.03324  -0.815    0.415
+## bgxhat$bhat -0.03316    0.03276  -1.012    0.312
 ## 
-## Residual standard error: 0.9769 on 390 degrees of freedom
-## Multiple R-squared:  0.001701,   Adjusted R-squared:  -0.0008585 
-## F-statistic: 0.6646 on 1 and 390 DF,  p-value: 0.4154</code></pre>
+## Residual standard error: 0.9838 on 390 degrees of freedom
+## Multiple R-squared:  0.002621,   Adjusted R-squared:  6.346e-05 
+## F-statistic: 1.025 on 1 and 390 DF,  p-value: 0.312</code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit">
 <span class="va">index</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">c</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">c</span><span class="op">)</span>
 <span class="va">bgxhat1</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">::</span><span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">index</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">G</span><span class="op">[</span><span class="va">index</span>,<span class="op">]</span><span class="op">)</span>
@@ -564,18 +564,18 @@ y_i &amp;= a^y + \beta_{yx} x_i + \beta_{yC}C_i + \beta_{yG}G_i + \epsilon^y_i
 ## lm(formula = bgyhat1$bhat ~ 0 + bgxhat1$bhat, weights = 1/bgyhat1$se^2)
 ## 
 ## Weighted Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.2097 -0.5342  0.0264  0.6571  2.8501 
+##      Min       1Q   Median       3Q      Max 
+## -2.78142 -0.72147 -0.07354  0.52912  2.25477 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error t value Pr(&gt;|t|)    
-## bgxhat1$bhat -0.23759    0.03891  -6.106 2.48e-09 ***
+## bgxhat1$bhat -0.20363    0.03694  -5.513 6.44e-08 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.9418 on 390 degrees of freedom
-## Multiple R-squared:  0.08724,    Adjusted R-squared:  0.0849 
-## F-statistic: 37.28 on 1 and 390 DF,  p-value: 2.478e-09</code></pre>
+## Residual standard error: 0.9508 on 390 degrees of freedom
+## Multiple R-squared:  0.07229,    Adjusted R-squared:  0.06991 
+## F-statistic: 30.39 on 1 and 390 DF,  p-value: 6.438e-08</code></pre>
 <div class="sourceCode" id="cb41"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bgyhat2</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">bgxhat2</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></pre></div>
 <p><img src="mr_dgp_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
@@ -587,17 +587,17 @@ y_i &amp;= a^y + \beta_{yx} x_i + \beta_{yC}C_i + \beta_{yG}G_i + \epsilon^y_i
 ## 
 ## Weighted Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.87384 -0.61282  0.02941  0.66996  3.01409 
+## -3.15970 -0.55933 -0.03055  0.66115  2.48211 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error t value Pr(&gt;|t|)    
-## bgxhat2$bhat  0.14884    0.03817     3.9 0.000113 ***
+## bgxhat2$bhat  0.15664    0.03624   4.322 1.97e-05 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.968 on 390 degrees of freedom
-## Multiple R-squared:  0.03753,    Adjusted R-squared:  0.03506 
-## F-statistic: 15.21 on 1 and 390 DF,  p-value: 0.0001133</code></pre>
+## Residual standard error: 0.9178 on 390 degrees of freedom
+## Multiple R-squared:  0.04571,    Adjusted R-squared:  0.04326 
+## F-statistic: 18.68 on 1 and 390 DF,  p-value: 1.965e-05</code></pre>
 </div>
 <div id="model-3---the-interacting-variable-from-2-is-proxied-by-a-large-number-of-proxies" class="section level1">
 <h1 class="hasAnchor">
@@ -728,7 +728,7 @@ y &amp;= P\beta_{yp} + u \beta_{yu} + e^y
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">dgp4</span><span class="op">(</span>sample_size<span class="op">=</span><span class="fl">10000</span>, h2<span class="op">=</span><span class="fl">0.5</span>, nvariants<span class="op">=</span><span class="fl">40000</span>, h2_inst<span class="op">=</span><span class="fl">0.05</span>, S<span class="op">=</span><span class="fl">0</span>, maf_alpha<span class="op">=</span><span class="fl">1</span>, maf_beta<span class="op">=</span><span class="fl">1</span>, r_yx<span class="op">=</span><span class="fl">0</span>, r_xu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>, r_yu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>, r_xp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>, r_yp<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0</span><span class="op">)</span>, r_pu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>, rsq_yg<span class="op">=</span><span class="fl">0</span><span class="op">)</span></pre></div>
 <pre><code>## index
 ##   1   2   3 
-## 101 251  40</code></pre>
+##  99 256  45</code></pre>
 <div class="sourceCode" id="cb49"><pre class="downlit">
 <span class="va">bgxhat</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">::</span><span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">G</span><span class="op">)</span>
 <span class="va">bgyhat</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">::</span><span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">G</span><span class="op">)</span>
@@ -742,17 +742,17 @@ y &amp;= P\beta_{yp} + u \beta_{yu} + e^y
 ## 
 ## Weighted Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -4.1384 -0.8665 -0.0633  0.7339  3.7169 
+## -3.5975 -0.7643  0.1351  0.9331  3.4232 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## bgxhat$bhat  0.15327    0.03766    4.07 5.69e-05 ***
+## bgxhat$bhat  0.17196    0.03633   4.733 3.07e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.226 on 391 degrees of freedom
-## Multiple R-squared:  0.04064,    Adjusted R-squared:  0.03819 
-## F-statistic: 16.56 on 1 and 391 DF,  p-value: 5.693e-05</code></pre>
+## Residual standard error: 1.175 on 399 degrees of freedom
+## Multiple R-squared:  0.05317,    Adjusted R-squared:  0.05079 
+## F-statistic:  22.4 on 1 and 399 DF,  p-value: 3.072e-06</code></pre>
 </div>
   </div>
 

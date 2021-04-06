@@ -116,6 +116,7 @@
   <span class='va'>nid</span>,
   vy <span class='op'>=</span> <span class='fl'>1</span>,
   minmaf <span class='op'>=</span> <span class='fl'>0.001</span>,
+  ld <span class='op'>=</span> <span class='cn'>NULL</span>,
   ldobj <span class='op'>=</span> <span class='cn'>NULL</span>,
   ldobjlist <span class='op'>=</span> <span class='cn'>NULL</span>,
   ldobjfiles <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -141,6 +142,10 @@
     <tr>
       <th>minmaf</th>
       <td><p>minimum allowed maf. default=0.01 to prevent instability</p></td>
+    </tr>
+    <tr>
+      <th>ld</th>
+      <td><p>LD correlation matrix. Must be same dimension as params</p></td>
     </tr>
     <tr>
       <th>ldobj</th>

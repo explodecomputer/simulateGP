@@ -111,7 +111,7 @@
 
 <span class="co"># Check that the SNPs explain 5% of the variance in x</span>
 <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.06101182</span>
+<span class="co">#&gt; [1] 0.05191079</span>
 
 <span class="co"># Create Y, which is negatively influenced by x, explaining 10% of the variance in Y#</span>
 <span class="co"># so if the variances of x and y are both 1 then the effect size is about -0.31</span>
@@ -131,11 +131,11 @@
 <span class="co">#&gt; 4           X          Y       Y        X               Simple mode   20</span>
 <span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   20</span>
 <span class="co">#&gt;            b         se         pval</span>
-<span class="co">#&gt; 1 -0.3067359 0.06945463 3.331980e-04</span>
-<span class="co">#&gt; 2 -0.3319027 0.06298175 1.365552e-07</span>
-<span class="co">#&gt; 3 -0.3440340 0.04093057 4.267401e-17</span>
-<span class="co">#&gt; 4 -0.4273474 0.10099633 4.518605e-04</span>
-<span class="co">#&gt; 5 -0.3732034 0.07933612 1.544933e-04</span></pre></div>
+<span class="co">#&gt; 1 -0.2520586 0.12912618 6.666863e-02</span>
+<span class="co">#&gt; 2 -0.2978746 0.06869027 1.447770e-05</span>
+<span class="co">#&gt; 3 -0.3295442 0.05464474 1.632859e-09</span>
+<span class="co">#&gt; 4 -0.3443272 0.09761973 2.251758e-03</span>
+<span class="co">#&gt; 5 -0.2968178 0.08147103 1.729593e-03</span></pre></div>
 <p>The effect size is approx -0.31 as we simulated.</p>
 <div id="more-complex-example" class="section level3">
 <h3 class="hasAnchor">
@@ -169,25 +169,25 @@
 <span class="co">#&gt; 4           X          Y       Y        X               Simple mode   28</span>
 <span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   28</span>
 <span class="co">#&gt;            b         se         pval</span>
-<span class="co">#&gt; 1 -0.2956305 0.08348686 1.528040e-03</span>
-<span class="co">#&gt; 2 -0.3241051 0.02284613 1.111657e-45</span>
-<span class="co">#&gt; 3 -0.3382881 0.03058010 1.910047e-28</span>
-<span class="co">#&gt; 4 -0.3200901 0.03695778 2.820664e-09</span>
-<span class="co">#&gt; 5 -0.3172545 0.03543751 1.442211e-09</span>
+<span class="co">#&gt; 1 -0.2838373 0.10689530 1.335047e-02</span>
+<span class="co">#&gt; 2 -0.2703282 0.02313429 1.517706e-31</span>
+<span class="co">#&gt; 3 -0.2794106 0.04143031 1.539668e-11</span>
+<span class="co">#&gt; 4 -0.2672073 0.03206937 6.092196e-09</span>
+<span class="co">#&gt; 5 -0.2808324 0.02573693 2.115216e-11</span>
 <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">dat2</span>, <span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Analysing 'X' on 'Y'</span>
 <span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   29</span>
-<span class="co">#&gt; 2           X          Y       Y        X           Weighted median   29</span>
-<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   29</span>
-<span class="co">#&gt; 4           X          Y       Y        X               Simple mode   29</span>
-<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   29</span>
+<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   25</span>
+<span class="co">#&gt; 2           X          Y       Y        X           Weighted median   25</span>
+<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   25</span>
+<span class="co">#&gt; 4           X          Y       Y        X               Simple mode   25</span>
+<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   25</span>
 <span class="co">#&gt;           b         se         pval</span>
-<span class="co">#&gt; 1 0.2611408 0.09359298 9.546175e-03</span>
-<span class="co">#&gt; 2 0.2874271 0.02700271 1.852153e-26</span>
-<span class="co">#&gt; 3 0.2912836 0.04023173 4.482034e-13</span>
-<span class="co">#&gt; 4 0.2648308 0.04439272 2.007401e-06</span>
-<span class="co">#&gt; 5 0.3094855 0.02887952 2.044689e-11</span>
+<span class="co">#&gt; 1 0.3432633 0.08412490 4.606535e-04</span>
+<span class="co">#&gt; 2 0.3083818 0.02184220 2.916398e-45</span>
+<span class="co">#&gt; 3 0.3098119 0.02945415 7.103514e-26</span>
+<span class="co">#&gt; 4 0.2890109 0.03666478 4.096575e-08</span>
+<span class="co">#&gt; 5 0.3075490 0.02885087 1.390773e-10</span>
 
 <span class="co"># Do multivariable MR</span>
 <span class="co"># First get the effects for x1, x2 and y, and put them in mv format</span>
@@ -199,11 +199,11 @@
 <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mv_multiple.html">mv_multiple</a></span><span class="op">(</span><span class="va">mvdat</span><span class="op">)</span>
 <span class="co">#&gt; $result</span>
 <span class="co">#&gt;   id.exposure exposure id.outcome outcome nsnp          b         se</span>
-<span class="co">#&gt; 1          x1       x1          y       y   28 -0.3369279 0.01212065</span>
-<span class="co">#&gt; 2          x2       x2          y       y   29  0.2976037 0.01228111</span>
+<span class="co">#&gt; 1          x1       x1          y       y   28 -0.2898420 0.01171008</span>
+<span class="co">#&gt; 2          x2       x2          y       y   25  0.3114361 0.01168375</span>
 <span class="co">#&gt;            pval</span>
-<span class="co">#&gt; 1 4.606670e-170</span>
-<span class="co">#&gt; 2 1.008165e-129</span></pre></div>
+<span class="co">#&gt; 1 2.987998e-135</span>
+<span class="co">#&gt; 2 1.545175e-156</span></pre></div>
 </div>
 </div>
 <div id="generating-summary-data-directly" class="section level2">
@@ -268,11 +268,11 @@
 <span class="co">#&gt; 4           X          Y       Y        X               Simple mode  100</span>
 <span class="co">#&gt; 5           X          Y       Y        X             Weighted mode  100</span>
 <span class="co">#&gt;            b          se         pval</span>
-<span class="co">#&gt; 1 -0.3002642 0.035778493 3.665339e-13</span>
-<span class="co">#&gt; 2 -0.2996721 0.003766891 0.000000e+00</span>
-<span class="co">#&gt; 3 -0.2660478 0.022431174 1.895495e-32</span>
-<span class="co">#&gt; 4 -0.3087840 0.011766201 2.214902e-46</span>
-<span class="co">#&gt; 5 -0.3087840 0.012601099 8.003348e-44</span></pre></div>
+<span class="co">#&gt; 1 -0.3384038 0.034592973 3.590314e-16</span>
+<span class="co">#&gt; 2 -0.3027508 0.003420707 0.000000e+00</span>
+<span class="co">#&gt; 3 -0.3328361 0.022057824 1.905846e-51</span>
+<span class="co">#&gt; 4 -0.2907131 0.020208232 5.369016e-26</span>
+<span class="co">#&gt; 5 -0.2907131 0.020471143 1.276516e-25</span></pre></div>
 </div>
 <div id="sample-overlap-case" class="section level3">
 <h3 class="hasAnchor">
@@ -331,9 +331,9 @@
     <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="va">.</span>, method_list<span class="op">=</span><span class="st">"mr_ivw"</span><span class="op">)</span>
 <span class="co">#&gt; Analysing 'X' on 'Y'</span>
 <span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X Inverse variance weighted   39</span>
-<span class="co">#&gt;           b         se          pval</span>
-<span class="co">#&gt; 1 0.3186653 0.01477096 3.168257e-103</span></pre></div>
+<span class="co">#&gt; 1           X          Y       Y        X Inverse variance weighted   38</span>
+<span class="co">#&gt;           b         se         pval</span>
+<span class="co">#&gt; 1 0.2964795 0.01494314 1.331014e-87</span></pre></div>
 </div>
 </div>
   </div>

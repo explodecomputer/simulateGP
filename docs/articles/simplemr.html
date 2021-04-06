@@ -141,7 +141,7 @@
 <p>Check that the SNPs explain 5% of the variance in x</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.0511963</span></pre></div>
+<span class="co">#&gt; [1] 0.0572949</span></pre></div>
 <p>Create Y, which is negatively influenced by x and positively influenced by the confounder</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span>effs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">beta_xy</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">u</span><span class="op">)</span><span class="op">)</span></pre></div>
@@ -153,14 +153,14 @@
 <span class="co">#&gt; method: 2SLS </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;            N   DF     SSR  detRCov   OLS-R2 McElroy-R2</span>
-<span class="co">#&gt; system 10000 9998 9528.58 0.953049 0.047047   0.047047</span>
+<span class="co">#&gt; system 10000 9998 9549.46 0.955137 0.044959   0.044959</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         N   DF     SSR      MSE     RMSE       R2   Adj R2</span>
-<span class="co">#&gt; eq1 10000 9998 9528.58 0.953049 0.976242 0.047047 0.046951</span>
+<span class="co">#&gt; eq1 10000 9998 9549.46 0.955137 0.977311 0.044959 0.044863</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; The covariance matrix of the residuals</span>
 <span class="co">#&gt;          eq1</span>
-<span class="co">#&gt; eq1 0.953049</span>
+<span class="co">#&gt; eq1 0.955137</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; The correlations of the residuals</span>
 <span class="co">#&gt;     eq1</span>
@@ -171,16 +171,16 @@
 <span class="co">#&gt; Model Formula: y ~ x</span>
 <span class="co">#&gt; Instruments: ~g</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;                 Estimate   Std. Error  t value   Pr(&gt;|t|)    </span>
-<span class="co">#&gt; (Intercept) -6.72797e-18  9.76242e-03  0.00000          1    </span>
-<span class="co">#&gt; x           -2.27575e-01  4.33722e-02 -5.24703 1.5774e-07 ***</span>
+<span class="co">#&gt;                 Estimate   Std. Error t value  Pr(&gt;|t|)    </span>
+<span class="co">#&gt; (Intercept) -7.46174e-18  9.77311e-03   0.000         1    </span>
+<span class="co">#&gt; x           -2.92897e-01  4.08902e-02  -7.163 8.451e-13 ***</span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.976242 on 9998 degrees of freedom</span>
+<span class="co">#&gt; Residual standard error: 0.977311 on 9998 degrees of freedom</span>
 <span class="co">#&gt; Number of observations: 10000 Degrees of Freedom: 9998 </span>
-<span class="co">#&gt; SSR: 9528.57923 MSE: 0.953049 Root MSE: 0.976242 </span>
-<span class="co">#&gt; Multiple R-Squared: 0.047047 Adjusted R-Squared: 0.046951</span></pre></div>
+<span class="co">#&gt; SSR: 9549.459138 MSE: 0.955137 Root MSE: 0.977311 </span>
+<span class="co">#&gt; Multiple R-Squared: 0.044959 Adjusted R-Squared: 0.044863</span></pre></div>
 <p>Compare against confounded observational estimate</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span>
@@ -190,18 +190,18 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Residuals:</span>
 <span class="co">#&gt;     Min      1Q  Median      3Q     Max </span>
-<span class="co">#&gt; -3.9817 -0.6614 -0.0137  0.6659  3.9991 </span>
+<span class="co">#&gt; -3.9867 -0.6446  0.0158  0.6567  3.7199 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;               Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">#&gt; (Intercept) -7.671e-17  9.762e-03    0.00        1    </span>
-<span class="co">#&gt; x           -2.172e-01  9.762e-03  -22.24   &lt;2e-16 ***</span>
+<span class="co">#&gt; (Intercept)  1.952e-16  9.748e-03    0.00        1    </span>
+<span class="co">#&gt; x           -2.232e-01  9.749e-03  -22.89   &lt;2e-16 ***</span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.9762 on 9998 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-squared:  0.04716,    Adjusted R-squared:  0.04706 </span>
-<span class="co">#&gt; F-statistic: 494.8 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</span></pre></div>
+<span class="co">#&gt; Residual standard error: 0.9748 on 9998 degrees of freedom</span>
+<span class="co">#&gt; Multiple R-squared:  0.04982,    Adjusted R-squared:  0.04972 </span>
+<span class="co">#&gt; F-statistic: 524.2 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</span></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

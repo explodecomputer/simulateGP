@@ -36,7 +36,8 @@ expected_ssx <- function(af, n)
 #' @return array of standard errors
 expected_se <- function(beta, af, n, vy)
 {
-	sqrt(expected_mse(beta, af, vy) / expected_ssx(af, n))
+	# sqrt(expected_mse(beta, af, vy) / expected_ssx(af, n))
+	sqrt(c(vy) - beta^2 * 2 * af * (1-af)) / sqrt(c(n)) * (1 / sqrt(2 * af * (1-af)))
 }
 
 #' Sample beta values given standard errors
@@ -57,8 +58,7 @@ sample_beta <- function(beta, se, r=NULL, af=NULL)
 	} else {
 		xvar <- 2 * af * (1-af)
 		semat <- diag(se) %*% r %*% diag(se)
-		MASS::mvrnorm(length(beta), mu=beta, Sigma=semat) %>% 
-			diag() %>%
+		MASS::mvrnorm(1, mu=beta, Sigma=semat) %>%
 			return()
 	}
 }
@@ -105,6 +105,7 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 #' @param nid sample size
 #' @param vy Variance of trait
 #' @param minmaf minimum allowed maf. default=0.01 to prevent instability
+#' @param ld LD correlation matrix. Must be same dimension as params
 #' @param ldobj LD objects (e.g. see test_ldobj)
 #' @param ldobjlist List of LD objects 
 #' @param ldobjfiles Array of filenames containing LD object files (e.g. see \code{generate_ldobj})
@@ -113,10 +114,17 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 #'
 #' @export
 #' @return Updated params
-generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
+generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ld = NULL, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
 {
 	params <- subset(params, !duplicated(snp))
 	stopifnot(all(params$af > 0 & params$af < 1))
+
+	if(!is.null(ld))
+	{
+		stopifnot(nrow(ld) == nrow(params))
+		x <- generate_gwas_ss_1(params, nid, vy, minmaf, ld)
+		return(x)
+	}
 
 	if(!is.null(ldobj))
 	{
@@ -226,8 +234,8 @@ generate_gwas_ss_1 <- function(params, nid, vy=1, minmaf=0.01, r=NULL)
 		params <- params %>%
 			dplyr::mutate(
 				af = pmax(minmaf, af) %>% pmin(1-minmaf, 1-af),
-				se = expected_se(beta, af, nid, vy),
 				beta_ld = (diag(1/xvar) %*% r %*% diag(xvar) %*% beta) %>% drop(),
+				se = expected_se(beta_ld, af, nid, vy),
 				bhat = sample_beta(beta_ld, se, r, af),
 				fval = (bhat / se)^2,
 				n = nid,

@@ -9,6 +9,7 @@ generate_gwas_ss(
   nid,
   vy = 1,
   minmaf = 0.001,
+  ld = NULL,
   ldobj = NULL,
   ldobjlist = NULL,
   ldobjfiles = NULL,
@@ -24,6 +25,8 @@ generate_gwas_ss(
 \item{vy}{Variance of trait}
 
 \item{minmaf}{minimum allowed maf. default=0.01 to prevent instability}
+
+\item{ld}{LD correlation matrix. Must be same dimension as params}
 
 \item{ldobj}{LD objects (e.g. see test_ldobj)}
 
