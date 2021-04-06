@@ -1,0 +1,107 @@
+---
+title: "Comparing SuSIE results with summary level vs individual level simulations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparing SuSIE results with summary level vs individual level simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  eval=FALSE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simulateGP)
+library(tidyverse)
+library(susieR)
+```
+
+## Compare summary level simulations against individual level simulations
+
+```{r}
+ldobj <- readRDS("~/data/ld_files/ldmat/EUR_1kg_hm3/ldobj_chr9_30387392_31310382.rds")
+set.seed(1234)
+nid <- 100000
+params <- ldobj$map %>%
+  generate_gwas_params(h2=0.02, Pi=3/nrow(ldobj$map)) %>%
+  generate_gwas_ss(nid, ldobj=ldobj)
+
+X <- MASS::mvrnorm(nid, rep(0, nrow(ldobj$ld)), ldobj$ld)
+for(i in 1:ncol(X))
+{
+	X[,i] <- X[,i] * sqrt(2 * ldobj$map$af[i] * (1-ldobj$map$af[i]))
+}
+
+Xb <- X %*% params$beta
+y <- Xb + rnorm(nid, sd=sqrt(1 - var(Xb)))
+out <- gwas(y, X)
+```
+
+```{r}
+plot(cor(X), ldobj$ld)
+```
+
+```{r}
+plot(out$bhat ~ params$bhat)
+```
+
+Run SuSIE
+
+```{r}
+sus <- susieR::susie_rss(params$bhat/params$se, R = ldobj$ld, check_R=FALSE)
+susieR::susie_plot(sus, y="PIP", b=params$beta)
+sus$sets
+
+sui <- susieR::susie_rss(out$bhat / out$se, R = ldobj$ld, check_R=FALSE)
+susieR::susie_plot(sui, y="PIP", b=params$beta)
+sui$sets
+```
+
+## Compare two different populations
+
+
+```{r}
+ldobj1 <- readRDS("~/data/ld_files/ldmat/EUR_1kg_hm3/ldobj_chr22_26791628_27834751.rds")
+ldobj2 <- readRDS("~/data/ld_files/ldmat/EAS_1kg_hm3/ldobj_chr22_26524344_28233389.rds")
+
+snps <- ldobj1$map$snp[ldobj1$map$snp %in% ldobj2$map$snp] 
+index1 <- which(ldobj1$map$snp %in% snps)
+index2 <- which(ldobj2$map$snp %in% snps)
+ldobj1$map <- ldobj1$map[index1,]
+ldobj1$ld <- ldobj1$ld[index1, index1]
+ldobj2$map <- ldobj2$map[index2,]
+ldobj2$ld <- ldobj2$ld[index2, index2]
+length(snps)
+
+set.seed(1111)
+nid <- 100000
+params1 <- ldobj1$map %>%
+  generate_gwas_params(h2=0.02, Pi=3/nrow(ldobj1$map)) %>%
+  generate_gwas_ss(nid, ldobj=ldobj1)
+
+params2 <- ldobj2$map %>%
+	mutate(beta = params1$beta) %>%
+	generate_gwas_ss(nid, ldobj=ldobj2)	
+
+bind_rows(params1 %>% mutate(pop="EUR"), params2 %>% mutate(pop="EAS")) %>%
+	ggplot(., aes(x=pos, y=-log10(pval))) +
+	geom_point(aes(colour=beta == 0)) +
+	facet_grid(pop ~ .)
+```
+
+Run SuSIE
+
+```{r}
+su1 <- susieR::susie_rss(params1$bhat/params1$se, R = ldobj1$ld, check_R=FALSE)
+susieR::susie_plot(su1, y="PIP", b=params1$beta)
+su1$sets
+
+su2 <- susieR::susie_rss(params2$bhat/params2$se, R = ldobj2$ld, check_R=FALSE)
+susieR::susie_plot(su2, y="PIP", b=params2$beta)
+su2$sets
+```

@@ -44,7 +44,7 @@ test_that("gwas summary data", {
 
 	out <- ldobj$map %>%
 		generate_gwas_params(h2=0.3, S=0.3, Pi=3/nsnp) %>%
-		generate_gwas_ss(100000, ld=ldobj)
+		generate_gwas_ss(100000, ld=ldobj$ld)
 	expect_equal(nrow(out), nsnp)
 	expect_true(sum(out$pval < 5e-8) > 3)
 
