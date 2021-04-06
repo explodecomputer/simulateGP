@@ -111,18 +111,26 @@
     <p>Sample beta values given standard errors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sample_beta</span><span class='op'>(</span><span class='va'>beta</span>, <span class='va'>se</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>sample_beta</span><span class='op'>(</span><span class='va'>beta</span>, <span class='va'>se</span>, r <span class='op'>=</span> <span class='cn'>NULL</span>, af <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>beta</th>
-      <td><p>array of beta values</p></td>
+      <td><p>array of beta values - i.e. the true coefficients. If using the correlation matrix r then this should be an LD-aware set of expected beta values.</p></td>
     </tr>
     <tr>
       <th>se</th>
       <td><p>array of se values</p></td>
+    </tr>
+    <tr>
+      <th>r</th>
+      <td><p>matrix of LD correlations amongst the SNPs. If NULL (default) then assumes no LD</p></td>
+    </tr>
+    <tr>
+      <th>af</th>
+      <td><p>array of allele frequencies. Must be non-null if r is non-null.</p></td>
     </tr>
     </table>
 

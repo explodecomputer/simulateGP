@@ -81,10 +81,10 @@ where $p$ is the allele frequency of the SNP and $n$ is the sample size. The num
 
 $$
 \begin{aligned}
-\sum \epsilon_i^2 &= \sum(y_i - \hat{y}_i)^2 / (n-1) \\
-&= Var(y) - r^2 Var(y) \\
-&\approx Var(y) - \hat{\beta}_1^2 Var(x) \\
-&\approx Var(y) - 2 p(1-p) \hat{\beta}_1^2
+\sum \epsilon_i^2 &= \sum(y_i - \hat{y}_i)^2 \\
+&= (n-1)(Var(y) - r^2 Var(y)) \\
+&\approx (n-1)(Var(y) - \hat{\beta}_1^2 Var(x)) \\
+&\approx (n-1)(Var(y) - 2 p(1-p) \hat{\beta}_1^2)
 \end{aligned}
 $$
 

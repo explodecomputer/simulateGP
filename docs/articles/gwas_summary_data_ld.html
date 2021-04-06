@@ -109,26 +109,23 @@ R^2 = \frac{\hat{\boldsymbol{b}}' \boldsymbol{X}'\boldsymbol{y} \boldsymbol{\hat
 <p><span class="math display">\[
 \rho_{jk} = \frac{\sum^n{ x_j x_k}}{\sqrt{\sum^n{x_j^2}\sum^n{x_k^2}}}
 \]</span></p>
-<p>We can generate the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix by first calculating the sums of squares of each of the SNPs such that</p>
+<p>We can generate the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix by first calculating the sums of squares of each of the SNPs such that, which is represented in the diagonal matrix <span class="math inline">\(D\)</span></p>
 <p><span class="math display">\[
-s_j = \sum^n{x_j} = 2p_j(1-p_j)n
+D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 \]</span></p>
-<p>and the denominater of the correlation equation can be obtained from</p>
+<p>and re-writing X’X as</p>
 <p><span class="math display">\[
-\boldsymbol{ss'}
+\boldsymbol{X'X} = \boldsymbol{\rho} \sqrt{\boldsymbol{D}}
 \]</span></p>
-<p>Finally, given a correlation matrix <span class="math display">\[\boldsymbol{\rho}\]</span></p>
+<p>Finally</p>
 <p><span class="math display">\[
-\boldsymbol{X'X} = \boldsymbol{\rho} \circ \sqrt{\boldsymbol{ss'}}
+\boldsymbol{\beta} = \boldsymbol{D^{-1/2}} \boldsymbol{\rho} \boldsymbol{D^{1/2}} \boldsymbol{b}
 \]</span></p>
-<p>Putting it together:</p>
+<p>To generate the standard errors we need to allow for the sampling variance of each neighboring SNP to be correlated, such that</p>
 <p><span class="math display">\[
-\boldsymbol{\beta} = \boldsymbol{b (\rho \circ \sqrt{ss'}) D^{-1}}
+\boldsymbol{Cov(\hat{\beta})} = \boldsymbol{S} \boldsymbol{\rho} \boldsymbol{S}
 \]</span></p>
-<p>This all reduces to:</p>
-<p><span class="math display">\[
-\boldsymbol{\beta} = \boldsymbol{b \rho}
-\]</span></p>
+<p>Where S is a diagonal matrix of expected marginal standard errors for each SNP.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="va">calcs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
 <span class="op">{</span>

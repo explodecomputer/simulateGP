@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform association of many SNPs against phenotype — gwas • simulateGP</title>
+<title>Create a GWAS summary dataset — generate_gwas_ss_1 • simulateGP</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Perform association of many SNPs against phenotype — gwas" />
-<meta property="og:description" content="Perform association of many SNPs against phenotype" />
+<meta property="og:title" content="Create a GWAS summary dataset — generate_gwas_ss_1" />
+<meta property="og:description" content="Determines SE and generates effect estimates given input parameters" />
 
 
 
@@ -102,37 +102,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform association of many SNPs against phenotype</h1>
-    <small class="dont-index">Source: <a href='https://github.com/explodecomputer/simulateGP/blob/master/R/fast_assoc.r'><code>R/fast_assoc.r</code></a></small>
-    <div class="hidden name"><code>gwas.Rd</code></div>
+    <h1>Create a GWAS summary dataset</h1>
+    <small class="dont-index">Source: <a href='https://github.com/explodecomputer/simulateGP/blob/master/R/theoretical_gwas.R'><code>R/theoretical_gwas.R</code></a></small>
+    <div class="hidden name"><code>generate_gwas_ss_1.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform association of many SNPs against phenotype</p>
+    <p>Determines SE and generates effect estimates given input parameters</p>
     </div>
 
-    <pre class="usage"><span class='fu'>gwas</span><span class='op'>(</span><span class='va'>y</span>, <span class='va'>g</span>, logistic <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>generate_gwas_ss_1</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>nid</span>, vy <span class='op'>=</span> <span class='fl'>1</span>, minmaf <span class='op'>=</span> <span class='fl'>0.01</span>, r <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>y</th>
-      <td><p>Vector of phenotypes</p></td>
+      <th>params</th>
+      <td><p>Output from <code>generate_gwas_params</code></p></td>
     </tr>
     <tr>
-      <th>g</th>
-      <td><p>Matrix of genotypes</p></td>
+      <th>nid</th>
+      <td><p>sample size</p></td>
     </tr>
     <tr>
-      <th>logistic</th>
-      <td><p>Use logistic regression (much slower)? Default=FALSE</p></td>
+      <th>vy</th>
+      <td><p>Variance of trait</p></td>
+    </tr>
+    <tr>
+      <th>minmaf</th>
+      <td><p>minimum allowed maf. default=0.01 to prevent instability</p></td>
+    </tr>
+    <tr>
+      <th>r</th>
+      <td><p>LD correlation matrix. If NULL (default) then creates LD unaware sampling errors</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Data frame</p>
+    <p>list of data frames</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

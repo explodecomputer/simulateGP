@@ -73,35 +73,31 @@ $$
 \rho_{jk} = \frac{\sum^n{ x_j x_k}}{\sqrt{\sum^n{x_j^2}\sum^n{x_k^2}}}
 $$
 
-We can generate the $\boldsymbol{X'X}$ matrix by first calculating the sums of squares of each of the SNPs such that 
+We can generate the $\boldsymbol{X'X}$ matrix by first calculating the sums of squares of each of the SNPs such that, which is represented in the diagonal matrix $D$
 
 $$
-s_j = \sum^n{x_j} = 2p_j(1-p_j)n
+D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 $$
 
-and the denominater of the correlation equation can be obtained from
+and re-writing X'X as
 
 $$
-\boldsymbol{ss'}
+\boldsymbol{X'X} = \boldsymbol{\rho} \sqrt{\boldsymbol{D}}
 $$
 
-Finally, given a correlation matrix $$\boldsymbol{\rho}$$
+Finally
 
 $$
-\boldsymbol{X'X} = \boldsymbol{\rho} \circ \sqrt{\boldsymbol{ss'}}
+\boldsymbol{\beta} = \boldsymbol{D^{-1/2}} \boldsymbol{\rho} \boldsymbol{D^{1/2}} \boldsymbol{b}
 $$
 
-Putting it together:
+To generate the standard errors we need to allow for the sampling variance of each neighboring SNP to be correlated, such that 
 
 $$
-\boldsymbol{\beta} = \boldsymbol{b (\rho \circ \sqrt{ss'}) D^{-1}}
+\boldsymbol{Cov(\hat{\beta})} = \boldsymbol{S} \boldsymbol{\rho} \boldsymbol{S}
 $$
 
-This all reduces to:
-
-$$
-\boldsymbol{\beta} = \boldsymbol{b \rho}
-$$
+Where S is a diagonal matrix of expected marginal standard errors for each SNP.
 
 ```{r}
 calcs <- function(x, y, b)

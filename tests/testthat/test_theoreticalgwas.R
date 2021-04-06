@@ -29,8 +29,7 @@ test_that("gwas summary data", {
 		dplyr::bind_rows()
 	out <- map %>%
 		generate_gwas_params(h2=0.3, S=0.3, Pi=3/nsnp) %>%
-		add_ld_to_params(ldobjlist=ldobjlist) %>%
-		generate_gwas_ss(100000)
+		generate_gwas_ss(100000, ldobjlist=ldobjlist)
 	expect_equal(nrow(out), nsnp)
 	expect_true(sum(out$pval < 5e-8) > 3)
 	# ggplot(out, aes(pos, -log10(pval))) + geom_point() + facet_grid(. ~ chr)
@@ -39,8 +38,7 @@ test_that("gwas summary data", {
 	nsnp <- nrow(ldobj$map)
 	out <- ldobj$map %>%
 		generate_gwas_params(h2=0.3, S=0.3, Pi=3/nsnp) %>%
-		add_ld_to_params(ldobj=ldobj) %>%
-		generate_gwas_ss(100000)
+		generate_gwas_ss(100000, ldobj=ldobj)
 	expect_equal(nrow(out), nsnp)
 	expect_true(sum(out$pval < 5e-8) > 3)
 })

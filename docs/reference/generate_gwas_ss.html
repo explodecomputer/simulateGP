@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a GWAS summary dataset — generate_gwas_ss • simulateGP</title>
+<title>Modify SNP effects to account for LD — generate_gwas_ss • simulateGP</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Create a GWAS summary dataset — generate_gwas_ss" />
-<meta property="og:description" content="Determines SE and generates effect estimates given input parameters" />
+<meta property="og:title" content="Modify SNP effects to account for LD — generate_gwas_ss" />
+<meta property="og:description" content="After generating the set of causal effects at each SNP, use an LD correlation matrix to transform the effects to reflect the correlation structure at the SNPs. Note if running many repeats, only need to generate the LD-modified params once and then can repeatedly re-sample using generate_gwas_ss" />
 
 
 
@@ -102,16 +102,26 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a GWAS summary dataset</h1>
+    <h1>Modify SNP effects to account for LD</h1>
     <small class="dont-index">Source: <a href='https://github.com/explodecomputer/simulateGP/blob/master/R/theoretical_gwas.R'><code>R/theoretical_gwas.R</code></a></small>
     <div class="hidden name"><code>generate_gwas_ss.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Determines SE and generates effect estimates given input parameters</p>
+    <p>After generating the set of causal effects at each SNP, use an LD correlation matrix to transform the effects to reflect the correlation structure at the SNPs. Note if running many repeats, only need to generate the LD-modified params once and then can repeatedly re-sample using generate_gwas_ss</p>
     </div>
 
-    <pre class="usage"><span class='fu'>generate_gwas_ss</span><span class='op'>(</span><span class='va'>params</span>, <span class='va'>nid</span>, vy <span class='op'>=</span> <span class='fl'>1</span>, minmaf <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>generate_gwas_ss</span><span class='op'>(</span>
+  <span class='va'>params</span>,
+  <span class='va'>nid</span>,
+  vy <span class='op'>=</span> <span class='fl'>1</span>,
+  minmaf <span class='op'>=</span> <span class='fl'>0.001</span>,
+  ldobj <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ldobjlist <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ldobjfiles <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ldobjdir <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nthreads <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,11 +142,31 @@
       <th>minmaf</th>
       <td><p>minimum allowed maf. default=0.01 to prevent instability</p></td>
     </tr>
+    <tr>
+      <th>ldobj</th>
+      <td><p>LD objects (e.g. see test_ldobj)</p></td>
+    </tr>
+    <tr>
+      <th>ldobjlist</th>
+      <td><p>List of LD objects</p></td>
+    </tr>
+    <tr>
+      <th>ldobjfiles</th>
+      <td><p>Array of filenames containing LD object files (e.g. see <code>generate_ldobj</code>)</p></td>
+    </tr>
+    <tr>
+      <th>ldobjdir</th>
+      <td><p>Directory containing output from <code>generate_ldobj</code></p></td>
+    </tr>
+    <tr>
+      <th>nthreads</th>
+      <td><p>Number of threads (can be slow for complete GWAS and large LD regions)</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list of data frames</p>
+    <p>Updated params</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

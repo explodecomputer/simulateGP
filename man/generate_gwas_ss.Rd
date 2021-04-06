@@ -2,9 +2,19 @@
 % Please edit documentation in R/theoretical_gwas.R
 \name{generate_gwas_ss}
 \alias{generate_gwas_ss}
-\title{Create a GWAS summary dataset}
+\title{Modify SNP effects to account for LD}
 \usage{
-generate_gwas_ss(params, nid, vy = 1, minmaf = 0.01)
+generate_gwas_ss(
+  params,
+  nid,
+  vy = 1,
+  minmaf = 0.001,
+  ldobj = NULL,
+  ldobjlist = NULL,
+  ldobjfiles = NULL,
+  ldobjdir = NULL,
+  nthreads = 1
+)
 }
 \arguments{
 \item{params}{Output from \code{generate_gwas_params}}
@@ -14,10 +24,20 @@ generate_gwas_ss(params, nid, vy = 1, minmaf = 0.01)
 \item{vy}{Variance of trait}
 
 \item{minmaf}{minimum allowed maf. default=0.01 to prevent instability}
+
+\item{ldobj}{LD objects (e.g. see test_ldobj)}
+
+\item{ldobjlist}{List of LD objects}
+
+\item{ldobjfiles}{Array of filenames containing LD object files (e.g. see \code{generate_ldobj})}
+
+\item{ldobjdir}{Directory containing output from \code{generate_ldobj}}
+
+\item{nthreads}{Number of threads (can be slow for complete GWAS and large LD regions)}
 }
 \value{
-list of data frames
+Updated params
 }
 \description{
-Determines SE and generates effect estimates given input parameters
+After generating the set of causal effects at each SNP, use an LD correlation matrix to transform the effects to reflect the correlation structure at the SNPs. Note if running many repeats, only need to generate the LD-modified params once and then can repeatedly re-sample using generate_gwas_ss
 }

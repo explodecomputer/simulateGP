@@ -111,7 +111,14 @@
     <p>Get LD matrix for a specified region from bfile reference panel</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_ld</span><span class='op'>(</span><span class='va'>chr</span>, <span class='va'>from</span>, <span class='va'>to</span>, <span class='va'>bfile</span>, plink_bin <span class='op'>=</span> <span class='fu'>genetics.binaRies</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html'>get_plink_binary</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_ld</span><span class='op'>(</span>
+  <span class='va'>chr</span>,
+  <span class='va'>from</span>,
+  <span class='va'>to</span>,
+  <span class='va'>bfile</span>,
+  plink_bin <span class='op'>=</span> <span class='fu'>genetics.binaRies</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html'>get_plink_binary</a></span><span class='op'>(</span><span class='op'>)</span>,
+  nref <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,6 +142,10 @@
     <tr>
       <th>plink_bin</th>
       <td><p>Plink binary default=genetics.binaRies::get_plink_binary()</p></td>
+    </tr>
+    <tr>
+      <th>nref</th>
+      <td><p>Sample size of reference panel</p></td>
     </tr>
     </table>
 

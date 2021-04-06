@@ -74,7 +74,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://Rdatatable.gitlab.io/data.table">data.table</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></pre></div>
 <div id="obtain-independent-ld-regions" class="section level2">
 <h2 class="hasAnchor">
@@ -176,7 +176,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj_eas</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobj<span class="op">=</span><span class="va">ldobj_eas</span><span class="op">)</span></pre></div>
+    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobj<span class="op">=</span><span class="va">ldobj_eas</span><span class="op">)</span></pre></div>
 <p>Add some random noise for a sample size of 100000 and plot</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
@@ -189,7 +189,7 @@
 <span class="co"># Generate effects</span>
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map_eas</span> <span class="op">%&gt;%</span> 
     <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">100</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobjdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, nthreads<span class="op">=</span><span class="fl">16</span><span class="op">)</span>
+    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, nthreads<span class="op">=</span><span class="fl">16</span><span class="op">)</span>
 
 <span class="co"># Generate sample estimates</span>
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>

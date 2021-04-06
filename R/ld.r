@@ -122,12 +122,14 @@ generate_ldobj <- function(outdir, bfile, regions, plink_bin=genetics.binaRies::
 			fn <- file.path(outdir, paste0("ldobj_", codes[i], ".rds"))
 			saveRDS(out, file=fn, compress=TRUE)
 			out$map$region <- codes[i]
+			print(dim(map))
 			return(out$map)
 		} else {
 			return(NULL)
 		}
 	}, mc.cores=nthreads) %>%
 		dplyr::bind_rows()
+	print(dim(map))
 	saveRDS(map, file.path(outdir, "map.rds"))
 	return(map)
 }

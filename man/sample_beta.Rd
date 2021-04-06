@@ -4,12 +4,16 @@
 \alias{sample_beta}
 \title{Sample beta values given standard errors}
 \usage{
-sample_beta(beta, se)
+sample_beta(beta, se, r = NULL, af = NULL)
 }
 \arguments{
-\item{beta}{array of beta values}
+\item{beta}{array of beta values - i.e. the true coefficients. If using the correlation matrix r then this should be an LD-aware set of expected beta values.}
 
 \item{se}{array of se values}
+
+\item{r}{matrix of LD correlations amongst the SNPs. If NULL (default) then assumes no LD}
+
+\item{af}{array of allele frequencies. Must be non-null if r is non-null.}
 }
 \value{
 array of beta hats

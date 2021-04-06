@@ -74,7 +74,10 @@
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
+<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">read_json</a></span><span class="op">(</span><span class="st">"generate_ldobj_config.json"</span><span class="op">)</span>
+<span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">config</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span></pre></div>
 <p>We’d like to be able to simulate realistic GWAS summary data for a large (e.g. millions) of SNPs and representing arbitrarily large sample sizes. The simplest way to do this is to take a genetic reference dataset (e.g. UK Biobank, 500000 samples), and generate a phenotype based on the SNPs that we want to be causal. We would then run a GWAS on the simulated phenotype to obtain the GWAS summary data. However this would be very slow. The <code>simulateGP</code> package has a few methods to rapidly simulate GWAS summary data directly without going via analysis of individual level datasets.</p>
 <p>Features of GWAS:</p>
 <ul>
@@ -145,7 +148,6 @@
 <p>The above are large (~5Gb) <code>.tar</code> files. Download one and extract, it should contain a directory called <code>&lt;POP&gt;_1kg_hm3/</code>, which contains a <code>map.rds</code> and a number of <code>ldobj_&lt;region&gt;.rds</code> files. We will use the <code>map.rds</code> as our genome scaffold - it contains SNPs, chromosomes, positions, alleles and allele frequencies for the specific population. We can then select causal variants for the trait as above, and then introduce the LD transformation before sampling the effect estimates / SEs / p-values etc from the LD-aware effect sizes.</p>
 <p>Set the LD matrix data directory:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">datadir</span> <span class="op">&lt;-</span> <span class="st">"~/data/ld_files/ldmat/AFR_1kg_hm3"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">datadir</span><span class="op">)</span></pre></div>
 <p>Begin with a small number of SNPs for illustration. E.g. let’s use the first region in the set of regions downloaded</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
@@ -158,47 +160,40 @@
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></pre></div>
-<p>Now add LD to the effects</p>
+<p>We can now sample effect estimates for either the raw effects or the LD-aware effects</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">params_ld</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobj<span class="op">=</span><span class="va">ldobj</span><span class="op">)</span></pre></div>
-<p>We can now sample effect estimates for either the the raw effects or the LD-aware effects</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="va">ss_raw</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span><span class="op">)</span>
-<span class="va">ss_ld</span> <span class="op">&lt;-</span> <span class="va">params_ld</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span><span class="op">)</span></pre></div>
+<span class="va">ss_ld</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span>, ldobj<span class="op">=</span><span class="va">ldobj</span><span class="op">)</span></pre></div>
 <p>Compare the associations in the region. With no LD:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
+<div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ss_raw</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <p>Now when LD is added:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
+<div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ss_ld</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<p>The same process can be achieved for more complex architectures across the entire genome. It takes about 2 minutes to generate the LD-aware effect sizes, from which multiple independent sample effect estimates can be drawn nearly instantaneously.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
+<p>The same process can be achieved for more complex architectures across the entire genome. It takes about 2 minutes to generate the LD-aware effect sizes and effect estimates.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit">
 <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"map.rds"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">1000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
-
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">1000000</span><span class="op">)</span></pre></div>
+    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">1000000</span>, ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span></pre></div>
 </div>
 <div id="sample-overlap" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sample-overlap" class="anchor"></a>Sample overlap</h2>
 <p>Finally, we can draw joint estimates of two different GWASs that share some amount of sample overlap using the <code>summary_set</code> function. The steps are:</p>
 <p>For a set of variants, generate the true effect sizes for each of two different datasets. Here we make a simple example using the single small region as above. Trait 1 has a causal effect of 0.3 on trait 2.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
+<div class="sourceCode" id="cb14"><pre class="downlit">
 <span class="va">params1</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">3</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">params2</span> <span class="op">&lt;-</span> <span class="va">params2</span>
 <span class="va">params2</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">params1</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="fl">0.3</span></pre></div>
 <p>Now sample the effect estimates jointly. We specify the sample sizes of each GWAS, and the number of overlapping samples. We also specify an observational correlation, which represents the total association due to the causal relationship and any confounding.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
+<div class="sourceCode" id="cb15"><pre class="downlit">
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span>
     beta_gx<span class="op">=</span><span class="va">params1</span><span class="op">$</span><span class="va">beta</span>,
     beta_gy<span class="op">=</span><span class="va">params2</span><span class="op">$</span><span class="va">beta</span>,
@@ -219,7 +214,7 @@
 <li>Sampling the effect estimates for some sample size and overlap structure</li>
 </ol>
 <p>As illustration, assume a polygenic model for both trait X and trait Y, and trait X also has a causal effect on trait Y .</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
+<div class="sourceCode" id="cb16"><pre class="downlit">
 <span class="co"># Define the causal effect</span>
 <span class="va">b_xy</span> <span class="op">&lt;-</span> <span class="fl">0.3</span>
 
@@ -237,10 +232,10 @@
 
 <span class="co"># Introduce LD</span>
 <span class="va">paramsx</span> <span class="op">&lt;-</span> <span class="va">paramsx</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
+    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
 
 <span class="va">paramsy</span> <span class="op">&lt;-</span> <span class="va">paramsy</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/add_ld_to_params.html">add_ld_to_params</a></span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
+    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
 
 <span class="co"># Create sample estimates where there is some non-genetic confounding of X and Y and partial overlap of the G-X and G-Y datasets</span>
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span>

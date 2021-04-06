@@ -41,14 +41,26 @@ expected_se <- function(beta, af, n, vy)
 
 #' Sample beta values given standard errors
 #'
-#' @param beta array of beta values
+#' @param beta array of beta values - i.e. the true coefficients. If using the correlation matrix r then this should be an LD-aware set of expected beta values.
 #' @param se array of se values
+#' @param r matrix of LD correlations amongst the SNPs. If NULL (default) then assumes no LD
+#' @param af array of allele frequencies. Must be non-null if r is non-null.
 #'
 #' @export
 #' @return array of beta hats
-sample_beta <- function(beta, se)
+sample_beta <- function(beta, se, r=NULL, af=NULL)
 {
-	stats::rnorm(length(beta), beta, se)
+	if(is.null(r))
+	{
+		stats::rnorm(length(beta), beta, se) %>%
+			return()
+	} else {
+		xvar <- 2 * af * (1-af)
+		semat <- diag(se) %*% r %*% diag(se)
+		MASS::mvrnorm(length(beta), mu=beta, Sigma=semat) %>% 
+			diag() %>%
+			return()
+	}
 }
 
 
@@ -90,6 +102,9 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 #' After generating the set of causal effects at each SNP, use an LD correlation matrix to transform the effects to reflect the correlation structure at the SNPs. Note if running many repeats, only need to generate the LD-modified params once and then can repeatedly re-sample using generate_gwas_ss
 #'
 #' @param params Output from \code{generate_gwas_params}
+#' @param nid sample size
+#' @param vy Variance of trait
+#' @param minmaf minimum allowed maf. default=0.01 to prevent instability
 #' @param ldobj LD objects (e.g. see test_ldobj)
 #' @param ldobjlist List of LD objects 
 #' @param ldobjfiles Array of filenames containing LD object files (e.g. see \code{generate_ldobj})
@@ -98,22 +113,20 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 #'
 #' @export
 #' @return Updated params
-add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
+generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
 {
 	params <- subset(params, !duplicated(snp))
-	stopifnot(c("chr", "pos", "snp", "beta") %in% names(params))
+	stopifnot(all(params$af > 0 & params$af < 1))
+
 	if(!is.null(ldobj))
 	{
 		stopifnot(is.list(ldobj))
 		stopifnot(all(c("map", "ld") %in% names(ldobj)))
-		params <- subset(params, snp %in% ldobj$map$snp)
-		if(nrow(params) > 0)
-		{
-			params$beta <- params$beta %*% ldobj[["ld"]] %>% drop()
-		}
-		return(params)
-	}
+		x <- subset(params, snp %in% ldobj[["map"]][["snp"]]) %>%
+			generate_gwas_ss_1(nid, vy, minmaf, ldobj[["ld"]])
 
+		return(x)
+	}
 	if(!is.null(ldobjlist))
 	{
 		stopifnot(is.list(ldobjlist))
@@ -121,12 +134,9 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 		nchunk <- 1:length(ldobjlist)
 		l <- pbapply::pblapply(1:length(ldobjlist), function(i)
 		{
-			parami <- subset(params, snp %in% ldobjlist[[i]][["map"]]$snp)
-			if(nrow(parami) > 0)
-			{
-				parami$beta <- parami$beta %*% ldobjlist[[i]][["ld"]] %>% drop()
-			}
-			return(parami)
+			subset(params, snp %in% ldobjlist[[i]][["map"]]$snp) %>%
+				generate_gwas_ss_1(nid, vy, minmaf, ldobjlist[[i]][["ld"]]) %>%
+				return()
 		}, cl=nthreads) %>%
 			dplyr::bind_rows() %>%
 			dplyr::arrange(chr, pos)
@@ -141,12 +151,9 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 		l <- pbapply::pblapply(1:length(ldobjfiles), function(i)
 		{
 			ldobj <- readRDS(ldobjfiles[i])
-			parami <- subset(params, snp %in% ldobj[["map"]]$snp)
-			if(nrow(parami) > 0)
-			{
-				parami$beta <- parami$beta %*% ldobj[["ld"]] %>% drop()
-			}
-			return(parami)
+			subset(params, snp %in% ldobj[["map"]][["snp"]]) %>%
+				generate_gwas_ss_1(nid, vy, minmaf, ldobj[["ld"]]) %>%
+				return()
 		}, cl=nthreads) %>%
 			dplyr::bind_rows() %>%
 			dplyr::arrange(chr, pos)
@@ -166,20 +173,19 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 		l <- pbapply::pblapply(1:length(code), function(i)
 		{
 			ldobj <- readRDS(fn[i])
-			parami <- subset(params, region == code[i])
-			parami <- subset(parami, snp %in% ldobj[["map"]]$snp)
-			if(nrow(parami) > 0)
-			{
-				parami$beta <- parami$beta %*% ldobj[["ld"]] %>% drop()
-			}
-			return(parami)
+			subset(params, region == code[i]) %>%
+				subset(snp %in% ldobj[["map"]][["snp"]]) %>%
+				generate_gwas_ss_1(nid, vy, minmaf, ldobj[["ld"]]) %>%
+				return()
 		}, cl=nthreads) %>%
 			dplyr::bind_rows() %>%
 			dplyr::arrange(chr, pos)
 		return(l)
 	}
 
-	stop("At least one of ldobj, ldobjlist, ldobjfiles, ldobjdir should be specified")
+	generate_gwas_ss_1(params, nid, vy, minmaf) %>%
+		return()
+
 }
 
 #' Create a GWAS summary dataset
@@ -190,25 +196,43 @@ add_ld_to_params <- function(params, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL
 #' @param nid sample size
 #' @param vy Variance of trait
 #' @param minmaf minimum allowed maf. default=0.01 to prevent instability
+#' @param r LD correlation matrix. If NULL (default) then creates LD unaware sampling errors
 #'
 #' @export
 #' @return list of data frames
-generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.01)
+generate_gwas_ss_1 <- function(params, nid, vy=1, minmaf=0.01, r=NULL)
 {
 	nsnp <- nrow(params)
+	if(nsnp == 0)
+	{
+		return(params)
+	}
 	stopifnot(all(params$af > 0 & params$af < 1))
-
-	params <- params %>%
-		dplyr::mutate(
-			af = pmax(minmaf, af) %>% pmin(1-minmaf, 1-af),
-			se = expected_se(beta, af, nid, vy),
-			bhat = sample_beta(beta, se),
-			fval = (bhat / se)^2,
-			n = nid,
-			pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
-		) %>%
-		dplyr::select(-beta)
+	if(is.null(r))
+	{
+		params <- params %>%
+			dplyr::mutate(
+				af = pmax(minmaf, af) %>% pmin(1-minmaf, 1-af),
+				se = expected_se(beta, af, nid, vy),
+				bhat = sample_beta(beta, se),
+				fval = (bhat / se)^2,
+				n = nid,
+				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
+			) %>%
+			dplyr::select(-beta)		
+	} else {
+		stopifnot(nrow(r) == nrow(params))
+		xvar <- sqrt(2 * params[["af"]] * (1-params[["af"]]))
+		params <- params %>%
+			dplyr::mutate(
+				af = pmax(minmaf, af) %>% pmin(1-minmaf, 1-af),
+				se = expected_se(beta, af, nid, vy),
+				beta_ld = (diag(1/xvar) %*% r %*% diag(xvar) %*% beta) %>% drop(),
+				bhat = sample_beta(beta_ld, se, r, af),
+				fval = (bhat / se)^2,
+				n = nid,
+				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
+			)
+	}
 	return(params)
 }
-
-
