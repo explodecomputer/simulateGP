@@ -225,7 +225,7 @@ generate_gwas_ss_1 <- function(params, nid, vy=1, minmaf=0.01, r=NULL)
 				bhat = sample_beta(beta, se),
 				fval = (bhat / se)^2,
 				n = nid,
-				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
+				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE)
 			) %>%
 			dplyr::select(-beta)		
 	} else {
@@ -239,7 +239,7 @@ generate_gwas_ss_1 <- function(params, nid, vy=1, minmaf=0.01, r=NULL)
 				bhat = sample_beta(beta_ld, se, r, af),
 				fval = (bhat / se)^2,
 				n = nid,
-				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE) * 2
+				pval = pf(fval, df1=1, df2=nid-1, lower.tail=FALSE)
 			)
 	}
 	return(params)

@@ -105,3 +105,4 @@ su2 <- susieR::susie_rss(params2$bhat/params2$se, R = ldobj2$ld, check_R=FALSE)
 susieR::susie_plot(su2, y="PIP", b=params2$beta)
 su2$sets
 ```
+
