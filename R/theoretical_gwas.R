@@ -110,11 +110,12 @@ generate_gwas_params <- function(map, h2, S=0, Pi=1)
 #' @param ldobjlist List of LD objects 
 #' @param ldobjfiles Array of filenames containing LD object files (e.g. see \code{generate_ldobj})
 #' @param ldobjdir Directory containing output from \code{generate_ldobj}
+#' @param gwasglue2 Logical, creates a gwasglue2 SummarySet when @param ldobj is not NULL (default FALSE). 
 #' @param nthreads Number of threads (can be slow for complete GWAS and large LD regions)
 #'
 #' @export
 #' @return Updated params
-generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ld = NULL, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, nthreads=1)
+generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ld = NULL, ldobj=NULL, ldobjlist=NULL, ldobjfiles=NULL, ldobjdir=NULL, gwasglue2=FALSE, nthreads=1)
 {
 	params <- subset(params, !duplicated(snp))
 	stopifnot(all(params$af > 0 & params$af < 1))
@@ -132,6 +133,16 @@ generate_gwas_ss <- function(params, nid, vy=1, minmaf=0.001, ld = NULL, ldobj=N
 		stopifnot(all(c("map", "ld") %in% names(ldobj)))
 		x <- subset(params, snp %in% ldobj[["map"]][["snp"]]) %>%
 			generate_gwas_ss_1(nid, vy, minmaf, ldobj[["ld"]])
+		
+		if(isTRUE(gwasglue2)){
+			x <- gwasglue2::create_summaryset_from_tibble(x,
+                              pvalue_col = "pval",
+                              position_col = "pos",
+                              rsid_col = "snp",
+                              effect_allele_col = "alt",
+                              other_allele_col = "ref",
+                              eaf_col = "af")	
+		}
 
 		return(x)
 	}
