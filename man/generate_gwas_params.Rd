@@ -7,7 +7,7 @@
 generate_gwas_params(map, h2, S = 0, Pi = 1)
 }
 \arguments{
-\item{map}{Data frame containing at least `af` allele frequency and `snp` SNP columns. SNPs must be unique, `af` must be between 0 and 1. Optionally also include the chr, pos, ref, alt columns if using LD-aware simulations}
+\item{map}{Data frame containing at least \code{af} allele frequency and \code{snp} SNP columns. SNPs must be unique, \code{af} must be between 0 and 1. Optionally also include the chr, pos, ref, alt columns if using LD-aware simulations}
 
 \item{h2}{Variance explained by all SNPs}
 

@@ -7,10 +7,10 @@
 \format{
 A data frame with 5731 rows and 4 columns
 \describe{
-   \item{chr}{chromosome}
-   \item{start}{start position}
-   \item{stop}{stop position}
-   \item{pop}{Population}
+\item{chr}{chromosome}
+\item{start}{start position}
+\item{stop}{stop position}
+\item{pop}{Population}
 }
 }
 \source{

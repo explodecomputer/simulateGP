@@ -14,6 +14,7 @@ generate_gwas_ss(
   ldobjlist = NULL,
   ldobjfiles = NULL,
   ldobjdir = NULL,
+  gwasglue2 = FALSE,
   nthreads = 1
 )
 }
@@ -35,6 +36,8 @@ generate_gwas_ss(
 \item{ldobjfiles}{Array of filenames containing LD object files (e.g. see \code{generate_ldobj})}
 
 \item{ldobjdir}{Directory containing output from \code{generate_ldobj}}
+
+\item{gwasglue2}{Logical, creates a gwasglue2 SummarySet when @param ldobj is not NULL (default FALSE).}
 
 \item{nthreads}{Number of threads (can be slow for complete GWAS and large LD regions)}
 }
