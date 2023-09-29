@@ -2,46 +2,52 @@ Package: simulateGP
 Title: Functions for Simulating Genotype-Phenotype Relationships
 Version: 0.1.2
 Authors@R: c(
-	person("Gibran", "Hemani", email = "explodecomputer@gmail.com", role = c("aut", "cre")),
-	person("John", "Ferguson", email = "john.ferguson@nuigalway.ie", role = c("aut")))
-Description: Functions for simulating SNP effects on phenotypes. Functions for
-    simulating disease risk on probability and liability scales. Simulations to
-    quickly obtain estimates of effect sizes for simulated genotype-phenotypes.
-Depends:
-    R (>= 4.0.0)
+    person("Gibran", "Hemani", , "explodecomputer@gmail.com", role = c("aut", "cre")),
+    person("John", "Ferguson", , "john.ferguson@nuigalway.ie", role = "aut")
+  )
+Description: Functions for simulating SNP effects on phenotypes. Functions
+    for simulating disease risk on probability and liability scales.
+    Simulations to quickly obtain estimates of effect sizes for simulated
+    genotype-phenotypes.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.1.1
-Imports:
-    MASS,
-    dplyr,
-    TwoSampleMR,
-    ggplot2,
-    data.table,
-    ieugwasr,
-    stats,
-    magrittr,
-    graphics,
-    rlang,
-    parallel,
-    genetics.binaRies,
-    pbapply
-Suggests: 
-    testthat,
-    knitr,
-    rmarkdown,
-    systemfit,
-    tidyverse,
-    ggdag,
-    dagitty,
-    mvtnorm,
-    covr,
-    jsonlite
-Remotes:
-	mrcieu/TwoSampleMR,
-	mrcieu/ieugwasr,
-    explodecomputer/genetics.binaRies
-VignetteBuilder: knitr
 URL: https://explodecomputer.github.io/simulateGP/
 BugReports: https://github.com/explodecomputer/simulateGP/issues
+Depends:
+    R (>= 4.0.0)
+Imports:
+    data.table,
+    dplyr,
+    genetics.binaRies,
+    ggplot2,
+    graphics,
+    gwasglue2,
+    ieugwasr,
+    magrittr,
+    MASS,
+    parallel,
+    pbapply,
+    rlang,
+    stats,
+    TwoSampleMR
+Suggests: 
+    covr,
+    dagitty,
+    ggdag,
+    jsonlite,
+    knitr,
+    mvtnorm,
+    rmarkdown,
+    systemfit,
+    testthat,
+    tidyverse
+VignetteBuilder: 
+    knitr
+Remotes:
+    mrcieu/genetics.binaRies,
+    mrcieu/gwasglue2,
+    mrcieu/ieugwasr,
+    mrcieu/TwoSampleMR
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

@@ -52,6 +52,7 @@ logistic_assoc <- function(y, x)
 #' @param y Vector of phenotypes
 #' @param g Matrix of genotypes
 #' @param logistic Use logistic regression (much slower)? Default=FALSE
+#' @importFrom stats glm
 #'
 #' @export
 #' @return Data frame

@@ -11,5 +11,5 @@ This package is a collection of utilities relating to simulating genotype phenot
 The simulations are largely used for Mendelian randomisation, and link up with the TwoSampleMR R package
 }
 \details{
-**Full documentation available here:** [https://explodecomputer.github.io/simulateGP](https://explodecomputer.github.io/simulateGP)
+\strong{Full documentation available here:} \url{https://explodecomputer.github.io/simulateGP}
 }
