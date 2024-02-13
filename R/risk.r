@@ -19,7 +19,7 @@ range01 <- function(x)
 #' @return Vector of disease probabilities
 gx_to_gp <- function(gx, h2x, prev)
 {
-	x_prime <- qnorm(prev, 0, 1)
+	x_prime <- qnorm(prev, 0, 1, lower.tail=FALSE)
 	p <- pnorm(x_prime, mean=gx, sd = sqrt(1 - h2x), lower.tail=FALSE)
 	return(p)
 }
