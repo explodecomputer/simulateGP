@@ -13,3 +13,21 @@ The simulations are largely used for Mendelian randomisation, and link up with t
 \details{
 \strong{Full documentation available here:} \url{https://explodecomputer.github.io/simulateGP}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://explodecomputer.github.io/simulateGP/}
+  \item Report bugs at \url{https://github.com/explodecomputer/simulateGP/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Gibran Hemani \email{explodecomputer@gmail.com} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
+
+Authors:
+\itemize{
+  \item John Ferguson \email{john.ferguson@nuigalway.ie}
+  \item Rita Rasteiro \email{rita.rasteiro@bristol.ac.uk} (\href{https://orcid.org/0000-0002-4217-3060}{ORCID})
+}
+
+}

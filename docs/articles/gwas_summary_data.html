@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,34 +60,41 @@
 
       
 
-      </header><script src="gwas_summary_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Background notes: Simulating GWAS summary data</h1>
+      <h1 data-toc-skip>Background notes: Simulating GWAS summary
+data</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/gwas_summary_data.Rmd"><code>vignettes/gwas_summary_data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/gwas_summary_data.Rmd" class="external-link"><code>vignettes/gwas_summary_data.Rmd</code></a></small>
       <div class="hidden name"><code>gwas_summary_data.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</span>
-<span class="co">#&gt; ✔ ggplot2 3.3.3     ✔ purrr   0.3.4</span>
-<span class="co">#&gt; ✔ tibble  3.1.0     ✔ dplyr   1.0.5</span>
-<span class="co">#&gt; ✔ tidyr   1.1.2     ✔ stringr 1.4.0</span>
-<span class="co">#&gt; ✔ readr   1.4.0     ✔ forcats 0.5.0</span>
-<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
-<span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span>
-<span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.4</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.4.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.2.1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.2     </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span></code></pre></div>
 <p>GWAS summary data can be generated in two ways</p>
 <ol style="list-style-type: decimal">
-<li>Given a set of parameters, generate the genotypes for a set of individuals and the phenotypes that arise from those genotypes. Then obtain linear regression estimates from these simulated individual level data</li>
-<li>Given a set of parameters, simulate the summary level data directly</li>
+<li>Given a set of parameters, generate the genotypes for a set of
+individuals and the phenotypes that arise from those genotypes. Then
+obtain linear regression estimates from these simulated individual level
+data</li>
+<li>Given a set of parameters, simulate the summary level data
+directly</li>
 </ol>
 <p>here we look at (1).</p>
 <p>Given the following inputs:</p>
@@ -101,10 +110,12 @@
 <li>Sampled estimate of SNP effect on trait</li>
 <li>P-value of SNP effect estimate for trait</li>
 </ol>
-<p>Strategy is to begin by obtaining the expected standard error for the true causal effect for each SNP, and then sampling an estimated SNP effect based on the expected standard error.</p>
-<div id="expected-standard-error" class="section level2">
-<h2 class="hasAnchor">
-<a href="#expected-standard-error" class="anchor"></a>Expected standard error</h2>
+<p>Strategy is to begin by obtaining the expected standard error for the
+true causal effect for each SNP, and then sampling an estimated SNP
+effect based on the expected standard error.</p>
+<div class="section level2">
+<h2 id="expected-standard-error">Expected standard error<a class="anchor" aria-label="anchor" href="#expected-standard-error"></a>
+</h2>
 <p>For a linear model</p>
 <p><span class="math display">\[
 y_i = \beta_0 + \beta_1 x_i + \epsilon_i
@@ -119,16 +130,21 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i
 \]</span></p>
 <p>The standard error of a regression coefficient is:</p>
 <p><span class="math display">\[
-s_{\hat{\beta}_1} = \sqrt{\frac{\sum{\epsilon_i^2}}{(n-2) \sum{(x_i - \bar{x})^2}}}
+s_{\hat{\beta}_1} = \sqrt{\frac{\sum{\epsilon_i^2}}{(n-2) \sum{(x_i -
+\bar{x})^2}}}
 \]</span></p>
-<p>This can be broken down. The denominator is the sum of squares of X:</p>
+<p>This can be broken down. The denominator is the sum of squares of
+X:</p>
 <p><span class="math display">\[
 \begin{aligned}
 (x_i - \bar{x})^2 &amp;= (n-1) Var(x) \\
 &amp;\approx (n-1) 2p(1-p)
 \end{aligned}
 \]</span></p>
-<p>where <span class="math inline">\(p\)</span> is the allele frequency of the SNP and <span class="math inline">\(n\)</span> is the sample size. The numerator is the mean squared error, which relates to the variance unexplained in Y:</p>
+<p>where <span class="math inline">\(p\)</span> is the allele frequency
+of the SNP and <span class="math inline">\(n\)</span> is the sample
+size. The numerator is the mean squared error, which relates to the
+variance unexplained in Y:</p>
 <p><span class="math display">\[
 \begin{aligned}
 \sum \epsilon_i^2 &amp;= \sum(y_i - \hat{y}_i)^2 \\
@@ -138,30 +154,35 @@ s_{\hat{\beta}_1} = \sqrt{\frac{\sum{\epsilon_i^2}}{(n-2) \sum{(x_i - \bar{x})^2
 \end{aligned}
 \]</span></p>
 <p>Quick check:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span>
-<span class="co">#&gt; [1] 0.1022306</span>
-<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.1022306</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 0.1001364</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.1001364</span></span></code></pre></div>
 </div>
-<div id="sampling-the-effect-estimate" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sampling-the-effect-estimate" class="anchor"></a>Sampling the effect estimate</h2>
-<p>Given a standard error <span class="math inline">\(s_{\hat{\beta}_1}\)</span>, we can obtain an estimated value for <span class="math inline">\(\beta_1\)</span> using</p>
+<div class="section level2">
+<h2 id="sampling-the-effect-estimate">Sampling the effect estimate<a class="anchor" aria-label="anchor" href="#sampling-the-effect-estimate"></a>
+</h2>
+<p>Given a standard error <span class="math inline">\(s_{\hat{\beta}_1}\)</span>, we can obtain an
+estimated value for <span class="math inline">\(\beta_1\)</span>
+using</p>
 <p><span class="math display">\[
 \hat{\beta}_1 \sim N(\beta_1, s_{\hat{\beta}_1})
 \]</span></p>
-<p>Question: Do I need to update the expected standard error based on the sampled value of <span class="math inline">\(\hat{\beta}_1\)</span>?</p>
+<p>Question: Do I need to update the expected standard error based on
+the sampled value of <span class="math inline">\(\hat{\beta}_1\)</span>?</p>
 </div>
-<div id="sampling-a-set-of-effect-estimates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sampling-a-set-of-effect-estimates" class="anchor"></a>Sampling a set of effect estimates</h2>
-<p>Suppose we need a set of SNPs to explain some proportion of the variance in a trait.</p>
-<p>When specifying the SNP effects there is a simple model that can relate to a SNP to its contribution to heritability</p>
+<div class="section level2">
+<h2 id="sampling-a-set-of-effect-estimates">Sampling a set of effect estimates<a class="anchor" aria-label="anchor" href="#sampling-a-set-of-effect-estimates"></a>
+</h2>
+<p>Suppose we need a set of SNPs to explain some proportion of the
+variance in a trait.</p>
+<p>When specifying the SNP effects there is a simple model that can
+relate to a SNP to its contribution to heritability</p>
 <p><span class="math display">\[
 h^2_j = \frac{2p_j(1-p_j)\beta^2_j}{Var(y)}
 \]</span></p>
@@ -176,7 +197,8 @@ h_j^2 &amp;= \frac{Cov(x_j, y)^2}{Var(x_j)Var(y)} \\
 <p><span class="math display">\[
 h^2 = \sum^M_j h_j^2
 \]</span></p>
-<p>If each SNP has MAF of <span class="math inline">\(p_j\)</span> and effect of <span class="math inline">\(\beta_j\)</span>, then</p>
+<p>If each SNP has MAF of <span class="math inline">\(p_j\)</span> and
+effect of <span class="math inline">\(\beta_j\)</span>, then</p>
 <p><span class="math display">\[
 V_G = \sum^M_j 2p_j(1-p_j)\beta^2_j
 \]</span></p>
@@ -186,244 +208,358 @@ V_E = \frac{V_G(1 - h^2)}{h^2}
 <p><span class="math display">\[
 Var(y) = V_G + V_E
 \]</span></p>
-<p>Once SNP effects have been sampled then they can be scaled to represent a phenotype with variance of 1:</p>
+<p>Once SNP effects have been sampled then they can be scaled to
+represent a phenotype with variance of 1:</p>
 <p><span class="math display">\[
 \beta_j^* = \frac{\beta_j}{\sqrt{Var(y)}}
 \]</span></p>
-<p>Relating SNP effects to allele frequencies can be done by specifying a selection model. Generalise the relationship between the SNP effects, allele frequencies and selection coefficient of the trait:</p>
+<p>Relating SNP effects to allele frequencies can be done by specifying
+a selection model. Generalise the relationship between the SNP effects,
+allele frequencies and selection coefficient of the trait:</p>
 <p><span class="math display">\[
 \beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)
 \]</span></p>
-<p>Where S is the parameter describing the selection acting on the trait. Here <span class="math inline">\(\sigma^2_\beta = V_G / M\)</span> if all SNPs were scaled to have variance of 1 and mean of 0.</p>
+<p>Where S is the parameter describing the selection acting on the
+trait. Here <span class="math inline">\(\sigma^2_\beta = V_G /
+M\)</span> if all SNPs were scaled to have variance of 1 and mean of
+0.</p>
 <p><span class="math display">\[
 \begin{aligned}
 \sigma^2_\beta &amp;= \sum^M_j (\beta_j-\bar{\beta})^2 \\
 &amp;= \sum^M_j \beta_j^2
 \end{aligned}
 \]</span></p>
-<p>when the distribution of SNP effects is centred. This can be adapted to the BayesS model, in which some proportion of SNPs have no effect:</p>
+<p>when the distribution of SNP effects is centred. This can be adapted
+to the BayesS model, in which some proportion of SNPs have no
+effect:</p>
 <p><span class="math display">\[
-\beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)\pi + \vartheta (1 - \pi)
+\beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)\pi + \vartheta (1 -
+\pi)
 \]</span></p>
-<p>I think ultimately the presence of <span class="math inline">\(\sigma^2_\beta\)</span> in this model does not actually mean anything, it scales the SNP effects with respect to the variance of the phenotype. Use the following function to generate SNP effects for a set of SNPs according to specified MAF, heritability and selection model:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">generate_gwas_params</span>
-<span class="co">#&gt; function (map, h2, S = 0, Pi = 1) </span>
-<span class="co">#&gt; {</span>
-<span class="co">#&gt;     stopifnot(all(c("snp", "af") %in% names(map)))</span>
-<span class="co">#&gt;     stopifnot(all(map$af &gt; 0 &amp; map$af &lt; 1))</span>
-<span class="co">#&gt;     stopifnot(!any(duplicated(map$snp)))</span>
-<span class="co">#&gt;     nsnp &lt;- nrow(map)</span>
-<span class="co">#&gt;     if (h2 == 0) {</span>
-<span class="co">#&gt;         map$beta &lt;- 0</span>
-<span class="co">#&gt;         return(map)</span>
-<span class="co">#&gt;     }</span>
-<span class="co">#&gt;     index &lt;- sample(1:nsnp, ceiling(nsnp * Pi), replace = FALSE)</span>
-<span class="co">#&gt;     map$beta &lt;- 0</span>
-<span class="co">#&gt;     map$beta[index] &lt;- stats::rnorm(length(index), mean = 0, </span>
-<span class="co">#&gt;         sd = sqrt((map$af[index] * 2 * (1 - map$af[index]))^S))</span>
-<span class="co">#&gt;     vg &lt;- sum(map$af * 2 * (1 - map$af) * map$beta^2)</span>
-<span class="co">#&gt;     ve &lt;- (vg - h2 * vg)/h2</span>
-<span class="co">#&gt;     vy &lt;- vg + ve</span>
-<span class="co">#&gt;     map$beta &lt;- map$beta/sqrt(vy)</span>
-<span class="co">#&gt;     return(map)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; &lt;bytecode: 0x7f92e1cae1f8&gt;</span>
-<span class="co">#&gt; &lt;environment: namespace:simulateGP&gt;</span></pre></div>
+<p>I think ultimately the presence of <span class="math inline">\(\sigma^2_\beta\)</span> in this model does not
+actually mean anything, it scales the SNP effects with respect to the
+variance of the phenotype. Use the following function to generate SNP
+effects for a set of SNPs according to specified MAF, heritability and
+selection model:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">generate_gwas_params</span></span>
+<span><span class="co">#&gt; function (map, h2, S = 0, Pi = 1) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     stopifnot(all(c("snp", "af") %in% names(map)))</span></span>
+<span><span class="co">#&gt;     stopifnot(all(map$af &gt; 0 &amp; map$af &lt; 1))</span></span>
+<span><span class="co">#&gt;     stopifnot(!any(duplicated(map$snp)))</span></span>
+<span><span class="co">#&gt;     nsnp &lt;- nrow(map)</span></span>
+<span><span class="co">#&gt;     if (h2 == 0) {</span></span>
+<span><span class="co">#&gt;         map$beta &lt;- 0</span></span>
+<span><span class="co">#&gt;         return(map)</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     index &lt;- sample(1:nsnp, ceiling(nsnp * Pi), replace = FALSE)</span></span>
+<span><span class="co">#&gt;     map$beta &lt;- 0</span></span>
+<span><span class="co">#&gt;     map$beta[index] &lt;- stats::rnorm(length(index), mean = 0, </span></span>
+<span><span class="co">#&gt;         sd = sqrt((map$af[index] * 2 * (1 - map$af[index]))^S))</span></span>
+<span><span class="co">#&gt;     vg &lt;- sum(map$af * 2 * (1 - map$af) * map$beta^2)</span></span>
+<span><span class="co">#&gt;     ve &lt;- (vg - h2 * vg)/h2</span></span>
+<span><span class="co">#&gt;     vy &lt;- vg + ve</span></span>
+<span><span class="co">#&gt;     map$beta &lt;- map$beta/sqrt(vy)</span></span>
+<span><span class="co">#&gt;     return(map)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x117d98cf8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:simulateGP&gt;</span></span></code></pre></div>
 <p>Create a map</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 <p>Negative selection:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Positive selection:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Neutral model:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>Note that the genetic variance is the heritability</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">beta</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">g</span><span class="op">$</span><span class="va">af</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">g</span><span class="op">$</span><span class="va">af</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.4</span></pre></div>
-<p>Bringing it all together, we can simulate a set of GWAS summary stats by first specifying the true effects we want, and then obtaining sampled effects, standard errors and p-values.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># Simulate 1 million SNPs, </span>
-<span class="co"># with 10 large effects, </span>
-<span class="co"># a polygenic background of 10000 SNPs, </span>
-<span class="co"># and all others with no effects</span>
-
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
-    <span class="fu">tibble</span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,
-    <span class="fu">tibble</span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
-    <span class="fu">tibble</span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">-</span><span class="fl">10</span><span class="op">-</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">3</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">mutate</span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.1</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">2</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.3</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">3</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># Generate GWAS summary stats</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="fl">450000</span><span class="op">)</span></pre></div>
-<p>Compare to individual level data results to summary data simulations</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
-<span class="va">h2</span> <span class="op">&lt;-</span> <span class="fl">0.1</span>
-<span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="va">h2</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-<span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">nid</span><span class="op">)</span>
-
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">param</span><span class="op">$</span><span class="va">af</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">bind_cols</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; New names:</span>
-<span class="co">#&gt; * NA -&gt; ...1</span>
-<span class="co">#&gt; * NA -&gt; ...2</span>
-<span class="co">#&gt; * NA -&gt; ...3</span>
-<span class="co">#&gt; * NA -&gt; ...4</span>
-<span class="co">#&gt; * NA -&gt; ...5</span>
-<span class="co">#&gt; * ...</span>
-
-<span class="va">score</span> <span class="op">&lt;-</span> <span class="va">g</span> <span class="op">%*%</span> <span class="va">param</span><span class="op">$</span><span class="va">beta</span>
-<span class="va">err</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nid</span>, mean<span class="op">=</span><span class="fl">0</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">score</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">h2</span><span class="op">)</span> <span class="op">/</span> <span class="va">h2</span><span class="op">)</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">score</span> <span class="op">+</span> <span class="va">err</span>
-<span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">g</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">res1</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">beta</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">g</span><span class="op">$</span><span class="va">af</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">g</span><span class="op">$</span><span class="va">af</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.4</span></span></code></pre></div>
+<p>Bringing it all together, we can simulate a set of GWAS summary stats
+by first specifying the true effects we want, and then obtaining sampled
+effects, standard errors and p-values.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simulate 1 million SNPs, </span></span>
+<span><span class="co"># with 10 large effects, </span></span>
+<span><span class="co"># a polygenic background of 10000 SNPs, </span></span>
+<span><span class="co"># and all others with no effects</span></span>
+<span></span>
+<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">-</span><span class="fl">10</span><span class="op">-</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.1</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">2</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.3</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">3</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate GWAS summary stats</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="fl">450000</span><span class="op">)</span></span></code></pre></div>
+<p>Compare to individual level data results to summary data
+simulations</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">h2</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<span><span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="va">h2</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">nid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">param</span><span class="op">$</span><span class="va">af</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; New names:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...5`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...6`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...7`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...8`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...9`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...10`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...11`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...12`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...13`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...14`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...15`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...16`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...17`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...18`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...19`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...20`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...21`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...22`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...23`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...24`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...25`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...26`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...27`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...28`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...29`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...30`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...31`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...32`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...33`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...34`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...35`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...36`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...37`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...38`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...39`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...40`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...41`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...42`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...43`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...44`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...45`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...46`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...47`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...48`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...49`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...50`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...51`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...52`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...53`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...54`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...55`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...56`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...57`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...58`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...59`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...60`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...61`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...62`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...63`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...64`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...65`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...66`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...67`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...68`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...69`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...70`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...71`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...72`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...73`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...74`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...75`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...76`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...77`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...78`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...79`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...80`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...81`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...82`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...83`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...84`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...85`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...86`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...87`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...88`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...89`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...90`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...91`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...92`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...93`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...94`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...95`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...96`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...97`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...98`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...99`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...100`</span></span>
+<span></span>
+<span><span class="va">score</span> <span class="op">&lt;-</span> <span class="va">g</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">param</span><span class="op">$</span><span class="va">beta</span></span>
+<span><span class="va">err</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nid</span>, mean<span class="op">=</span><span class="fl">0</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">score</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">h2</span><span class="op">)</span> <span class="op">/</span> <span class="va">h2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">score</span> <span class="op">+</span> <span class="va">err</span></span>
+<span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">res1</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">se</span>, <span class="va">res1</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">se</span>, <span class="va">res1</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-10-2.png" width="700"></p>
 </div>
-<div id="sensitivitiy-to-hwe" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sensitivitiy-to-hwe" class="anchor"></a>Sensitivitiy to HWE</h2>
+<div class="section level2">
+<h2 id="sensitivitiy-to-hwe">Sensitivitiy to HWE<a class="anchor" aria-label="anchor" href="#sensitivitiy-to-hwe"></a>
+</h2>
 <p>The summary data results are not always perfect.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">make_correlated_vars</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="va">af</span><span class="op">)</span>
-<span class="op">{</span>
-  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span>
-  <span class="va">x</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">af</span><span class="op">)</span>
-  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span>
-  <span class="op">{</span>
-    <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">make_correlated_vars</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="va">af</span><span class="op">)</span>
-<span class="op">{</span>
-  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span>
-  <span class="va">x</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">af</span><span class="op">)</span>
-  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span>
-  <span class="op">{</span>
-    <span class="va">index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">nid</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">nid</span>, replace<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-    <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-    <span class="va">x</span><span class="op">[</span><span class="va">index</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">index</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="op">}</span></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">make_correlated_vars</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="va">af</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">af</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">make_correlated_vars</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="va">af</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nid</span>, <span class="fl">2</span>, <span class="va">af</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="va">index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">nid</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">nid</span>, replace<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span>    <span class="va">x</span><span class="op">[</span><span class="va">index</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">index</span>,<span class="va">i</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Simulate correlated variables</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
-<span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">1000000</span>
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">make_correlated_vars</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="fl">0.5</span><span class="op">)</span>
-<span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html">heatmap</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">1000000</span></span>
+<span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">make_correlated_vars</span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>Get estimates from individual level data</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">nsnp</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span>
-<span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">X</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">nsnp</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">X</span><span class="op">)</span></span></code></pre></div>
 <p>Now from summary data directly</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">out2</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>beta<span class="op">=</span><span class="va">b</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">nid</span>, ld<span class="op">=</span><span class="va">rho</span>, vy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">b</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">nid</span>, ld<span class="op">=</span><span class="va">rho</span>, vy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Compare beta estimates</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out2</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">out</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">out</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>Compare se</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out2</span><span class="op">$</span><span class="va">se</span> <span class="op">~</span> <span class="va">out</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span><span class="op">$</span><span class="va">se</span> <span class="op">~</span> <span class="va">out</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
-<p>When there is a real effect the SE is correct, but the SE for the null effects are slightly too large.</p>
+<p>When there is a real effect the SE is correct, but the SE for the
+null effects are slightly too large.</p>
 <p>Check with uncorrelated variables</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="va">Xu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">nid</span> <span class="op">*</span> <span class="va">nsnp</span>, <span class="fl">2</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">Xu</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span>
-<span class="va">outu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">Xu</span><span class="op">)</span>
-
-<span class="va">rhou</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">Xu</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html">heatmap</a></span><span class="op">(</span><span class="va">rhou</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Xu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nid</span> <span class="op">*</span> <span class="va">nsnp</span>, <span class="fl">2</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="va">nid</span>, <span class="va">nsnp</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">Xu</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span></span>
+<span><span class="va">outu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">Xu</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rhou</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">Xu</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="va">rhou</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <p>Generate summary data</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">Xu</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">out3</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>beta<span class="op">=</span><span class="va">b</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">nid</span>, vy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">Xu</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">out3</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">b</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">nid</span>, vy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Compare betas</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out3</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">outu</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out3</span><span class="op">$</span><span class="va">bhat</span> <span class="op">~</span> <span class="va">outu</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 <p>Compare se</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out3</span><span class="op">$</span><span class="va">se</span> <span class="op">~</span> <span class="va">outu</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out3</span><span class="op">$</span><span class="va">se</span> <span class="op">~</span> <span class="va">outu</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
 <p><img src="gwas_summary_data_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 <p>Suddenly well behaved…?</p>
-<p>Try to re-generate the expected SEs, where is the problem arising?</p>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span>
-<span class="va">resid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>
-<span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></pre></div>
+<p>Try to re-generate the expected SEs, where is the problem
+arising?</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">resid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<span><span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></span></code></pre></div>
 <p>Actual SE</p>
-<div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span>
-<span class="co">#&gt; [1] 0.001468453</span></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 0.001468453</span></span></code></pre></div>
 <p>Which comes from</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">resid</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.001468453</span></pre></div>
-<p>Now work backwards, introducing more summary level information to replace individual level calculations. Estimate residual variance:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit">
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">out</span><span class="op">$</span><span class="va">bhat</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;             [,1]</span>
-<span class="co">#&gt; [1,] 0.001468453</span></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">resid</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.001468453</span></span></code></pre></div>
+<p>Now work backwards, introducing more summary level information to
+replace individual level calculations. Estimate residual variance:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">out</span><span class="op">$</span><span class="va">bhat</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             [,1]</span></span>
+<span><span class="co">#&gt; [1,] 0.001468453</span></span></code></pre></div>
 <p>Estimate residual variance from simulated beta</p>
-<div class="sourceCode" id="cb26"><pre class="downlit">
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;             [,1]</span>
-<span class="co">#&gt; [1,] 0.001468453</span></pre></div>
-<p>Use allele frequency to estimate residual variance (very marginal as it explains a tiny amount)</p>
-<div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;             [,1]</span>
-<span class="co">#&gt; [1,] 0.001468453</span></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             [,1]</span></span>
+<span><span class="co">#&gt; [1,] 0.001468453</span></span></code></pre></div>
+<p>Use allele frequency to estimate residual variance (very marginal as
+it explains a tiny amount)</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             [,1]</span></span>
+<span><span class="co">#&gt; [1,] 0.001468453</span></span></code></pre></div>
 <p>Now use allele frequency to estimate variance of X</p>
-<div class="sourceCode" id="cb28"><pre class="downlit">
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;             [,1]</span>
-<span class="co">#&gt; [1,] 0.001469628</span></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="va">b</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">nid</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             [,1]</span></span>
+<span><span class="co">#&gt; [1,] 0.001469628</span></span></code></pre></div>
 <p>If the SNP is not in HWE then there will be a problem</p>
-<div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.7076724</span>
-<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.7071067</span></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">10</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.7076724</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">af</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.7071067</span></span></code></pre></div>
 </div>
   </div>
 
@@ -438,11 +574,13 @@ Var(y) = V_G + V_E
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -450,6 +588,8 @@ Var(y) = V_G + V_E
 
   
 
+
+  
 
   </body>
 </html>

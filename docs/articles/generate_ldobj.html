@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,147 +60,155 @@
 
       
 
-      </header><script src="generate_ldobj_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Generating LD matrices</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/generate_ldobj.Rmd"><code>vignettes/generate_ldobj.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/generate_ldobj.Rmd" class="external-link"><code>vignettes/generate_ldobj.Rmd</code></a></small>
       <div class="hidden name"><code>generate_ldobj.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></pre></div>
-<div id="obtain-independent-ld-regions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#obtain-independent-ld-regions" class="anchor"></a>Obtain independent LD regions</h2>
-<p>Use <a href="https://bitbucket.org/nygcresearch/ldetect-data/src/master/">https://bitbucket.org/nygcresearch/ldetect-data</a> from <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4731402/">Berisa and Pickrell (2016)</a> - a list of independent LD regions for Africans, Europeans and Asians.</p>
-<p>Note: The Africans dataset has a couple of None values that I am interpolating in a simple way to avoid errors.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/AFR/fourier_ls-all.bed"</span><span class="op">)</span>
-<span class="va">midpoint</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">108823642</span> <span class="op">+</span> <span class="fl">111048570</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">[</span><span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">==</span><span class="st">"None"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">midpoint</span>
-<span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">==</span><span class="st">"None"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">midpoint</span>
-<span class="va">a</span><span class="op">$</span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">)</span>
-<span class="va">a</span><span class="op">$</span><span class="va">stop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">)</span>
-<span class="va">a</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"AFR"</span>
-
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/ASN/fourier_ls-all.bed"</span><span class="op">)</span>
-<span class="va">b</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EAS"</span>
-
-<span class="va">c</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/EUR/fourier_ls-all.bed"</span><span class="op">)</span>
-<span class="va">c</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EUR"</span>
-
-<span class="va">ldetect</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">a</span>,<span class="va">b</span>,<span class="va">c</span><span class="op">)</span>
-
-<span class="co"># Avoid overlap between regions</span>
-<span class="va">ldetect</span><span class="op">$</span><span class="va">stop</span> <span class="op">&lt;-</span> <span class="va">ldetect</span><span class="op">$</span><span class="va">stop</span> <span class="op">-</span> <span class="fl">1</span></pre></div>
-<p>This <code>ldetect</code> object is saved as a data object in this package.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jeroen.r-universe.dev/jsonlite" class="external-link">jsonlite</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="obtain-independent-ld-regions">Obtain independent LD regions<a class="anchor" aria-label="anchor" href="#obtain-independent-ld-regions"></a>
+</h2>
+<p>Use <a href="https://bitbucket.org/nygcresearch/ldetect-data/src/master/" class="external-link">https://bitbucket.org/nygcresearch/ldetect-data</a>
+from <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4731402/" class="external-link">Berisa and
+Pickrell (2016)</a> - a list of independent LD regions for Africans,
+Europeans and Asians.</p>
+<p>Note: The Africans dataset has a couple of None values that I am
+interpolating in a simple way to avoid errors.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/AFR/fourier_ls-all.bed"</span><span class="op">)</span></span>
+<span><span class="va">midpoint</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">108823642</span> <span class="op">+</span> <span class="fl">111048570</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">[</span><span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">==</span><span class="st">"None"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">midpoint</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">==</span><span class="st">"None"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">midpoint</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">start</span><span class="op">)</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">stop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">stop</span><span class="op">)</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"AFR"</span></span>
+<span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/ASN/fourier_ls-all.bed"</span><span class="op">)</span></span>
+<span><span class="va">b</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EAS"</span></span>
+<span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"https://bitbucket.org/nygcresearch/ldetect-data/raw/ac125e47bf7ff3e90be31f278a7b6a61daaba0dc/EUR/fourier_ls-all.bed"</span><span class="op">)</span></span>
+<span><span class="va">c</span><span class="op">$</span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EUR"</span></span>
+<span></span>
+<span><span class="va">ldetect</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">a</span>,<span class="va">b</span>,<span class="va">c</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Avoid overlap between regions</span></span>
+<span><span class="va">ldetect</span><span class="op">$</span><span class="va">stop</span> <span class="op">&lt;-</span> <span class="va">ldetect</span><span class="op">$</span><span class="va">stop</span> <span class="op">-</span> <span class="fl">1</span></span></code></pre></div>
+<p>This <code>ldetect</code> object is saved as a data object in this
+package.</p>
 </div>
-<div id="generate-ld-matrix-objects" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generate-ld-matrix-objects" class="anchor"></a>Generate LD matrix objects</h2>
-<p>For each region create an <code>.rds</code> object that contains a list of <code>map</code> and <code>ld</code></p>
+<div class="section level2">
+<h2 id="generate-ld-matrix-objects">Generate LD matrix objects<a class="anchor" aria-label="anchor" href="#generate-ld-matrix-objects"></a>
+</h2>
+<p>For each region create an <code>.rds</code> object that contains a
+list of <code>map</code> and <code>ld</code></p>
 <p>Create a <code>generate_ldobj_config.json</code> file:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">{</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>    <span class="dt">"dl_dir"</span><span class="fu">:</span> <span class="st">"/path/to/downloads"</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"dl_dir"</span><span class="fu">:</span> <span class="st">"/path/to/downloads"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p>Setup directories</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">conf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">read_json</a></span><span class="op">(</span><span class="st">"generate_ldobj_config.json"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">conf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">read_json</a></span><span class="op">(</span><span class="st">"generate_ldobj_config.json"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span><span class="op">)</span></span></code></pre></div>
 <p>Get the 1000 genomes files</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">wget</span> -O 1kg.v3.tgz http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">tar</span> xzvf 1kg.v3.tgz</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">rm</span> 1kg.v3.tgz</span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">wget</span> https://github.com/MRCIEU/gwasglue/raw/master/inst/hapmap3/hapmap3_autosome.snplist.gz</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="fu">gunzip</span> hapmap3_autosome.snplist.gz</span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="ex">plink</span> --bfile EUR --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out EUR_1kg_hm3</span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="ex">plink</span> --bfile EAS --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out EAS_1kg_hm3</span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="ex">plink</span> --bfile AFR --extract hapmap3_autosome.snplist --make-bed --keep-allele-order --out AFR_1kg_hm3</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> 1kg.v3.tgz http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xzvf 1kg.v3.tgz</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> 1kg.v3.tgz</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/MRCIEU/gwasglue/raw/master/inst/hapmap3/hapmap3_autosome.snplist.gz</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gunzip</span> hapmap3_autosome.snplist.gz</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> EUR <span class="at">--extract</span> hapmap3_autosome.snplist <span class="at">--make-bed</span> <span class="at">--keep-allele-order</span> <span class="at">--out</span> EUR_1kg_hm3</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> EAS <span class="at">--extract</span> hapmap3_autosome.snplist <span class="at">--make-bed</span> <span class="at">--keep-allele-order</span> <span class="at">--out</span> EAS_1kg_hm3</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> AFR <span class="at">--extract</span> hapmap3_autosome.snplist <span class="at">--make-bed</span> <span class="at">--keep-allele-order</span> <span class="at">--out</span> AFR_1kg_hm3</span></code></pre></div>
 <p>Generate matrices for each population</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">ldetect</span><span class="op">)</span>
-
-<span class="va">map_eas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span>
-    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, 
-    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, 
-    regions<span class="op">=</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"EAS"</span><span class="op">)</span>,
-    nthreads<span class="op">=</span><span class="fl">16</span>
-<span class="op">)</span>
-
-<span class="va">map_afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span>
-    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span>, 
-    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span>, 
-    regions<span class="op">=</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"AFR"</span><span class="op">)</span>,
-    nthreads<span class="op">=</span><span class="fl">16</span>
-<span class="op">)</span>
-
-<span class="va">map_eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span>
-    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span>, 
-    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span>, 
-    regions<span class="op">=</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"EUR"</span><span class="op">)</span>,
-    nthreads<span class="op">=</span><span class="fl">16</span>
-<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ldetect</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_eas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span></span>
+<span>    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    regions<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"EAS"</span><span class="op">)</span>,</span>
+<span>    nthreads<span class="op">=</span><span class="fl">16</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span></span>
+<span>    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    regions<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"AFR"</span><span class="op">)</span>,</span>
+<span>    nthreads<span class="op">=</span><span class="fl">16</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_ldobj.html">generate_ldobj</a></span><span class="op">(</span></span>
+<span>    outdir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    bfile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EUR_1kg_hm3"</span><span class="op">)</span>, </span>
+<span>    regions<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ldetect</span>, <span class="va">pop</span><span class="op">==</span><span class="st">"EUR"</span><span class="op">)</span>,</span>
+<span>    nthreads<span class="op">=</span><span class="fl">16</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Package them up</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf EUR_1kg_hm3_ldobj.tar EUR_1kg_hm3"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span>
-
-<span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf EAS_1kg_hm3_ldobj.tar EAS_1kg_hm3"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span>
-
-<span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf AFR_1kg_hm3_ldobj.tar AFR_1kg_hm3"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf EUR_1kg_hm3_ldobj.tar EUR_1kg_hm3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf EAS_1kg_hm3_ldobj.tar EAS_1kg_hm3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cmd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"cd "</span>, <span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"; tar cvf AFR_1kg_hm3_ldobj.tar AFR_1kg_hm3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="try-it-out-for-generating-summary-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#try-it-out-for-generating-summary-data" class="anchor"></a>Try it out for generating summary data</h2>
-<p>Using just one region with just one causal variant. Read in a regional LD matrix</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"ldobj_chr"</span>, <span class="va">.</span>, value<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span><span class="op">}</span>
-<span class="va">ldobj_eas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="try-it-out-for-generating-summary-data">Try it out for generating summary data<a class="anchor" aria-label="anchor" href="#try-it-out-for-generating-summary-data"></a>
+</h2>
+<p>Using just one region with just one causal variant. Read in a
+regional LD matrix</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"ldobj_chr"</span>, <span class="va">.</span>, value<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span><span class="op">}</span></span>
+<span><span class="va">ldobj_eas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></span></code></pre></div>
 <p>Generate the LD-aware effects from a single causal variant</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj_eas</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobj<span class="op">=</span><span class="va">ldobj_eas</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj_eas</span><span class="op">$</span><span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobj<span class="op">=</span><span class="va">ldobj_eas</span><span class="op">)</span></span></code></pre></div>
 <p>Add some random noise for a sample size of 100000 and plot</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span>
-
-<span class="fu">ggplot</span><span class="op">(</span><span class="va">ss</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></pre></div>
-<p>Now try whole genome with 100 causal variants - from files - takes less than 2 minutes for HapMap3 with 1 thread</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="co"># Generate effects</span>
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map_eas</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">100</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, nthreads<span class="op">=</span><span class="fl">16</span><span class="op">)</span>
-
-<span class="co"># Generate sample estimates</span>
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="fl">10000000</span><span class="op">)</span>
-
-<span class="co"># Plot</span>
-<span class="fu">ggplot</span><span class="op">(</span><span class="va">ss</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu">facet_grid</span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">chr</span>, scale<span class="op">=</span><span class="st">"free_x"</span>, space<span class="op">=</span><span class="st">"free_x"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ss</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Now try whole genome with 100 causal variants - from files - takes
+less than 2 minutes for HapMap3 with 1 thread</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Generate effects</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map_eas</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, Pi<span class="op">=</span><span class="fl">100</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">conf</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"EAS_1kg_hm3"</span><span class="op">)</span>, nthreads<span class="op">=</span><span class="fl">16</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate sample estimates</span></span>
+<span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="fl">10000000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ss</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">chr</span>, scale<span class="op">=</span><span class="st">"free_x"</span>, space<span class="op">=</span><span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -213,11 +223,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -225,6 +237,8 @@
 
   
 
+
+  
 
   </body>
 </html>

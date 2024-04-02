@@ -31,3 +31,5 @@ articles:
       - mr_dgp
       - gwas_summary_data_ld
       - generate_ldobj
+      - susie_check
+      - sample_overlap_theory

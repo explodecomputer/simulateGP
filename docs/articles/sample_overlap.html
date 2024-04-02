@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,205 +60,208 @@
 
       
 
-      </header><script src="sample_overlap_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Sample overlap in GWAS summary datasets</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/sample_overlap.Rmd"><code>vignettes/sample_overlap.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/sample_overlap.Rmd" class="external-link"><code>vignettes/sample_overlap.Rmd</code></a></small>
       <div class="hidden name"><code>sample_overlap.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</span>
-<span class="co">#&gt; ✔ ggplot2 3.3.3     ✔ purrr   0.3.4</span>
-<span class="co">#&gt; ✔ tibble  3.1.0     ✔ dplyr   1.0.5</span>
-<span class="co">#&gt; ✔ tidyr   1.1.2     ✔ stringr 1.4.0</span>
-<span class="co">#&gt; ✔ readr   1.4.0     ✔ forcats 0.5.0</span>
-<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
-<span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span>
-<span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span>
-<span class="co">#&gt; ✖ dplyr::select() masks MASS::select()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.4</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.4.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.2.1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.2     </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">select()</span> masks <span style="color: #0000BB;">MASS</span>::select()</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <p>Sample overlap</p>
 <p><span class="math display">\[
 \begin{bmatrix}
-\hat{\beta}_1\\ 
+\hat{\beta}_1\\
 \hat{\beta}_2
-\end{bmatrix} = 
-MVN\left ( 
+\end{bmatrix} =
+MVN\left (
 \begin{bmatrix}
-\beta_1\\ 
+\beta_1\\
 \beta_2
 \end{bmatrix},
-\boldsymbol{S} 
- \right )
+\boldsymbol{S}
+\right )
 \]</span></p>
-<p>$$  = </p>
-<p>\begin{bmatrix} N_1 &amp; <em>{1,2}\ </em>{1,2} &amp; N_2 \end{bmatrix}</p>
-
+<p>$$ = </p>
+<span class="math display">\[\begin{bmatrix}
+N_1 &amp; \rho_{1,2}\frac{N_O}{\sqrt{N_1 N_2}}\\
+\rho_{1,2}\frac{N_O}{\sqrt{N_1 N_2}} &amp; N_2
+\end{bmatrix}\]</span>
 <p>$$</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">betas</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="va">n1</span>, <span class="va">n2</span>, <span class="va">pcor</span>, <span class="va">n_overlap</span>, <span class="va">Nrep</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">b1</span>,<span class="va">b2</span><span class="op">)</span>
-    <span class="co"># se1 and se2 are computed as per your formula</span>
-    <span class="va">ses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">se1</span>,<span class="fl">0</span>, <span class="fl">0</span>, <span class="va">se2</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>
-    <span class="co"># pcor is the phenotypic correlation between traits, N_0 is the sample overlap, N1 is sample size 1, N2 is sample size 2</span>
-    <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">pcor</span> <span class="op">*</span> <span class="va">n_overlap</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">n1</span><span class="op">*</span><span class="va">n2</span><span class="op">)</span>
-    <span class="va">cor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">r</span>, <span class="va">r</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>  
-    <span class="va">cov</span> <span class="op">&lt;-</span> <span class="va">ses</span> <span class="op">%*%</span> <span class="va">cor</span> <span class="op">%*%</span> <span class="va">ses</span>
-    <span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span><span class="va">Nrep</span>, <span class="va">mu</span>, <span class="va">cov</span><span class="op">)</span>
-    <span class="va">sample</span>
-<span class="op">}</span>
-
-<span class="va">maf</span> <span class="op">&lt;-</span> <span class="fl">0.4</span>
-<span class="va">vy</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">b1</span> <span class="op">&lt;-</span> <span class="fl">0.1</span>
-<span class="va">bxy</span> <span class="op">&lt;-</span> <span class="fl">0</span>
-<span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">b1</span> <span class="op">*</span> <span class="va">bxy</span>
-
-<span class="va">se1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">b1</span>, <span class="va">maf</span>, <span class="va">n1</span>, <span class="fl">1</span><span class="op">)</span>
-<span class="op">(</span><span class="va">b1</span> <span class="op">/</span> <span class="va">se1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
-<span class="co">#&gt; [1] 48.23151</span>
-<span class="va">se2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">b2</span>, <span class="va">maf</span>, <span class="va">n2</span>, <span class="fl">1</span><span class="op">)</span>
-
-<span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">colMeans</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.002279094</span>
-<span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">colMeans</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.0004251417</span>
-
-<span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">cor</span>
-<span class="co">#&gt;           [,1]      [,2]</span>
-<span class="co">#&gt; [1,] 1.0000000 0.4909255</span>
-<span class="co">#&gt; [2,] 0.4909255 1.0000000</span>
-<span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">cor</span>
-<span class="co">#&gt;            [,1]       [,2]</span>
-<span class="co">#&gt; [1,] 1.00000000 0.02215603</span>
-<span class="co">#&gt; [2,] 0.02215603 1.00000000</span>
-
-<span class="co"># rsq = F / (F + n -1)</span>
-
-<span class="co"># rsq F + rsq(n-1) = F</span>
-<span class="co"># rsq F - F = -rsq(n-1)</span>
-<span class="co"># F (rsq - 1) = - rsq(n - 1)</span>
-<span class="co"># F = (rsq - rsq n) / rsq - 1</span>
-
-<span class="co"># rsq = 20 / (20 + 1000 - 1)</span>
-
-
-<span class="va">nrep</span><span class="op">=</span><span class="fl">2000</span>
-<span class="va">nsnp</span><span class="op">=</span><span class="fl">100</span>
-<span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">maf</span> <span class="op">&lt;-</span> <span class="fl">0.4</span>
-<span class="va">pcor</span> <span class="op">&lt;-</span> <span class="fl">0.6</span>
-
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span>, af<span class="op">=</span><span class="va">maf</span><span class="op">)</span>, <span class="fl">1</span>, S<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span>b1<span class="op">=</span><span class="va">a</span><span class="op">$</span><span class="va">beta</span>, overlap<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, bxy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as_tibble</span>
-<span class="va">a</span><span class="op">$</span><span class="va">se1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span>, <span class="va">maf</span>, <span class="va">n1</span>, <span class="fl">1</span><span class="op">)</span>
-<span class="va">a</span><span class="op">$</span><span class="va">fval</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span><span class="op">/</span><span class="va">a</span><span class="op">$</span><span class="va">se1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">fval</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="va">n1</span>, <span class="va">n2</span>, <span class="va">pcor</span>, <span class="va">n_overlap</span>, <span class="va">Nrep</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">b1</span>,<span class="va">b2</span><span class="op">)</span></span>
+<span>    <span class="co"># se1 and se2 are computed as per your formula</span></span>
+<span>    <span class="va">ses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">se1</span>,<span class="fl">0</span>, <span class="fl">0</span>, <span class="va">se2</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="co"># pcor is the phenotypic correlation between traits, N_0 is the sample overlap, N1 is sample size 1, N2 is sample size 2</span></span>
+<span>    <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">pcor</span> <span class="op">*</span> <span class="va">n_overlap</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n1</span><span class="op">*</span><span class="va">n2</span><span class="op">)</span></span>
+<span>    <span class="va">cor</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">r</span>, <span class="va">r</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>  </span>
+<span>    <span class="va">cov</span> <span class="op">&lt;-</span> <span class="va">ses</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">cor</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">ses</span></span>
+<span>    <span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="va">Nrep</span>, <span class="va">mu</span>, <span class="va">cov</span><span class="op">)</span></span>
+<span>    <span class="va">sample</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">maf</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span>
+<span><span class="va">vy</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">b1</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<span><span class="va">bxy</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">b1</span> <span class="op">*</span> <span class="va">bxy</span></span>
+<span></span>
+<span><span class="va">se1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">b1</span>, <span class="va">maf</span>, <span class="va">n1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">b1</span> <span class="op">/</span> <span class="va">se1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 48.23151</span></span>
+<span><span class="va">se2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">b2</span>, <span class="va">maf</span>, <span class="va">n2</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">colMeans</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] 0.003083205</span></span>
+<span><span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">colMeans</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] -0.0005634219</span></span>
+<span></span>
+<span><span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">cor</span></span>
+<span><span class="co">#&gt;           [,1]      [,2]</span></span>
+<span><span class="co">#&gt; [1,] 1.0000000 0.5204661</span></span>
+<span><span class="co">#&gt; [2,] 0.5204661 1.0000000</span></span>
+<span><span class="fu">betas</span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="va">se1</span>, <span class="va">se2</span>, <span class="fl">1000</span>, <span class="fl">1000</span>, <span class="fl">0.5</span>, n_overlap<span class="op">=</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">cor</span></span>
+<span><span class="co">#&gt;              [,1]         [,2]</span></span>
+<span><span class="co">#&gt; [1,]  1.000000000 -0.007276515</span></span>
+<span><span class="co">#&gt; [2,] -0.007276515  1.000000000</span></span>
+<span></span>
+<span><span class="co"># rsq = F / (F + n -1)</span></span>
+<span></span>
+<span><span class="co"># rsq F + rsq(n-1) = F</span></span>
+<span><span class="co"># rsq F - F = -rsq(n-1)</span></span>
+<span><span class="co"># F (rsq - 1) = - rsq(n - 1)</span></span>
+<span><span class="co"># F = (rsq - rsq n) / rsq - 1</span></span>
+<span></span>
+<span><span class="co"># rsq = 20 / (20 + 1000 - 1)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">nrep</span><span class="op">=</span><span class="fl">2000</span></span>
+<span><span class="va">nsnp</span><span class="op">=</span><span class="fl">100</span></span>
+<span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">maf</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span>
+<span><span class="va">pcor</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
+<span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span>, af<span class="op">=</span><span class="va">maf</span><span class="op">)</span>, <span class="fl">1</span>, S<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>b1<span class="op">=</span><span class="va">a</span><span class="op">$</span><span class="va">beta</span>, overlap<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, bxy<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">as_tibble</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">se1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span>, <span class="va">maf</span>, <span class="va">n1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">fval</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span><span class="op">/</span><span class="va">a</span><span class="op">$</span><span class="va">se1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">fval</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sample_overlap_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-
-<span class="va">a</span><span class="op">$</span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">$</span><span class="va">b1</span> <span class="op">*</span> <span class="va">a</span><span class="op">$</span><span class="va">bxy</span>
-<span class="va">a</span><span class="op">$</span><span class="va">se2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b2</span>, <span class="va">maf</span>, <span class="va">n2</span>, <span class="fl">1</span><span class="op">)</span>
-
-<span class="va">l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">betas</span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">b2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">se1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">se2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">n1</span>, <span class="va">n2</span>, <span class="va">pcor</span>, <span class="va">a</span><span class="op">$</span><span class="va">overlap</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">n1</span>, <span class="va">nrep</span><span class="op">)</span>
-    <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nrep</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">d</span><span class="op">$</span><span class="va">bx</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>
-    <span class="va">d</span><span class="op">$</span><span class="va">by</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>
-    <span class="va">l</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">d</span>
-<span class="op">}</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">l</span><span class="op">)</span>
-<span class="va">dat</span><span class="op">$</span><span class="va">wr</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">by</span><span class="op">/</span><span class="va">dat</span><span class="op">$</span><span class="va">bx</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">wr</span> <span class="op">&lt;</span> <span class="fl">3</span> <span class="op">&amp;</span> <span class="va">wr</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">fval</span>, y<span class="op">=</span><span class="va">by</span><span class="op">/</span><span class="va">bx</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="co"># geom_point(size=0.1, aes(colour=as.factor(overlap))) +</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">bxy</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_colour_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span><span class="op">)</span>
-<span class="co">#&gt; `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">$</span><span class="va">b1</span> <span class="op">*</span> <span class="va">a</span><span class="op">$</span><span class="va">bxy</span></span>
+<span><span class="va">a</span><span class="op">$</span><span class="va">se2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expected_se.html">expected_se</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b2</span>, <span class="va">maf</span>, <span class="va">n2</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">betas</span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">b1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">b2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">se1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">a</span><span class="op">$</span><span class="va">se2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">n1</span>, <span class="va">n2</span>, <span class="va">pcor</span>, <span class="va">a</span><span class="op">$</span><span class="va">overlap</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="va">n1</span>, <span class="va">nrep</span><span class="op">)</span></span>
+<span>    <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">a</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nrep</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">d</span><span class="op">$</span><span class="va">bx</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
+<span>    <span class="va">d</span><span class="op">$</span><span class="va">by</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span></span>
+<span>    <span class="va">l</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">d</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">l</span><span class="op">)</span></span>
+<span><span class="va">dat</span><span class="op">$</span><span class="va">wr</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">by</span><span class="op">/</span><span class="va">dat</span><span class="op">$</span><span class="va">bx</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">wr</span> <span class="op">&lt;</span> <span class="fl">3</span> <span class="op">&amp;</span> <span class="va">wr</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">fval</span>, y<span class="op">=</span><span class="va">by</span><span class="op">/</span><span class="va">bx</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="co"># geom_point(size=0.1, aes(colour=as.factor(overlap))) +</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">bxy</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_colour_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'</span></span></code></pre></div>
 <p><img src="sample_overlap_files/figure-html/unnamed-chunk-2-2.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">nsim</span> <span class="op">&lt;-</span> <span class="fl">500</span>
-<span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">nsim</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span><span class="op">)</span>, overlap<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span>, overlap<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-<span class="va">dat3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span>, overlap<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
-
-<span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">n1</span>, <span class="fl">1</span>, <span class="fl">0.4</span><span class="op">)</span>
-<span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">n2</span>, <span class="fl">1</span>, <span class="fl">0.4</span><span class="op">)</span>
-<span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n1</span><span class="op">)</span>
-<span class="va">u2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n2</span><span class="op">)</span>
-<span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n2</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat1</span><span class="op">)</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
-    <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">u1</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">u2</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">u1</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">u2</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">y1</span>, <span class="va">g1</span><span class="op">)</span>
-    <span class="va">ex1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">g1</span><span class="op">)</span>
-    <span class="va">ey1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">g1</span><span class="op">)</span>
-    <span class="va">ey2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">y2</span>, <span class="va">g2</span><span class="op">)</span>
-    <span class="va">ey3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">y1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">mid</span><span class="op">]</span>, <span class="va">y2</span><span class="op">[</span><span class="op">(</span><span class="va">mid</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">g1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">mid</span><span class="op">]</span>, <span class="va">g2</span><span class="op">[</span><span class="op">(</span><span class="va">mid</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">dat1</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span>
-    <span class="va">dat2</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span>
-    <span class="va">dat3</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span>
-    <span class="va">dat1</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">dat1</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey1</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">dat2</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">dat2</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey2</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">dat3</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">dat3</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey3</span><span class="op">$</span><span class="va">bhat</span>
-<span class="op">}</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `fval`.</span>
-
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `fval`.</span>
-
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `fval`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span>
-<span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span>
-
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">dat1</span>, <span class="va">dat2</span>, <span class="va">dat3</span><span class="op">)</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">fval</span>, y<span class="op">=</span><span class="va">by</span><span class="op">/</span><span class="va">bx</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">0.1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">fval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_colour_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span><span class="op">)</span>
-<span class="co">#&gt; `geom_smooth()` using method = 'loess' and formula 'y ~ x'</span>
-<span class="co">#&gt; Warning: Removed 35 rows containing non-finite values (stat_smooth).</span>
-<span class="co">#&gt; Warning: Removed 35 rows containing missing values (geom_point).</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nsim</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">nsim</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span><span class="op">)</span>, overlap<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span>, overlap<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">dat3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>rsq1<span class="op">=</span><span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span>, overlap<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">n1</span>, <span class="fl">1</span>, <span class="fl">0.4</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">n2</span>, <span class="fl">1</span>, <span class="fl">0.4</span><span class="op">)</span></span>
+<span><span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n1</span><span class="op">)</span></span>
+<span><span class="va">u2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n2</span><span class="op">)</span></span>
+<span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n2</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dat1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">dat1</span><span class="op">$</span><span class="va">rsq1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">u1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">g2</span>, <span class="va">u2</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">u1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">u2</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">y1</span>, <span class="va">g1</span><span class="op">)</span></span>
+<span>    <span class="va">ex1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">g1</span><span class="op">)</span></span>
+<span>    <span class="va">ey1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">g1</span><span class="op">)</span></span>
+<span>    <span class="va">ey2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="va">y2</span>, <span class="va">g2</span><span class="op">)</span></span>
+<span>    <span class="va">ey3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fast_assoc.html">fast_assoc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">y1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">mid</span><span class="op">]</span>, <span class="va">y2</span><span class="op">[</span><span class="op">(</span><span class="va">mid</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">mid</span><span class="op">]</span>, <span class="va">g2</span><span class="op">[</span><span class="op">(</span><span class="va">mid</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">dat1</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span></span>
+<span>    <span class="va">dat2</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span></span>
+<span>    <span class="va">dat3</span><span class="op">$</span><span class="va">fval</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">fval</span></span>
+<span>    <span class="va">dat1</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">dat1</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey1</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">dat2</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">dat2</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey2</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">dat3</span><span class="op">$</span><span class="va">bx</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ex1</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">dat3</span><span class="op">$</span><span class="va">by</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ey3</span><span class="op">$</span><span class="va">bhat</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `fval`.</span></span>
+<span><span class="co">#&gt; Unknown or uninitialised column: `fval`.</span></span>
+<span><span class="co">#&gt; Unknown or uninitialised column: `fval`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `bx`.</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `by`.</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">dat1</span>, <span class="va">dat2</span>, <span class="va">dat3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">fval</span>, y<span class="op">=</span><span class="va">by</span><span class="op">/</span><span class="va">bx</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">0.1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">fval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_colour_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span></span>
+<span><span class="co">#&gt; Warning: Removed 106 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; (`stat_smooth()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 106 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sample_overlap_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-
-
-<span class="va">dat1</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.3574646</span>
-<span class="va">dat2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.4029192</span>
-<span class="va">dat3</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span>
-<span class="co">#&gt; [1] 0.3895792</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">dat1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] 0.2583269</span></span>
+<span><span class="va">dat2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] 0.2329293</span></span>
+<span><span class="va">dat3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">fval</span> <span class="op">&gt;</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">bx</span>, <span class="va">.</span><span class="op">$</span><span class="va">by</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] 0.2142105</span></span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -268,11 +273,13 @@ MVN\left (
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -280,6 +287,8 @@ MVN\left (
 
   
 
+
+  
 
   </body>
 </html>

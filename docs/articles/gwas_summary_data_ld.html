@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,28 +60,30 @@
 
       
 
-      </header><script src="gwas_summary_data_ld_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Simulating GWAS summary data with LD</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/gwas_summary_data_ld.Rmd"><code>vignettes/gwas_summary_data_ld.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/gwas_summary_data_ld.Rmd" class="external-link"><code>vignettes/gwas_summary_data_ld.Rmd</code></a></small>
       <div class="hidden name"><code>gwas_summary_data_ld.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org">mvtnorm</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></pre></div>
-<p>If a set of SNPs have some effect on y, and those SNPs are correlated, can we calculate the expected marginal effect sizes?</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org" class="external-link">mvtnorm</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
+<p>If a set of SNPs have some effect on y, and those SNPs are
+correlated, can we calculate the expected marginal effect sizes?</p>
 <p><span class="math display">\[
 \textbf{y} = \textbf{Xb} + \textbf{e}
 \]</span></p>
-<p>Intercept ignored for simplicity, so the genotyped matrix <span class="math inline">\(\textbf{X}\)</span> needs to be centered by subtracting the mean genotype value (<span class="math inline">\(2p_j\)</span>) from each genotype.</p>
+<p>Intercept ignored for simplicity, so the genotyped matrix <span class="math inline">\(\textbf{X}\)</span> needs to be centered by
+subtracting the mean genotype value (<span class="math inline">\(2p_j\)</span>) from each genotype.</p>
 <p>Linear regression is solved by:</p>
 <p><span class="math display">\[
 \hat{\textbf{b}} = \textbf{(X'X)}^{-1}\textbf{X'y}
@@ -88,28 +92,38 @@
 <p><span class="math display">\[
 var(\hat{\textbf{b}}) = \sigma^2_j (\textbf{X'X})^{-1}
 \]</span></p>
-<p>and <span class="math inline">\(\sigma^2_j\)</span> is the residual variance given by</p>
+<p>and <span class="math inline">\(\sigma^2_j\)</span> is the residual
+variance given by</p>
 <p><span class="math display">\[
 (1-R^2)var(y)
 \]</span></p>
 <p>and</p>
 <p><span class="math display">\[
-R^2 = \frac{\hat{\boldsymbol{b}}' \boldsymbol{X}'\boldsymbol{y} \boldsymbol{\hat{\beta}}}{var(y)}
+R^2 = \frac{\hat{\boldsymbol{b}}' \boldsymbol{X}'\boldsymbol{y}
+\boldsymbol{\hat{\beta}}}{var(y)}
 \]</span></p>
-<p>We can obtain the causal effects from the marginal estimates using:</p>
+<p>We can obtain the causal effects from the marginal estimates
+using:</p>
 <p><span class="math display">\[
 \boldsymbol{\hat{b}} = \boldsymbol{(X'X)^{-1}D\hat{\beta}}
 \]</span></p>
-<p>Where <span class="math inline">\(\boldsymbol{D}\)</span> is the diagonal matrix of <span class="math inline">\(\boldsymbol{X'X}\)</span> (i.e. the sums of squares for each of the SNPs).</p>
-<p>Therefore, to generate a set of marginal estimates from a given set of causal effects and a set of correlated SNPs:</p>
+<p>Where <span class="math inline">\(\boldsymbol{D}\)</span> is the
+diagonal matrix of <span class="math inline">\(\boldsymbol{X'X}\)</span> (i.e. the sums of
+squares for each of the SNPs).</p>
+<p>Therefore, to generate a set of marginal estimates from a given set
+of causal effects and a set of correlated SNPs:</p>
 <p><span class="math display">\[
 \boldsymbol{\hat{\beta}} = \boldsymbol{\hat{b}X'XD^{-1}}
 \]</span></p>
-<p>We would like to generate this just from a correlation matrix, rather than <span class="math inline">\(\boldsymbol{X'X}\)</span> which is the matrix of the sums of squares of X. Given that</p>
+<p>We would like to generate this just from a correlation matrix, rather
+than <span class="math inline">\(\boldsymbol{X'X}\)</span> which is
+the matrix of the sums of squares of X. Given that</p>
 <p><span class="math display">\[
 \rho_{jk} = \frac{\sum^n{ x_j x_k}}{\sqrt{\sum^n{x_j^2}\sum^n{x_k^2}}}
 \]</span></p>
-<p>We can generate the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix by first calculating the sums of squares of each of the SNPs such that, which is represented in the diagonal matrix <span class="math inline">\(D\)</span></p>
+<p>We can generate the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix by first
+calculating the sums of squares of each of the SNPs such that, which is
+represented in the diagonal matrix <span class="math inline">\(D\)</span></p>
 <p><span class="math display">\[
 D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 \]</span></p>
@@ -119,148 +133,155 @@ D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 \]</span></p>
 <p>Finally</p>
 <p><span class="math display">\[
-\boldsymbol{\beta} = \boldsymbol{D^{-1/2}} \boldsymbol{\rho} \boldsymbol{D^{1/2}} \boldsymbol{b}
+\boldsymbol{\beta} = \boldsymbol{D^{-1/2}} \boldsymbol{\rho}
+\boldsymbol{D^{1/2}} \boldsymbol{b}
 \]</span></p>
-<p>To generate the standard errors we need to allow for the sampling variance of each neighboring SNP to be correlated, such that</p>
+<p>To generate the standard errors we need to allow for the sampling
+variance of each neighboring SNP to be correlated, such that</p>
 <p><span class="math display">\[
-\boldsymbol{Cov(\hat{\beta})} = \boldsymbol{S} \boldsymbol{\rho} \boldsymbol{S}
+\boldsymbol{Cov(\hat{\beta})} = \boldsymbol{S} \boldsymbol{\rho}
+\boldsymbol{S}
 \]</span></p>
-<p>Where S is a diagonal matrix of expected marginal standard errors for each SNP.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">calcs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="va">xpx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">%*%</span> <span class="va">x</span>
-    <span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">xpx</span><span class="op">)</span>
-    <span class="va">betahat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">bhat</span>
-    <span class="va">bhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">xpx</span><span class="op">)</span> <span class="op">%*%</span> <span class="va">D</span> <span class="op">%*%</span> <span class="va">betahat</span><span class="op">)</span>
-    <span class="va">betahatc</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">%*%</span> <span class="va">xpx</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">drop</span>
-    <span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-    <span class="va">betahatrho</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">%*%</span> <span class="va">rho</span> <span class="op">%&gt;%</span> <span class="va">drop</span>
-    <span class="fu">tibble</span><span class="op">(</span><span class="va">b</span>, <span class="va">bhat</span>, <span class="va">betahat</span>, <span class="va">betahatc</span>, <span class="va">betahatrho</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">20</span>
-<span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="va">nsnp</span>, <span class="va">nsnp</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html">rmvnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nsnp</span><span class="op">)</span>, <span class="va">sigma</span><span class="op">)</span>
-
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">betahat</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">betahatc</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">betahat</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">betahatrho</span><span class="op">)</span></pre></div>
+<p>Where S is a diagonal matrix of expected marginal standard errors for
+each SNP.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">calcs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">xpx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x</span></span>
+<span>    <span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">xpx</span><span class="op">)</span></span>
+<span>    <span class="va">betahat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">bhat</span></span>
+<span>    <span class="va">bhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">xpx</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">D</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betahat</span><span class="op">)</span></span>
+<span>    <span class="va">betahatc</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">xpx</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">D</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">drop</span></span>
+<span>    <span class="va">rho</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>    <span class="va">betahatrho</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">rho</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">drop</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">bhat</span>, <span class="va">betahat</span>, <span class="va">betahatc</span>, <span class="va">betahatrho</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<span><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="va">nsnp</span>, <span class="va">nsnp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html" class="external-link">rmvnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">nsnp</span><span class="op">)</span>, <span class="va">sigma</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">betahat</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">betahatc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">betahat</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">betahatrho</span><span class="op">)</span></span></code></pre></div>
 <p>This works well. Now try with two correlated binomial variables</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">2</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">:::</span><span class="fu"><a href="../reference/correlated_binomial.html">correlated_binomial</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span><span class="op">)</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
-<span class="va">res</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">:::</span><span class="fu"><a href="../reference/correlated_binomial.html">correlated_binomial</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span></span>
+<span><span class="va">res</span></span></code></pre></div>
 <p>Not working so well now. Try scaling</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">:::</span><span class="fu"><a href="../reference/correlated_binomial.html">correlated_binomial</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">scale</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
-<span class="va">res</span></pre></div>
-<p>This works - it’s because there is no intercept term in the model!</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">simulateGP</span><span class="fu">:::</span><span class="fu"><a href="../reference/correlated_binomial.html">correlated_binomial</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">scale</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span></span>
+<span><span class="va">res</span></span></code></pre></div>
+<p>This works - it’s because there is no intercept term in the
+model!</p>
 <p>Now try with LD reference panel data</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">read_x</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">variants</span>, <span class="va">bfile</span>, <span class="va">plink_bin</span><span class="op">=</span><span class="fu">genetics.binaRies</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html">get_plink_binary</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="co"># Make textfile</span>
-    <span class="va">shell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="st">'sysname'</span><span class="op">]</span> <span class="op">==</span> <span class="st">"Windows"</span>, <span class="st">"cmd"</span>, <span class="st">"sh"</span><span class="op">)</span>
-    <span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">variants</span><span class="op">)</span>, file<span class="op">=</span><span class="va">fn</span>, row.names<span class="op">=</span><span class="cn">F</span>, col.names<span class="op">=</span><span class="cn">F</span>, quote<span class="op">=</span><span class="cn">F</span><span class="op">)</span>
-
-        <span class="va">fun1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html">shQuote</a></span><span class="op">(</span><span class="va">plink_bin</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>,
-        <span class="st">" --bfile "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html">shQuote</a></span><span class="op">(</span><span class="va">bfile</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>,
-        <span class="st">" --extract "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html">shQuote</a></span><span class="op">(</span><span class="va">fn</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>, 
-        <span class="st">" --recode A "</span>, 
-        <span class="st">" --out "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html">shQuote</a></span><span class="op">(</span><span class="va">fn</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>
-    <span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="va">fun1</span><span class="op">)</span>
-
-    <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">fn</span>, <span class="st">".raw"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="op">{</span><span class="va">.</span><span class="op">[</span>,<span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span><span class="op">}</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">fn</span>, <span class="st">".raw"</span><span class="op">)</span><span class="op">)</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">greedy_remove</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">0</span>
-    <span class="va">flag</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-    <span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="va">nom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>
-    <span class="kw">while</span><span class="op">(</span><span class="va">flag</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>
-    <span class="op">{</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"iteration"</span><span class="op">)</span>
-        <span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span>
-        <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="va">count</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
-        <span class="op">{</span>
-            <span class="va">worst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.max</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
-            <span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">rem</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">worst</span><span class="op">)</span><span class="op">)</span>
-            <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="op">-</span><span class="va">worst</span>,<span class="op">-</span><span class="va">worst</span><span class="op">]</span>
-        <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-            <span class="va">flag</span> <span class="op">&lt;-</span> <span class="fl">0</span>
-        <span class="op">}</span>
-    <span class="op">}</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">nom</span> <span class="op">%in%</span> <span class="va">rem</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EUR"</span>
-<span class="va">ldref</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"/Users/gh13047/repo/mr-base-api/app/ld_files/"</span>, <span class="va">pop</span><span class="op">)</span>
-<span class="va">bim</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">ldref</span>, <span class="st">".bim"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">regionfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"/Users/gh13047/repo/gwasglue/inst/extdata/ldetect/"</span>, <span class="va">pop</span>, <span class="st">".bed"</span><span class="op">)</span>
-<span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span><span class="va">regionfile</span>, header<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
-        chr<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="st">""</span>, <span class="va">chr</span><span class="op">)</span><span class="op">)</span>,
-        start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">start</span><span class="op">)</span>,
-        stop<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">stop</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">region1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">bim</span>, <span class="va">V1</span> <span class="op">==</span> <span class="va">regions</span><span class="op">$</span><span class="va">chr</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">V4</span> <span class="op">&gt;</span> <span class="va">regions</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">V4</span> <span class="op">&lt;</span> <span class="va">regions</span><span class="op">$</span><span class="va">stop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">V2</span>
-
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">read_x</span><span class="op">(</span><span class="va">region1</span>, <span class="va">ldref</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1008</span><span class="op">:</span><span class="fl">1030</span><span class="op">]</span></pre></div>
-<p>When calculating causal effects from marginal effects need to invert the correlation matrix. To avoid matrix being singular, remove any correlations that are &gt;= 0.99</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu">greedy_remove</span><span class="op">(</span><span class="va">r</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>,<span class="op">-</span><span class="va">rem</span><span class="op">]</span>
-<span class="co"># x &lt;- scale(x)</span>
-<span class="va">normalise_x</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="op">{</span>
-    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">xn</span> <span class="op">&lt;-</span> <span class="fu">normalise_x</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">xs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">xn</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">xn</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">xs</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span>
-<span class="va">xo</span> <span class="op">&lt;-</span> <span class="va">x</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xn</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xs</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xo</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">read_x</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">variants</span>, <span class="va">bfile</span>, <span class="va">plink_bin</span><span class="op">=</span><span class="fu">genetics.binaRies</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html" class="external-link">get_plink_binary</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="co"># Make textfile</span></span>
+<span>    <span class="va">shell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="st">'sysname'</span><span class="op">]</span> <span class="op">==</span> <span class="st">"Windows"</span>, <span class="st">"cmd"</span>, <span class="st">"sh"</span><span class="op">)</span></span>
+<span>    <span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">variants</span><span class="op">)</span>, file<span class="op">=</span><span class="va">fn</span>, row.names<span class="op">=</span><span class="cn">F</span>, col.names<span class="op">=</span><span class="cn">F</span>, quote<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
+<span></span>
+<span>        <span class="va">fun1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="va">plink_bin</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>,</span>
+<span>        <span class="st">" --bfile "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="va">bfile</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>,</span>
+<span>        <span class="st">" --extract "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="va">fn</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span>, </span>
+<span>        <span class="st">" --recode A "</span>, </span>
+<span>        <span class="st">" --out "</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="va">fn</span>, type<span class="op">=</span><span class="va">shell</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="va">fun1</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">fn</span>, <span class="st">".raw"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="op">{</span><span class="va">.</span><span class="op">[</span>,<span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span><span class="op">}</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">fn</span>, <span class="st">".raw"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">greedy_remove</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="va">flag</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>    <span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="va">nom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span>    <span class="kw">while</span><span class="op">(</span><span class="va">flag</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="op">{</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"iteration"</span><span class="op">)</span></span>
+<span>        <span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">count</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="op">{</span></span>
+<span>            <span class="va">worst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span>            <span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">rem</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">worst</span><span class="op">)</span><span class="op">)</span></span>
+<span>            <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="op">-</span><span class="va">worst</span>,<span class="op">-</span><span class="va">worst</span><span class="op">]</span></span>
+<span>        <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>            <span class="va">flag</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>        <span class="op">}</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">nom</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">rem</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="st">"EUR"</span></span>
+<span><span class="va">ldref</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"/Users/gh13047/repo/mr-base-api/app/ld_files/"</span>, <span class="va">pop</span><span class="op">)</span></span>
+<span><span class="va">bim</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ldref</span>, <span class="st">".bim"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">regionfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"/Users/gh13047/repo/gwasglue/inst/extdata/ldetect/"</span>, <span class="va">pop</span>, <span class="st">".bed"</span><span class="op">)</span></span>
+<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">regionfile</span>, header<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>        chr<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="st">""</span>, <span class="va">chr</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">start</span><span class="op">)</span>,</span>
+<span>        stop<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">stop</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">region1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">bim</span>, <span class="va">V1</span> <span class="op">==</span> <span class="va">regions</span><span class="op">$</span><span class="va">chr</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">V4</span> <span class="op">&gt;</span> <span class="va">regions</span><span class="op">$</span><span class="va">start</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">V4</span> <span class="op">&lt;</span> <span class="va">regions</span><span class="op">$</span><span class="va">stop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">V2</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">read_x</span><span class="op">(</span><span class="va">region1</span>, <span class="va">ldref</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1008</span><span class="op">:</span><span class="fl">1030</span><span class="op">]</span></span></code></pre></div>
+<p>When calculating causal effects from marginal effects need to invert
+the correlation matrix. To avoid matrix being singular, remove any
+correlations that are &gt;= 0.99</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">rem</span> <span class="op">&lt;-</span> <span class="fu">greedy_remove</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>,<span class="op">-</span><span class="va">rem</span><span class="op">]</span></span>
+<span><span class="co"># x &lt;- scale(x)</span></span>
+<span><span class="va">normalise_x</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">xn</span> <span class="op">&lt;-</span> <span class="fu">normalise_x</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">xs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">xn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">xn</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">xs</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
+<span><span class="va">xo</span> <span class="op">&lt;-</span> <span class="va">x</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xn</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xs</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">xo</span></span></code></pre></div>
 <p>Simulate</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">%*%</span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span>
-<span class="va">res</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">calcs</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">b</span><span class="op">)</span></span>
+<span><span class="va">res</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">~</span> <span class="va">res</span><span class="op">$</span><span class="va">bhat</span><span class="op">)</span></span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -272,11 +293,13 @@ D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -284,6 +307,8 @@ D_{j,j} = \sum^n{x_j} = 2p_j(1-p_j)n
 
   
 
+
+  
 
   </body>
 </html>

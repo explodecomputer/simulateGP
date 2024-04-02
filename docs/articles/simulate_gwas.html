@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,195 +60,256 @@
 
       
 
-      </header><script src="simulate_gwas_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Simulating GWAS summary data</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/simulate_gwas.Rmd"><code>vignettes/simulate_gwas.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/simulate_gwas.Rmd" class="external-link"><code>vignettes/simulate_gwas.Rmd</code></a></small>
       <div class="hidden name"><code>simulate_gwas.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
-<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">read_json</a></span><span class="op">(</span><span class="st">"generate_ldobj_config.json"</span><span class="op">)</span>
-<span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">config</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span></pre></div>
-<p>We’d like to be able to simulate realistic GWAS summary data for a large (e.g. millions) of SNPs and representing arbitrarily large sample sizes. The simplest way to do this is to take a genetic reference dataset (e.g. UK Biobank, 500000 samples), and generate a phenotype based on the SNPs that we want to be causal. We would then run a GWAS on the simulated phenotype to obtain the GWAS summary data. However this would be very slow. The <code>simulateGP</code> package has a few methods to rapidly simulate GWAS summary data directly without going via analysis of individual level datasets.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jeroen.r-universe.dev/jsonlite" class="external-link">jsonlite</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">read_json</a></span><span class="op">(</span><span class="st">"generate_ldobj_config.json"</span><span class="op">)</span></span>
+<span><span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">config</span><span class="op">$</span><span class="va">dl_dir</span>, <span class="st">"AFR_1kg_hm3"</span><span class="op">)</span></span></code></pre></div>
+<p>We’d like to be able to simulate realistic GWAS summary data for a
+large (e.g. millions) of SNPs and representing arbitrarily large sample
+sizes. The simplest way to do this is to take a genetic reference
+dataset (e.g. UK Biobank, 500000 samples), and generate a phenotype
+based on the SNPs that we want to be causal. We would then run a GWAS on
+the simulated phenotype to obtain the GWAS summary data. However this
+would be very slow. The <code>simulateGP</code> package has a few
+methods to rapidly simulate GWAS summary data directly without going via
+analysis of individual level datasets.</p>
 <p>Features of GWAS:</p>
 <ul>
 <li>Specified heritability</li>
-<li>Distribution of effect sizes according to a model of natural selection</li>
+<li>Distribution of effect sizes according to a model of natural
+selection</li>
 <li>Effect sizes have patterns relating to linkage disequilibrium</li>
 <li>LD patterns reflect specific major populations</li>
 <li>Two GWAS summary datasets are correlated due to sample overlap</li>
 </ul>
-<div id="genetic-architecture" class="section level2">
-<h2 class="hasAnchor">
-<a href="#genetic-architecture" class="anchor"></a>Genetic architecture</h2>
-<p>We use the following model to describe the distribution of effect sizes for each SNP <span class="math inline">\(j...M\)</span> across the genome:</p>
+<div class="section level2">
+<h2 id="genetic-architecture">Genetic architecture<a class="anchor" aria-label="anchor" href="#genetic-architecture"></a>
+</h2>
+<p>We use the following model to describe the distribution of effect
+sizes for each SNP <span class="math inline">\(j...M\)</span> across the
+genome:</p>
 <p><span class="math display">\[
-\beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)\pi + \vartheta (1 - \pi)
+\beta_j \sim N(0, [2p_j (1-p_j)]^S \sigma^2_\beta)\pi + \vartheta (1 -
+\pi)
 \]</span></p>
-<p>where <span class="math inline">\(\beta_j\)</span> is the effect size, <span class="math inline">\(p_j\)</span> is the allele frequency, <span class="math inline">\(S\)</span> is the selection coefficient acting on the trait, <span class="math inline">\(\pi\)</span> is the fraction of SNPs that have an effect and <span class="math inline">\(\vartheta()\)</span> represents a null value for all SNPs that have no effect. If the phenotypic variance is 1 then <span class="math inline">\(M \sigma^2_\beta\)</span> is the heritability.</p>
-<p>We can generate effect sizes for an arbitrary number of SNPs by starting with a set of allele frequencies and supplying the relevant parameters described above</p>
-<p>First create a map of all the SNPs to be simulated, containing at least the SNP names and the effect allele frequencies</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">1000000</span>
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span>, af<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span></pre></div>
+<p>where <span class="math inline">\(\beta_j\)</span> is the effect
+size, <span class="math inline">\(p_j\)</span> is the allele frequency,
+<span class="math inline">\(S\)</span> is the selection coefficient
+acting on the trait, <span class="math inline">\(\pi\)</span> is the
+fraction of SNPs that have an effect and <span class="math inline">\(\vartheta()\)</span> represents a null value for
+all SNPs that have no effect. If the phenotypic variance is 1 then <span class="math inline">\(M \sigma^2_\beta\)</span> is the heritability.</p>
+<p>We can generate effect sizes for an arbitrary number of SNPs by
+starting with a set of allele frequencies and supplying the relevant
+parameters described above</p>
+<p>First create a map of all the SNPs to be simulated, containing at
+least the SNP names and the effect allele frequencies</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">1000000</span></span>
+<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/arbitrary_map.html">arbitrary_map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Next, generate effect sizes for each SNP</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>map<span class="op">=</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.4</span>, Pi<span class="op">=</span><span class="fl">0.005</span><span class="op">)</span></pre></div>
-<p>Here there is negative selection acting on a small number of causal variants, and the overall heritability explained by all causal variants is 0.4. Observe the relationship between allele frequency and effect size for this selection coefficient:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="va">params</span><span class="op">$</span><span class="va">beta</span><span class="op">!=</span><span class="fl">0</span>,<span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">af</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<p>Finally, generate sample effect estimates, standard errors and p-values for an arbitrary sample size, e.g. for 10 million samples here</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000000</span>
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">params</span>, nid<span class="op">=</span><span class="va">nid</span><span class="op">)</span>
-<span class="va">ss</span></pre></div>
-<p>Note that you can generate more complex underlying genetic architectures manually. For example if there is a mixture of distributions, where some SNPs have large effects and many have small effects:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,
-    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
-    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">-</span><span class="fl">10</span><span class="op">-</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">3</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.1</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">2</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.3</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">3</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># Generate GWAS summary stats</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="fl">450000</span><span class="op">)</span>
-<span class="va">res</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>map<span class="op">=</span><span class="va">map</span>, h2<span class="op">=</span><span class="fl">0.4</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.4</span>, Pi<span class="op">=</span><span class="fl">0.005</span><span class="op">)</span></span></code></pre></div>
+<p>Here there is negative selection acting on a small number of causal
+variants, and the overall heritability explained by all causal variants
+is 0.4. Observe the relationship between allele frequency and effect
+size for this selection coefficient:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="va">params</span><span class="op">$</span><span class="va">beta</span><span class="op">!=</span><span class="fl">0</span>,<span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">af</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, generate sample effect estimates, standard errors and
+p-values for an arbitrary sample size, e.g. for 10 million samples
+here</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000000</span></span>
+<span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">params</span>, nid<span class="op">=</span><span class="va">nid</span><span class="op">)</span></span>
+<span><span class="va">ss</span></span></code></pre></div>
+<p>Note that you can generate more complex underlying genetic
+architectures manually. For example if there is a mixture of
+distributions, where some SNPs have large effects and many have small
+effects:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">-</span><span class="fl">10</span><span class="op">-</span><span class="fl">10000</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, group<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, pos<span class="op">=</span><span class="va">snp</span>, chr<span class="op">=</span><span class="fl">99</span>, ea<span class="op">=</span><span class="st">"1"</span>, oa<span class="op">=</span><span class="st">"2"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.1</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">2</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0.3</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">map</span>, <span class="va">group</span><span class="op">==</span><span class="fl">3</span><span class="op">)</span>, h2<span class="op">=</span><span class="fl">0</span>, S<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate GWAS summary stats</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">param</span>, <span class="fl">450000</span><span class="op">)</span></span>
+<span><span class="va">res</span></span></code></pre></div>
 </div>
-<div id="linkage-disequilibrium" class="section level2">
-<h2 class="hasAnchor">
-<a href="#linkage-disequilibrium" class="anchor"></a>Linkage disequilibrium</h2>
-<p>The above effects assume all SNPs are completely independent. In order for the characteristic patterns of LD around a causal variant to be generated, we need to transform the distribution of effects according to the correlation matrix amongst the SNPs.</p>
-<p>We need a set of LD matrices to generate realistic LD patterns for a large set of SNPs. LD matrices are available for three major human populations for download here:</p>
+<div class="section level2">
+<h2 id="linkage-disequilibrium">Linkage disequilibrium<a class="anchor" aria-label="anchor" href="#linkage-disequilibrium"></a>
+</h2>
+<p>The above effects assume all SNPs are completely independent. In
+order for the characteristic patterns of LD around a causal variant to
+be generated, we need to transform the distribution of effects according
+to the correlation matrix amongst the SNPs.</p>
+<p>We need a set of LD matrices to generate realistic LD patterns for a
+large set of SNPs. LD matrices are available for three major human
+populations for download here:</p>
 <ul>
-<li>Africans - <a href="http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar">http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar</a>
+<li>Africans - <a href="http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar" class="external-link">http://fileserve.mrcieu.ac.uk/ld/AFR_1kg_hm3_ldobj.tar</a>
 </li>
-<li>East Asians - <a href="http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar">http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar</a>
+<li>East Asians - <a href="http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar" class="external-link">http://fileserve.mrcieu.ac.uk/ld/EAS_1kg_hm3_ldobj.tar</a>
 </li>
-<li>Europeans - <a href="http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar">http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar</a>
+<li>Europeans - <a href="http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar" class="external-link">http://fileserve.mrcieu.ac.uk/ld/EUR_1kg_hm3_ldobj.tar</a>
 </li>
 </ul>
-<p>The above are large (~5Gb) <code>.tar</code> files. Download one and extract, it should contain a directory called <code>&lt;POP&gt;_1kg_hm3/</code>, which contains a <code>map.rds</code> and a number of <code>ldobj_&lt;region&gt;.rds</code> files. We will use the <code>map.rds</code> as our genome scaffold - it contains SNPs, chromosomes, positions, alleles and allele frequencies for the specific population. We can then select causal variants for the trait as above, and then introduce the LD transformation before sampling the effect estimates / SEs / p-values etc from the LD-aware effect sizes.</p>
+<p>The above are large (~5Gb) <code>.tar</code> files. Download one and
+extract, it should contain a directory called
+<code>&lt;POP&gt;_1kg_hm3/</code>, which contains a <code>map.rds</code>
+and a number of <code>ldobj_&lt;region&gt;.rds</code> files. We will use
+the <code>map.rds</code> as our genome scaffold - it contains SNPs,
+chromosomes, positions, alleles and allele frequencies for the specific
+population. We can then select causal variants for the trait as above,
+and then introduce the LD transformation before sampling the effect
+estimates / SEs / p-values etc from the LD-aware effect sizes.</p>
 <p>Set the LD matrix data directory:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">datadir</span><span class="op">)</span></pre></div>
-<p>Begin with a small number of SNPs for illustration. E.g. let’s use the first region in the set of regions downloaded</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">datadir</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"ldobj_"</span>, <span class="va">.</span>, value<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span>
-<span class="va">ldobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">fn</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">ldobj</span><span class="op">)</span></pre></div>
-<p>We see it contains two items in a list, the <code>map</code> and the <code>ld</code> objects. The <code>map</code> is a data frame containing information about the SNPs in the region. The <code>ld</code> is a matrix containing LD correlations amongst all the SNPs in the region. To use this to transform our data - let’s simulate a single causal variant in the region</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></pre></div>
-<p>We can now sample effect estimates for either the raw effects or the LD-aware effects</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">ss_raw</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span><span class="op">)</span>
-<span class="va">ss_ld</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span>, ldobj<span class="op">=</span><span class="va">ldobj</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">datadir</span><span class="op">)</span></span></code></pre></div>
+<p>Begin with a small number of SNPs for illustration. E.g. let’s use
+the first region in the set of regions downloaded</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">datadir</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"ldobj_"</span>, <span class="va">.</span>, value<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="op">{</span><span class="va">.</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span></span>
+<span><span class="va">ldobj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ldobj</span><span class="op">)</span></span></code></pre></div>
+<p>We see it contains two items in a list, the <code>map</code> and the
+<code>ld</code> objects. The <code>map</code> is a data frame containing
+information about the SNPs in the region. The <code>ld</code> is a
+matrix containing LD correlations amongst all the SNPs in the region. To
+use this to transform our data - let’s simulate a single causal variant
+in the region</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>We can now sample effect estimates for either the raw effects or the
+LD-aware effects</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ss_raw</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span><span class="op">)</span></span>
+<span><span class="va">ss_ld</span> <span class="op">&lt;-</span> <span class="va">params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">10000</span>, ldobj<span class="op">=</span><span class="va">ldobj</span><span class="op">)</span></span></code></pre></div>
 <p>Compare the associations in the region. With no LD:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ss_raw</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ss_raw</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Now when LD is added:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ss_ld</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<p>The same process can be achieved for more complex architectures across the entire genome. It takes about 2 minutes to generate the LD-aware effect sizes and effect estimates.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"map.rds"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">1000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">1000000</span>, ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ss_ld</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">pos</span>, y<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The same process can be achieved for more complex architectures
+across the entire genome. It takes about 2 minutes to generate the
+LD-aware effect sizes and effect estimates.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"map.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">1000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span>nid<span class="op">=</span><span class="fl">1000000</span>, ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="sample-overlap" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sample-overlap" class="anchor"></a>Sample overlap</h2>
-<p>Finally, we can draw joint estimates of two different GWASs that share some amount of sample overlap using the <code>summary_set</code> function. The steps are:</p>
-<p>For a set of variants, generate the true effect sizes for each of two different datasets. Here we make a simple example using the single small region as above. Trait 1 has a causal effect of 0.3 on trait 2.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="va">params1</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">3</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">params2</span> <span class="op">&lt;-</span> <span class="va">params2</span>
-<span class="va">params2</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">params1</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="fl">0.3</span></pre></div>
-<p>Now sample the effect estimates jointly. We specify the sample sizes of each GWAS, and the number of overlapping samples. We also specify an observational correlation, which represents the total association due to the causal relationship and any confounding.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span>
-    beta_gx<span class="op">=</span><span class="va">params1</span><span class="op">$</span><span class="va">beta</span>,
-    beta_gy<span class="op">=</span><span class="va">params2</span><span class="op">$</span><span class="va">beta</span>,
-    af<span class="op">=</span><span class="va">params1</span><span class="op">$</span><span class="va">af</span>,
-    n_gx<span class="op">=</span><span class="fl">100000</span>,
-    n_gy<span class="op">=</span><span class="fl">10000</span>,
-    n_overlap<span class="op">=</span><span class="fl">5000</span>,
-    cor_xy<span class="op">=</span><span class="fl">0.5</span>
-<span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="sample-overlap">Sample overlap<a class="anchor" aria-label="anchor" href="#sample-overlap"></a>
+</h2>
+<p>Finally, we can draw joint estimates of two different GWASs that
+share some amount of sample overlap using the <code>summary_set</code>
+function. The steps are:</p>
+<p>For a set of variants, generate the true effect sizes for each of two
+different datasets. Here we make a simple example using the single small
+region as above. Trait 1 has a causal effect of 0.3 on trait 2.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params1</span> <span class="op">&lt;-</span> <span class="va">ldobj</span><span class="op">$</span><span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.01</span>, S<span class="op">=</span><span class="fl">0</span>, Pi<span class="op">=</span><span class="fl">3</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">params2</span> <span class="op">&lt;-</span> <span class="va">params2</span></span>
+<span><span class="va">params2</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">params1</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="fl">0.3</span></span></code></pre></div>
+<p>Now sample the effect estimates jointly. We specify the sample sizes
+of each GWAS, and the number of overlapping samples. We also specify an
+observational correlation, which represents the total association due to
+the causal relationship and any confounding.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span></span>
+<span>    beta_gx<span class="op">=</span><span class="va">params1</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    beta_gy<span class="op">=</span><span class="va">params2</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    af<span class="op">=</span><span class="va">params1</span><span class="op">$</span><span class="va">af</span>,</span>
+<span>    n_gx<span class="op">=</span><span class="fl">100000</span>,</span>
+<span>    n_gy<span class="op">=</span><span class="fl">10000</span>,</span>
+<span>    n_overlap<span class="op">=</span><span class="fl">5000</span>,</span>
+<span>    cor_xy<span class="op">=</span><span class="fl">0.5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="synthesising-sample-overlap-ld-and-architecture" class="section level2">
-<h2 class="hasAnchor">
-<a href="#synthesising-sample-overlap-ld-and-architecture" class="anchor"></a>Synthesising sample overlap, LD and architecture</h2>
-<p>In principle each of these three components are independent modular aspects of the data generating process. This means that we can</p>
+<div class="section level2">
+<h2 id="synthesising-sample-overlap-ld-and-architecture">Synthesising sample overlap, LD and architecture<a class="anchor" aria-label="anchor" href="#synthesising-sample-overlap-ld-and-architecture"></a>
+</h2>
+<p>In principle each of these three components are independent modular
+aspects of the data generating process. This means that we can</p>
 <ol style="list-style-type: decimal">
-<li>Specify the true underlying causal effects according to some model of genetic architecture</li>
+<li>Specify the true underlying causal effects according to some model
+of genetic architecture</li>
 <li>Imposing an LD structure on the causal and non-causal effects</li>
-<li>Sampling the effect estimates for some sample size and overlap structure</li>
+<li>Sampling the effect estimates for some sample size and overlap
+structure</li>
 </ol>
-<p>As illustration, assume a polygenic model for both trait X and trait Y, and trait X also has a causal effect on trait Y .</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="co"># Define the causal effect</span>
-<span class="va">b_xy</span> <span class="op">&lt;-</span> <span class="fl">0.3</span>
-
-<span class="co"># Start with a variant map</span>
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"map.rds"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Generate genetic effects on trait 1</span>
-<span class="va">paramsx</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">1000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Generate genetic effects on trait 2</span>
-<span class="va">paramsy</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">2000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>
-<span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span> <span class="op">+</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="va">b_xy</span>
-
-<span class="co"># Introduce LD</span>
-<span class="va">paramsx</span> <span class="op">&lt;-</span> <span class="va">paramsx</span> <span class="op">%&gt;%</span>
-    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
-
-<span class="va">paramsy</span> <span class="op">&lt;-</span> <span class="va">paramsy</span> <span class="op">%&gt;%</span>
-    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span>
-
-<span class="co"># Create sample estimates where there is some non-genetic confounding of X and Y and partial overlap of the G-X and G-Y datasets</span>
-<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span>
-    beta_gx <span class="op">=</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">beta</span>,
-    beta_gy <span class="op">=</span> <span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span>,
-    af <span class="op">=</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">af</span>,
-    n_gx <span class="op">=</span> <span class="fl">100000</span>,
-    n_gy <span class="op">=</span> <span class="fl">100000</span>,
-    n_overlap <span class="op">=</span> <span class="fl">50000</span>,
-    cor_xy <span class="op">=</span> <span class="fl">0.5</span>
-<span class="op">)</span></pre></div>
+<p>As illustration, assume a polygenic model for both trait X and trait
+Y, and trait X also has a causal effect on trait Y .</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Define the causal effect</span></span>
+<span><span class="va">b_xy</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span>
+<span></span>
+<span><span class="co"># Start with a variant map</span></span>
+<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"map.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate genetic effects on trait 1</span></span>
+<span><span class="va">paramsx</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">1000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate genetic effects on trait 2</span></span>
+<span><span class="va">paramsy</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span>, S<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>, Pi<span class="op">=</span><span class="fl">2000</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span> <span class="op">+</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="va">b_xy</span></span>
+<span></span>
+<span><span class="co"># Introduce LD</span></span>
+<span><span class="va">paramsx</span> <span class="op">&lt;-</span> <span class="va">paramsx</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">paramsy</span> <span class="op">&lt;-</span> <span class="va">paramsy</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">add_ld_to_params</span><span class="op">(</span>ldobjdir<span class="op">=</span><span class="va">datadir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create sample estimates where there is some non-genetic confounding of X and Y and partial overlap of the G-X and G-Y datasets</span></span>
+<span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span></span>
+<span>    beta_gx <span class="op">=</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    beta_gy <span class="op">=</span> <span class="va">paramsy</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    af <span class="op">=</span> <span class="va">paramsx</span><span class="op">$</span><span class="va">af</span>,</span>
+<span>    n_gx <span class="op">=</span> <span class="fl">100000</span>,</span>
+<span>    n_gy <span class="op">=</span> <span class="fl">100000</span>,</span>
+<span>    n_overlap <span class="op">=</span> <span class="fl">50000</span>,</span>
+<span>    cor_xy <span class="op">=</span> <span class="fl">0.5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -261,11 +324,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -273,6 +338,8 @@
 
   
 
+
+  
 
   </body>
 </html>

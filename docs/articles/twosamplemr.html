@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simulateGP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -46,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/explodecomputer/simulateGP">Source</a>
+  <a href="https://github.com/explodecomputer/simulateGP" class="external-link">Source</a>
 </li>
       </ul>
 </div>
@@ -58,161 +60,183 @@
 
       
 
-      </header><script src="twosamplemr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Simple two-sample Mendelian randomisation examples</h1>
+      <h1 data-toc-skip>Simple two-sample Mendelian randomisation
+examples</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/master/vignettes/twosamplemr.Rmd"><code>vignettes/twosamplemr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/explodecomputer/simulateGP/blob/HEAD/vignettes/twosamplemr.Rmd" class="external-link"><code>vignettes/twosamplemr.Rmd</code></a></small>
       <div class="hidden name"><code>twosamplemr.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/">simulateGP</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span>
-<span class="co">#&gt; TwoSampleMR version 0.5.6 </span>
-<span class="co">#&gt; [&gt;] New: Option to use non-European LD reference panels for clumping etc</span>
-<span class="co">#&gt; [&gt;] Some studies temporarily quarantined to verify effect allele</span>
-<span class="co">#&gt; [&gt;] See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for further details</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'TwoSampleMR'</span>
-<span class="co">#&gt; The following objects are masked from 'package:simulateGP':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     allele_frequency, contingency, get_population_allele_frequency</span></pre></div>
-<p>A convenient approach to performing Mendelian randomisation is to use GWAS summary data, often known as summary MR or 2-sample MR. This figure outlines the approach:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://explodecomputer.github.io/simulateGP/" class="external-link">simulateGP</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; TwoSampleMR version 0.5.10 </span></span>
+<span><span class="co">#&gt; [&gt;] New: Option to use non-European LD reference panels for clumping etc</span></span>
+<span><span class="co">#&gt; [&gt;] Some studies temporarily quarantined to verify effect allele</span></span>
+<span><span class="co">#&gt; [&gt;] See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for further details</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Warning:</span></span>
+<span><span class="co">#&gt; You are running an old version of the TwoSampleMR package.</span></span>
+<span><span class="co">#&gt; This version:   0.5.10</span></span>
+<span><span class="co">#&gt; Latest version: 0.5.11</span></span>
+<span><span class="co">#&gt; Please consider updating using remotes::install_github('MRCIEU/TwoSampleMR')</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'TwoSampleMR'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:simulateGP':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     allele_frequency, contingency, get_population_allele_frequency</span></span></code></pre></div>
+<p>A convenient approach to performing Mendelian randomisation is to use
+GWAS summary data, often known as summary MR or 2-sample MR. This figure
+outlines the approach:</p>
 <div class="figure">
 <img src="2smr.png" alt=""><p class="caption">2smr</p>
 </div>
-<p>In this vignette we simulate some examples of how to simulate the underlying GWAS summary data for 2-sample MR.</p>
-<div id="generating-summary-data-from-individual-level-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generating-summary-data-from-individual-level-data" class="anchor"></a>Generating summary data from individual level data</h2>
+<p>In this vignette we simulate some examples of how to simulate the
+underlying GWAS summary data for 2-sample MR.</p>
+<div class="section level2">
+<h2 id="generating-summary-data-from-individual-level-data">Generating summary data from individual level data<a class="anchor" aria-label="anchor" href="#generating-summary-data-from-individual-level-data"></a>
+</h2>
 <p>Here we want to achieve the following:</p>
 <ol style="list-style-type: decimal">
 <li>Simulate some genetic or confounding variables</li>
 <li>Simulate exposures that are influenced by (1)</li>
 <li>Simulate the outcomes that are influenced by (1) and (2)</li>
-<li>Get the SNP-exposure and SNP-outcome effects and standard errors for these simulations, for use in further analyses e.g. using the <a href="https://github.com/MRCIEU/TwoSampleMR">TwoSampleMR</a> package</li>
+<li>Get the SNP-exposure and SNP-outcome effects and standard errors for
+these simulations, for use in further analyses e.g. using the <a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a>
+package</li>
 </ol>
 <p>Here is how to do 1-3:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Genotypes for 20 SNPs and 10000 individuals, where the SNPs have MAF = 0.5:</span>
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">20</span>, <span class="fl">0.5</span><span class="op">)</span>
-
-<span class="co"># These SNPs instrument some exposure, and together explain 5% of the variance</span>
-<span class="va">effs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">0.05</span><span class="op">)</span>
-
-<span class="co"># Create X</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs</span>, <span class="va">g</span><span class="op">)</span>
-
-<span class="co"># Check that the SNPs explain 5% of the variance in x</span>
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/cor.html">cor</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.05191079</span>
-
-<span class="co"># Create Y, which is negatively influenced by x, explaining 10% of the variance in Y#</span>
-<span class="co"># so if the variances of x and y are both 1 then the effect size is about -0.31</span>
-<span class="va">beta_xy</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">beta_xy</span>, <span class="va">x</span><span class="op">)</span></pre></div>
-<p>We now have an X and Y, and the genotypes. To perform 2-sample MR on this we need to obtain the summary data.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Genotypes for 20 SNPs and 10000 individuals, where the SNPs have MAF = 0.5:</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">20</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># These SNPs instrument some exposure, and together explain 5% of the variance</span></span>
+<span><span class="va">effs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create X</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs</span>, <span class="va">g</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check that the SNPs explain 5% of the variance in x</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.05320766</span></span>
+<span></span>
+<span><span class="co"># Create Y, which is negatively influenced by x, explaining 10% of the variance in Y#</span></span>
+<span><span class="co"># so if the variances of x and y are both 1 then the effect size is about -0.31</span></span>
+<span><span class="va">beta_xy</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">beta_xy</span>, <span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<p>We now have an X and Y, and the genotypes. To perform 2-sample MR on
+this we need to obtain the summary data.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p>Perform MR</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
-<span class="co">#&gt; Analysing 'X' on 'Y'</span>
-<span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   20</span>
-<span class="co">#&gt; 2           X          Y       Y        X           Weighted median   20</span>
-<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   20</span>
-<span class="co">#&gt; 4           X          Y       Y        X               Simple mode   20</span>
-<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   20</span>
-<span class="co">#&gt;            b         se         pval</span>
-<span class="co">#&gt; 1 -0.2520586 0.12912618 6.666863e-02</span>
-<span class="co">#&gt; 2 -0.2978746 0.06869027 1.447770e-05</span>
-<span class="co">#&gt; 3 -0.3295442 0.05464474 1.632859e-09</span>
-<span class="co">#&gt; 4 -0.3443272 0.09761973 2.251758e-03</span>
-<span class="co">#&gt; 5 -0.2968178 0.08147103 1.729593e-03</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analysing 'X' on 'Y'</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span></span>
+<span><span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   20</span></span>
+<span><span class="co">#&gt; 2           X          Y       Y        X           Weighted median   20</span></span>
+<span><span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   20</span></span>
+<span><span class="co">#&gt; 4           X          Y       Y        X               Simple mode   20</span></span>
+<span><span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   20</span></span>
+<span><span class="co">#&gt;            b         se         pval</span></span>
+<span><span class="co">#&gt; 1 -0.1191640 0.08034709 1.553421e-01</span></span>
+<span><span class="co">#&gt; 2 -0.2402189 0.06345669 1.533651e-04</span></span>
+<span><span class="co">#&gt; 3 -0.2607820 0.04651527 2.066081e-08</span></span>
+<span><span class="co">#&gt; 4 -0.3590511 0.08356491 3.893170e-04</span></span>
+<span><span class="co">#&gt; 5 -0.2385588 0.05929477 7.265316e-04</span></span></code></pre></div>
 <p>The effect size is approx -0.31 as we simulated.</p>
-<div id="more-complex-example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#more-complex-example" class="anchor"></a>More complex example</h3>
-<p>Let’s simulate an instance where there are two traits that have different effects on the outcome, but they share some of the same instruments</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># Simulate 100 genotypes</span>
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">80</span>, <span class="fl">0.5</span><span class="op">)</span>
-
-<span class="co"># Choose effect sizes for instruments for each trait</span>
-<span class="va">effs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0.05</span><span class="op">)</span>
-<span class="va">effs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0.05</span><span class="op">)</span>
-
-<span class="co"># Create X1 and X2, where they overlap some variants</span>
-<span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs1</span>, <span class="va">g</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span>
-<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs2</span>, <span class="va">g</span><span class="op">[</span>,<span class="fl">31</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># Create Y - x1 has a -0.3 influence on it and x2 has a +0.3 influence on it</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Perform separate MR on each</span>
-<span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span>
-<span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span>
-
-<span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">dat1</span>, <span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Analysing 'X' on 'Y'</span>
-<span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   28</span>
-<span class="co">#&gt; 2           X          Y       Y        X           Weighted median   28</span>
-<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   28</span>
-<span class="co">#&gt; 4           X          Y       Y        X               Simple mode   28</span>
-<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   28</span>
-<span class="co">#&gt;            b         se         pval</span>
-<span class="co">#&gt; 1 -0.2838373 0.10689530 1.335047e-02</span>
-<span class="co">#&gt; 2 -0.2703282 0.02313429 1.517706e-31</span>
-<span class="co">#&gt; 3 -0.2794106 0.04143031 1.539668e-11</span>
-<span class="co">#&gt; 4 -0.2672073 0.03206937 6.092196e-09</span>
-<span class="co">#&gt; 5 -0.2808324 0.02573693 2.115216e-11</span>
-<span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html">subset</a></span><span class="op">(</span><span class="va">dat2</span>, <span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Analysing 'X' on 'Y'</span>
-<span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   25</span>
-<span class="co">#&gt; 2           X          Y       Y        X           Weighted median   25</span>
-<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   25</span>
-<span class="co">#&gt; 4           X          Y       Y        X               Simple mode   25</span>
-<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   25</span>
-<span class="co">#&gt;           b         se         pval</span>
-<span class="co">#&gt; 1 0.3432633 0.08412490 4.606535e-04</span>
-<span class="co">#&gt; 2 0.3083818 0.02184220 2.916398e-45</span>
-<span class="co">#&gt; 3 0.3098119 0.02945415 7.103514e-26</span>
-<span class="co">#&gt; 4 0.2890109 0.03666478 4.096575e-08</span>
-<span class="co">#&gt; 5 0.3075490 0.02885087 1.390773e-10</span>
-
-<span class="co"># Do multivariable MR</span>
-<span class="co"># First get the effects for x1, x2 and y, and put them in mv format</span>
-<span class="va">mvdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mvdat.html">make_mvdat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span>
-<span class="co">#&gt; There are 2 exposures</span>
-<span class="co">#&gt; Harmonising x1 (x1) and y (y)</span>
-
-<span class="co"># Perform MV MR</span>
-<span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mv_multiple.html">mv_multiple</a></span><span class="op">(</span><span class="va">mvdat</span><span class="op">)</span>
-<span class="co">#&gt; $result</span>
-<span class="co">#&gt;   id.exposure exposure id.outcome outcome nsnp          b         se</span>
-<span class="co">#&gt; 1          x1       x1          y       y   28 -0.2898420 0.01171008</span>
-<span class="co">#&gt; 2          x2       x2          y       y   25  0.3114361 0.01168375</span>
-<span class="co">#&gt;            pval</span>
-<span class="co">#&gt; 1 2.987998e-135</span>
-<span class="co">#&gt; 2 1.545175e-156</span></pre></div>
+<div class="section level3">
+<h3 id="more-complex-example">More complex example<a class="anchor" aria-label="anchor" href="#more-complex-example"></a>
+</h3>
+<p>Let’s simulate an instance where there are two traits that have
+different effects on the outcome, but they share some of the same
+instruments</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simulate 100 genotypes</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">80</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Choose effect sizes for instruments for each trait</span></span>
+<span><span class="va">effs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="va">effs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create X1 and X2, where they overlap some variants</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs1</span>, <span class="va">g</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="va">effs2</span>, <span class="va">g</span><span class="op">[</span>,<span class="fl">31</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create Y - x1 has a -0.3 influence on it and x2 has a +0.3 influence on it</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Perform separate MR on each</span></span>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span>
+<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x2</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">dat1</span>, <span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analysing 'X' on 'Y'</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span></span>
+<span><span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   32</span></span>
+<span><span class="co">#&gt; 2           X          Y       Y        X           Weighted median   32</span></span>
+<span><span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   32</span></span>
+<span><span class="co">#&gt; 4           X          Y       Y        X               Simple mode   32</span></span>
+<span><span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   32</span></span>
+<span><span class="co">#&gt;            b         se         pval</span></span>
+<span><span class="co">#&gt; 1 -0.1873725 0.07415657 1.702220e-02</span></span>
+<span><span class="co">#&gt; 2 -0.2560702 0.02451385 1.529361e-25</span></span>
+<span><span class="co">#&gt; 3 -0.2228823 0.02767159 7.976943e-16</span></span>
+<span><span class="co">#&gt; 4 -0.2715727 0.04546517 1.324346e-06</span></span>
+<span><span class="co">#&gt; 5 -0.2715727 0.04066437 1.809455e-07</span></span>
+<span><span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">dat2</span>, <span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analysing 'X' on 'Y'</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span></span>
+<span><span class="co">#&gt; 1           X          Y       Y        X                  MR Egger   32</span></span>
+<span><span class="co">#&gt; 2           X          Y       Y        X           Weighted median   32</span></span>
+<span><span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted   32</span></span>
+<span><span class="co">#&gt; 4           X          Y       Y        X               Simple mode   32</span></span>
+<span><span class="co">#&gt; 5           X          Y       Y        X             Weighted mode   32</span></span>
+<span><span class="co">#&gt;           b         se         pval</span></span>
+<span><span class="co">#&gt; 1 0.2763200 0.08400630 2.570070e-03</span></span>
+<span><span class="co">#&gt; 2 0.2973715 0.02535335 9.043432e-32</span></span>
+<span><span class="co">#&gt; 3 0.2516120 0.03440694 2.615787e-13</span></span>
+<span><span class="co">#&gt; 4 0.3245394 0.03784075 1.096375e-09</span></span>
+<span><span class="co">#&gt; 5 0.3087809 0.02339750 2.914096e-14</span></span>
+<span></span>
+<span><span class="co"># Do multivariable MR</span></span>
+<span><span class="co"># First get the effects for x1, x2 and y, and put them in mv format</span></span>
+<span><span class="va">mvdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mvdat.html">make_mvdat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span>
+<span><span class="co">#&gt; There are 2 exposures</span></span>
+<span><span class="co">#&gt; Harmonising x1 (x1) and y (y)</span></span>
+<span></span>
+<span><span class="co"># Perform MV MR</span></span>
+<span><span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mv_multiple.html" class="external-link">mv_multiple</a></span><span class="op">(</span><span class="va">mvdat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $result</span></span>
+<span><span class="co">#&gt;   id.exposure exposure id.outcome outcome nsnp          b         se</span></span>
+<span><span class="co">#&gt; 1          x1       x1          y       y   32 -0.2796164 0.01272162</span></span>
+<span><span class="co">#&gt; 2          x2       x2          y       y   32  0.2961061 0.01287924</span></span>
+<span><span class="co">#&gt;            pval</span></span>
+<span><span class="co">#&gt; 1 4.512174e-107</span></span>
+<span><span class="co">#&gt; 2 5.741421e-117</span></span></code></pre></div>
 </div>
 </div>
-<div id="generating-summary-data-directly" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generating-summary-data-directly" class="anchor"></a>Generating summary data directly</h2>
-<p>For large scale analyses it is more convenient to just generate the summary data directly. For this we need to specify the genotype effects on <span class="math inline">\(x\)</span>, determine the standard errors expected based on the sample size, and then determine the genotype effect on <span class="math inline">\(y\)</span> according to causal effects of <span class="math inline">\(x\)</span> and pleiotropic paths, and determine the sample sizes for <span class="math inline">\(y\)</span> also. We can additionally specify the extent of sample overlap.</p>
-<div id="no-sample-overlap-case" class="section level3">
-<h3 class="hasAnchor">
-<a href="#no-sample-overlap-case" class="anchor"></a>No sample overlap case</h3>
+<div class="section level2">
+<h2 id="generating-summary-data-directly">Generating summary data directly<a class="anchor" aria-label="anchor" href="#generating-summary-data-directly"></a>
+</h2>
+<p>For large scale analyses it is more convenient to just generate the
+summary data directly. For this we need to specify the genotype effects
+on <span class="math inline">\(x\)</span>, determine the standard errors
+expected based on the sample size, and then determine the genotype
+effect on <span class="math inline">\(y\)</span> according to causal
+effects of <span class="math inline">\(x\)</span> and pleiotropic paths,
+and determine the sample sizes for <span class="math inline">\(y\)</span> also. We can additionally specify the
+extent of sample overlap.</p>
+<div class="section level3">
+<h3 id="no-sample-overlap-case">No sample overlap case<a class="anchor" aria-label="anchor" href="#no-sample-overlap-case"></a>
+</h3>
 <ol style="list-style-type: decimal">
 <li>Choose true effects of instruments on <span class="math inline">\(x\)</span>
 </li>
@@ -224,116 +248,126 @@
 </li>
 <li>Perform two-sample MR</li>
 </ol>
-<p>Choose some number of SNPs and the effect allele frequencies and the variance explained in <span class="math inline">\(x\)</span> by the SNPs</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
-<span class="va">rsq_gx</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></pre></div>
+<p>Choose some number of SNPs and the effect allele frequencies and the
+variance explained in <span class="math inline">\(x\)</span> by the
+SNPs</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">rsq_gx</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span></code></pre></div>
 <p>Generate some effects that correspond to these values</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-
-<span class="va">b_gx</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="va">rsq_gx</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">b_gx</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="va">rsq_gx</span><span class="op">)</span></span></code></pre></div>
 <p>Generate sample effects for 1 million samples</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">nid_x</span> <span class="op">&lt;-</span> <span class="fl">1000000</span>
-<span class="va">bhat_gx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">b_gx</span>, nid<span class="op">=</span><span class="va">nid_x</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nid_x</span> <span class="op">&lt;-</span> <span class="fl">1000000</span></span>
+<span><span class="va">bhat_gx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">b_gx</span>, nid<span class="op">=</span><span class="va">nid_x</span><span class="op">)</span></span></code></pre></div>
 <p>Assume <span class="math inline">\(x\)</span> has an effect on <span class="math inline">\(y\)</span> of -0.3</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">b_xy</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.3</span></pre></div>
-<p>Simulate some balanced pleiotropy - assume that 50% of the instruments have a direct effect on <span class="math inline">\(y\)</span> and they explain 2% of the variance through this path</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">plei_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span>, <span class="va">nsnp</span><span class="op">*</span><span class="fl">0.5</span><span class="op">)</span>
-<span class="va">b_gy_plei</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span>, snp<span class="op">=</span><span class="va">plei_index</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.02</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">b_xy</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.3</span></span></code></pre></div>
+<p>Simulate some balanced pleiotropy - assume that 50% of the
+instruments have a direct effect on <span class="math inline">\(y\)</span> and they explain 2% of the variance
+through this path</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plei_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span>, <span class="va">nsnp</span><span class="op">*</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">b_gy_plei</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span>, snp<span class="op">=</span><span class="va">plei_index</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.02</span><span class="op">)</span></span></code></pre></div>
 <p>Sum the genetic effects on <span class="math inline">\(y\)</span></p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">b_gy</span> <span class="op">&lt;-</span> <span class="va">b_gx</span>
-<span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="va">b_xy</span>
-<span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span> <span class="op">+</span> <span class="va">b_gy_plei</span><span class="op">$</span><span class="va">beta</span></pre></div>
-<p>Generate summary data for g-y associations, assuming sample size of 800000</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">nid_y</span> <span class="op">&lt;-</span> <span class="fl">800000</span>
-<span class="va">bhat_gy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">b_gy</span>, nid<span class="op">=</span><span class="va">nid_y</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">b_gy</span> <span class="op">&lt;-</span> <span class="va">b_gx</span></span>
+<span><span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="va">b_xy</span></span>
+<span><span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">b_gy</span><span class="op">$</span><span class="va">beta</span><span class="op">[</span><span class="va">plei_index</span><span class="op">]</span> <span class="op">+</span> <span class="va">b_gy_plei</span><span class="op">$</span><span class="va">beta</span></span></code></pre></div>
+<p>Generate summary data for g-y associations, assuming sample size of
+800000</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nid_y</span> <span class="op">&lt;-</span> <span class="fl">800000</span></span>
+<span><span class="va">bhat_gy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_gwas_ss.html">generate_gwas_ss</a></span><span class="op">(</span><span class="va">b_gy</span>, nid<span class="op">=</span><span class="va">nid_y</span><span class="op">)</span></span></code></pre></div>
 <p>Perform MR</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">bhat_gx</span>, <span class="va">bhat_gy</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
-<span class="co">#&gt; Analysing 'X' on 'Y'</span>
-<span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X                  MR Egger  100</span>
-<span class="co">#&gt; 2           X          Y       Y        X           Weighted median  100</span>
-<span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted  100</span>
-<span class="co">#&gt; 4           X          Y       Y        X               Simple mode  100</span>
-<span class="co">#&gt; 5           X          Y       Y        X             Weighted mode  100</span>
-<span class="co">#&gt;            b          se         pval</span>
-<span class="co">#&gt; 1 -0.3384038 0.034592973 3.590314e-16</span>
-<span class="co">#&gt; 2 -0.3027508 0.003420707 0.000000e+00</span>
-<span class="co">#&gt; 3 -0.3328361 0.022057824 1.905846e-51</span>
-<span class="co">#&gt; 4 -0.2907131 0.020208232 5.369016e-26</span>
-<span class="co">#&gt; 5 -0.2907131 0.020471143 1.276516e-25</span></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">bhat_gx</span>, <span class="va">bhat_gy</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analysing 'X' on 'Y'</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span></span>
+<span><span class="co">#&gt; 1           X          Y       Y        X                  MR Egger  100</span></span>
+<span><span class="co">#&gt; 2           X          Y       Y        X           Weighted median  100</span></span>
+<span><span class="co">#&gt; 3           X          Y       Y        X Inverse variance weighted  100</span></span>
+<span><span class="co">#&gt; 4           X          Y       Y        X               Simple mode  100</span></span>
+<span><span class="co">#&gt; 5           X          Y       Y        X             Weighted mode  100</span></span>
+<span><span class="co">#&gt;            b          se         pval</span></span>
+<span><span class="co">#&gt; 1 -0.2420559 0.040902499 4.803362e-08</span></span>
+<span><span class="co">#&gt; 2 -0.3001481 0.004199798 0.000000e+00</span></span>
+<span><span class="co">#&gt; 3 -0.2818603 0.022631250 1.322205e-35</span></span>
+<span><span class="co">#&gt; 4 -0.2887265 0.016955286 3.532470e-31</span></span>
+<span><span class="co">#&gt; 5 -0.2887265 0.016077724 6.554287e-33</span></span></code></pre></div>
 </div>
-<div id="sample-overlap-case" class="section level3">
-<h3 class="hasAnchor">
-<a href="#sample-overlap-case" class="anchor"></a>Sample overlap case</h3>
-<p>It is of course possible to simulate varying degrees of sample overlap by simulating two individual-level datasets with the same underlying DAG, and then selecting which individuals contribute to the exposure and outcome effects e.g.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000</span>
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="fl">0.5</span><span class="op">)</span>
-<span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span>
-<span class="va">beta_gx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.05</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">beta_gx</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">u</span><span class="op">)</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">u</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="sample-overlap-case">Sample overlap case<a class="anchor" aria-label="anchor" href="#sample-overlap-case"></a>
+</h3>
+<p>It is of course possible to simulate varying degrees of sample
+overlap by simulating two individual-level datasets with the same
+underlying DAG, and then selecting which individuals contribute to the
+exposure and outcome effects e.g.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nid</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_geno.html">make_geno</a></span><span class="op">(</span><span class="va">nid</span>, <span class="va">nsnp</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">nid</span><span class="op">)</span></span>
+<span><span class="va">beta_gx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/choose_effects.html">choose_effects</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">beta_gx</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">u</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_phen.html">make_phen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">u</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Complete sample overlap</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_effs.html">get_effs</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <p>No sample overlap</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="va">id1</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">id2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">2</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">nid</span>
-<span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">id1</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id1</span>,<span class="op">]</span><span class="op">)</span>
-<span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">id2</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id2</span>,<span class="op">]</span><span class="op">)</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">exp</span>, <span class="va">out</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">id1</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">id2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">2</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">nid</span></span>
+<span><span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">id1</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id1</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">id2</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id2</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">exp</span>, <span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <p>Partial sample overlap</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="va">id1</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">1.5</span><span class="op">)</span>
-<span class="va">id2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">1.5</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">nid</span>
-<span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">id1</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id1</span>,<span class="op">]</span><span class="op">)</span>
-<span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">id2</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id2</span>,<span class="op">]</span><span class="op">)</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">exp</span>, <span class="va">out</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">id1</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">1.5</span><span class="op">)</span></span>
+<span><span class="va">id2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">nid</span><span class="op">/</span><span class="fl">1.5</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">nid</span></span>
+<span><span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">id1</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id1</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gwas.html">gwas</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">id2</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">id2</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/merge_exp_out.html">merge_exp_out</a></span><span class="op">(</span><span class="va">exp</span>, <span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <hr>
-<p>An approach to doing this directly, bypassing simulation of individuals, is also implemented in the <code>summary_set</code> function e.g.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span>
-<span class="va">beta_gx</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
-<span class="va">beta_gy</span> <span class="op">&lt;-</span> <span class="va">beta_gx</span>
-<span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="fl">0.3</span>
-
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span>
-    beta_gx <span class="op">=</span> <span class="va">beta_gx</span><span class="op">$</span><span class="va">beta</span>,
-    beta_gy <span class="op">=</span> <span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span>,
-    af <span class="op">=</span> <span class="va">beta_gx</span><span class="op">$</span><span class="va">af</span>,
-    n_gx <span class="op">=</span> <span class="fl">10000</span>,
-    n_gy <span class="op">=</span> <span class="fl">10000</span>,
-    n_overlap <span class="op">=</span> <span class="fl">10000</span>,
-    cor_xy <span class="op">=</span> <span class="fl">0.6</span>,
-    prev_y <span class="op">=</span> <span class="cn">NA</span>,
-    sigma_x <span class="op">=</span> <span class="fl">1</span>,
-    sigma_y <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span>
-
-<span class="va">dat</span> <span class="op">%&gt;%</span>
-    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span><span class="op">(</span><span class="va">.</span>, method_list<span class="op">=</span><span class="st">"mr_ivw"</span><span class="op">)</span>
-<span class="co">#&gt; Analysing 'X' on 'Y'</span>
-<span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span>
-<span class="co">#&gt; 1           X          Y       Y        X Inverse variance weighted   38</span>
-<span class="co">#&gt;           b         se         pval</span>
-<span class="co">#&gt; 1 0.2964795 0.01494314 1.331014e-87</span></pre></div>
+<p>An approach to doing this directly, bypassing simulation of
+individuals, is also implemented in the <code>summary_set</code>
+function e.g.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nsnp</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">nsnp</span>, <span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span></span>
+<span><span class="va">beta_gx</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>af<span class="op">=</span><span class="va">af</span>, snp<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="va">nsnp</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="../reference/generate_gwas_params.html">generate_gwas_params</a></span><span class="op">(</span>h2<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">beta_gy</span> <span class="op">&lt;-</span> <span class="va">beta_gx</span></span>
+<span><span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="fl">0.3</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_set.html">summary_set</a></span><span class="op">(</span></span>
+<span>    beta_gx <span class="op">=</span> <span class="va">beta_gx</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    beta_gy <span class="op">=</span> <span class="va">beta_gy</span><span class="op">$</span><span class="va">beta</span>,</span>
+<span>    af <span class="op">=</span> <span class="va">beta_gx</span><span class="op">$</span><span class="va">af</span>,</span>
+<span>    n_gx <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>    n_gy <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>    n_overlap <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>    cor_xy <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span>    prev_y <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    sigma_x <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    sigma_y <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pval.exposure</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://mrcieu.github.io/TwoSampleMR/reference/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">.</span>, method_list<span class="op">=</span><span class="st">"mr_ivw"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analysing 'X' on 'Y'</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome outcome exposure                    method nsnp</span></span>
+<span><span class="co">#&gt; 1           X          Y       Y        X Inverse variance weighted   39</span></span>
+<span><span class="co">#&gt;           b        se         pval</span></span>
+<span><span class="co">#&gt; 1 0.2751496 0.0152435 7.848903e-73</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -349,11 +383,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, John Ferguson.</p>
+  <p></p>
+<p>Developed by Gibran Hemani, John Ferguson, Rita Rasteiro.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -361,6 +397,8 @@
 
   
 
+
+  
 
   </body>
 </html>

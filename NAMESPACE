@@ -3,6 +3,7 @@
 export("%>%")
 export(add_u)
 export(allele_frequency)
+export(arbitrary_map)
 export(ascertain_samples)
 export(choose_effects)
 export(contingency)

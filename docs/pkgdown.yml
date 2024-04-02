@@ -1,5 +1,5 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   generate_ldobj: generate_ldobj.html
@@ -14,5 +14,5 @@ articles:
   susie_check: susie_check.html
   twosamplemr: twosamplemr.html
   weak_instruments: weak_instruments.html
-last_built: 2021-04-06T21:53Z
+last_built: 2024-04-02T11:08Z
 
