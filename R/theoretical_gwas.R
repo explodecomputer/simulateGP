@@ -1,3 +1,14 @@
+#' Create an arbitrary map
+#' 
+#' @param af vectory of allele frequencies
+#' 
+#' @return data frame with snp name, chr, pos, ea, oa
+#' @export
+arbitrary_map <- function(af) {
+	dplyr::tibble(snp=1:length(af), chr=99, pos=snp, ea="1", oa="2", af = af)
+}
+
+
 #' Calculate expected MSE
 #'
 #' @param beta array of effect sizes
