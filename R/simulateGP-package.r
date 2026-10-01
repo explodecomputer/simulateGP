@@ -5,7 +5,5 @@
 #'
 #' **Full documentation available here:** [https://explodecomputer.github.io/simulateGP](https://explodecomputer.github.io/simulateGP)
 #'
-#' @name simulateGP-package
 #' @aliases simulateGP simulategp
-#' @docType package
-NULL
+"_PACKAGE"

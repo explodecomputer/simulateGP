@@ -9,6 +9,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}  
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
 Background: [Deep IV](http://proceedings.mlr.press/v70/hartford17a.html) can infer causal effects in which the sample is stratified by one or many covariates, and there is a different causal effect within each stratum.
 
 The covariates don't necessarily need to be directly measured, could have a large number of proxy variables for example.
@@ -26,14 +34,14 @@ bmi_hits <- ieugwasr::tophits("ukb-b-19953")
 str(bmi_hits)
 ```
 
-There are `r nrow(bmi_hits)` independent instruments for BMI. All the instruments have small effects:
+This gives the independent instruments for BMI. All the instruments have small effects:
 
 ```{r}
 bmi_hits$rsq <- 2 * bmi_hits$beta^2 * bmi_hits$eaf * (1 - bmi_hits$eaf)
 hist(bmi_hits$rsq, breaks=100)
 ```
 
-In total the `r nrow(bmi_hits)` BMI hits explain `r sum(bmi_hits$rsq) * 100`% of the variance in BMI.
+In total the BMI hits explain `sum(bmi_hits$rsq) * 100`% of the variance in BMI.
 
 What is the effect on coronary heart disease?
 
@@ -78,7 +86,7 @@ Problem with this model is that if we assume that all the instruments explain th
 1. Choose a number of causal variants for the trait (large, e.g. >10000)
 2. Sample the allele frequency distribution of all causal variants
 3. Sample the effects for all causal variants
-4. Retain only those that cumulatively explain some amount of variance. e.g. For BMI, the variance exlained is `r round(sum(bmi_hits$rsq, 2))`, so we just want the set of variants that are required to explain that much variance.
+4. Retain only those that cumulatively explain some amount of variance. e.g. For BMI, the variance explained is `sum(bmi_hits$rsq)`, so we just want the set of variants that are required to explain that much variance.
 
 Ultimately, we can draw allele frequencies from some distribution e.g.
 

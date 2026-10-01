@@ -26,6 +26,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Gibran Hemani \email{explodecomputer@gmail.com} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
   \item John Ferguson \email{john.ferguson@nuigalway.ie}
   \item Rita Rasteiro \email{rita.rasteiro@bristol.ac.uk} (\href{https://orcid.org/0000-0002-4217-3060}{ORCID})
 }

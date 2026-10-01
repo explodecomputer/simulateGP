@@ -2,16 +2,20 @@ Package: simulateGP
 Title: Functions for Simulating Genotype-Phenotype Relationships
 Version: 0.1.3
 Authors@R: c(
-    person("Gibran", "Hemani", , "explodecomputer@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0920-1055")),
+    person("Gibran", "Hemani", , "explodecomputer@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0920-1055")),
     person("John", "Ferguson", , "john.ferguson@nuigalway.ie", role = "aut"),
-    person("Rita", "Rasteiro", , "rita.rasteiro@bristol.ac.uk", role = c("aut"), comment = c(ORCID = "0000-0002-4217-3060"))
+    person("Rita", "Rasteiro", , "rita.rasteiro@bristol.ac.uk", role = "aut",
+           comment = c(ORCID = "0000-0002-4217-3060"))
   )
 Description: Functions for simulating SNP effects on phenotypes. Functions
     for simulating disease risk on probability and liability scales.
     Simulations to quickly obtain estimates of effect sizes for simulated
     genotype-phenotypes.
 License: MIT + file LICENSE
-URL: https://explodecomputer.github.io/simulateGP/
+URL: https://explodecomputer.github.io/simulateGP/,
+    https://github.com/explodecomputer/simulateGP,
+    https://mrcieu.r-universe.dev/simulateGP
 BugReports: https://github.com/explodecomputer/simulateGP/issues
 Depends:
     R (>= 4.0.0)
@@ -48,7 +52,7 @@ Remotes:
     mrcieu/gwasglue2,
     mrcieu/ieugwasr,
     mrcieu/TwoSampleMR
+Config/roxygen2/markdown: TRUE
+Config/roxygen2/version: 8.1.0
 Encoding: UTF-8
 LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1

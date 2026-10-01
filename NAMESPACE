@@ -50,22 +50,24 @@ export(y_to_binary)
 importFrom(graphics,hist)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
-importFrom(stats,anova)
-importFrom(stats,cor)
-importFrom(stats,cov)
-importFrom(stats,glm)
-importFrom(stats,lm)
-importFrom(stats,na.exclude)
-importFrom(stats,pf)
-importFrom(stats,plogis)
-importFrom(stats,pnorm)
-importFrom(stats,pt)
-importFrom(stats,qnorm)
-importFrom(stats,quantile)
-importFrom(stats,rbinom)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,start)
-importFrom(stats,uniroot)
-importFrom(stats,var)
+importFrom(stats,
+  anova,
+  cor,
+  cov,
+  glm,
+  lm,
+  na.exclude,
+  pf,
+  plogis,
+  pnorm,
+  pt,
+  qnorm,
+  quantile,
+  rbinom,
+  rnorm,
+  runif,
+  start,
+  uniroot,
+  var
+)
 importFrom(utils,write.table)
